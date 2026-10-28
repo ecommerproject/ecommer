@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\StoreSettingService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -99,11 +102,29 @@ class AdminDashboardController extends Controller
             'cancelled' => max(0, 100 - (round(($completedOrders / $gaugeTotal) * 100) + round(($processingOrders / $gaugeTotal) * 100) + round(($pendingOrders / $gaugeTotal) * 100))),
         ];
 
+        $recentOrders = Order::query()->orderByDesc('id')->limit(6)->get();
+
+        $lowStockProducts = Product::query()
+            ->when(! $isAdmin, fn ($query) => $query->active())
+            ->where('stock', '<=', 30)
+            ->orderBy('stock', 'asc')
+            ->limit(5)
+            ->get();
+
+        $paymentMethodStats = Order::query()
+            ->select('payment_method', DB::raw('count(*) as count'), DB::raw('sum(total_amount) as total'))
+            ->groupBy('payment_method')
+            ->orderByDesc('count')
+            ->get();
+
         return view('admin.dashboard', [
             'isAdmin' => $isAdmin,
             'totalRevenue' => $totalRevenue,
             'totalOrders' => $totalOrders,
             'avgOrderValue' => $avgOrderValue,
+            'recentOrders' => $recentOrders,
+            'lowStockProducts' => $lowStockProducts,
+            'paymentMethodStats' => $paymentMethodStats,
             'orderStats' => [
                 'completed' => $completedOrders,
                 'processing' => $processingOrders,
@@ -153,7 +174,143 @@ class AdminDashboardController extends Controller
             'recentCustomers' => $isAdmin
                 ? DB::table('users')->where('is_admin', false)->orderByDesc('created_at')->orderByDesc('id')->limit(5)->get(['id', 'name', 'email', 'created_at'])
                 : collect(),
+            'activeCampaign' => StoreSettingService::get('active_campaign', null),
+            'categories' => Product::distinct()->pluck('category')->filter()->values(),
         ]);
+    }
+
+    /**
+     * Apply an App-wide or Category-wide promotional discount to products
+     */
+    public function applyPromotion(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'discount_percent' => ['required', 'numeric', 'min:1', 'max:95'],
+            'scope' => ['required', 'string'],
+            'badge_text' => ['required', 'string', 'max:60'],
+            'badge_color' => ['nullable', 'string', 'max:100'],
+            'badge_style' => ['nullable', 'string', 'max:40'],
+            'banner_title' => ['nullable', 'string', 'max:100'],
+            'sync_announcement' => ['nullable'],
+        ]);
+
+        $percent = (float) $validated['discount_percent'];
+        $scope = $validated['scope'];
+        $badgeText = trim($validated['badge_text']);
+        $badgeColor = !empty($validated['badge_color']) ? trim($validated['badge_color']) : null;
+        $badgeStyle = !empty($validated['badge_style']) ? trim($validated['badge_style']) : 'solid';
+        $bannerTitle = trim($validated['banner_title'] ?: '⚡ ប្រូម៉ូសិនពិសេស');
+
+        $productQuery = Product::query();
+        if ($scope !== 'all') {
+            $productQuery->where('category', $scope);
+        }
+        $products = $productQuery->get();
+
+        if ($products->isEmpty()) {
+            return redirect()->route('admin.dashboard')->with('error', 'រកមិនឃើញទំនិញដែលត្រូវអនុវត្តប្រូម៉ូសិនឡើយ!');
+        }
+
+        // 1. Capture snapshot before applying changes so we can revert 100% losslessly
+        $existingCampaign = StoreSettingService::get('active_campaign');
+        $snapshots = $existingCampaign['snapshots'] ?? [];
+
+        foreach ($products as $prod) {
+            if (!isset($snapshots[$prod->id])) {
+                $snapshots[$prod->id] = [
+                    'price' => (float) $prod->price,
+                    'old_price' => $prod->old_price !== null ? (float) $prod->old_price : null,
+                    'badge' => $prod->badge,
+                    'badge_color' => $prod->badge_color,
+                    'badge_style' => $prod->badge_style,
+                ];
+            }
+
+            // Base price is previous old_price (if already discounted) or original price
+            $basePrice = $snapshots[$prod->id]['old_price'] ?? $snapshots[$prod->id]['price'];
+            $newPrice = round($basePrice * (1 - ($percent / 100)), 2);
+            if ($newPrice <= 0) $newPrice = 0.50;
+
+            $prod->price = $newPrice;
+            $prod->old_price = $basePrice;
+            $prod->badge = $badgeText;
+            if ($badgeColor) {
+                $prod->badge_color = $badgeColor;
+            }
+            if ($badgeStyle) {
+                $prod->badge_style = $badgeStyle;
+            }
+            $prod->save();
+        }
+
+        // 2. Persist active campaign in StoreSettingService
+        $campaignData = [
+            'is_active' => true,
+            'title' => $bannerTitle,
+            'badge' => $badgeText,
+            'badge_color' => $badgeColor,
+            'badge_style' => $badgeStyle,
+            'discount_percent' => $percent,
+            'scope' => $scope,
+            'applied_at' => now()->format('d M Y, h:i A'),
+            'affected_count' => $products->count(),
+            'snapshots' => $snapshots,
+        ];
+
+        $settingsUpdate = ['active_campaign' => $campaignData];
+
+        if ($request->filled('sync_announcement')) {
+            $settingsUpdate['announcement_active'] = true;
+            $settingsUpdate['announcement_text_km'] = "{$bannerTitle}! បញ្ចុះតម្លៃពិសេស -{$percent}% លើទំនិញពេញនិយម!";
+            $settingsUpdate['announcement_text_en'] = "Special Promotion! Save -{$percent}% OFF storewide!";
+        }
+
+        StoreSettingService::update($settingsUpdate);
+
+        return redirect()->route('admin.dashboard')->with('status', "🎉 ប្រូម៉ូសិន ({$badgeText}) ត្រូវបានអនុវត្តដោយជោគជ័យលើទំនិញចំនួន {$products->count()} មុខ!");
+    }
+
+    /**
+     * Clear and revert the active promotion, restoring all original prices & badges
+     */
+    public function clearPromotion(Request $request): RedirectResponse
+    {
+        $campaign = StoreSettingService::get('active_campaign');
+        $snapshots = $campaign['snapshots'] ?? [];
+        $restoredCount = 0;
+
+        if (!empty($snapshots)) {
+            foreach ($snapshots as $id => $data) {
+                $prod = Product::find($id);
+                if ($prod) {
+                    $prod->price = $data['price'];
+                    $prod->old_price = $data['old_price'];
+                    $prod->badge = $data['badge'] ?? null;
+                    $prod->badge_color = $data['badge_color'] ?? null;
+                    $prod->badge_style = $data['badge_style'] ?? 'solid';
+                    $prod->save();
+                    $restoredCount++;
+                }
+            }
+        } else {
+            // Fallback if no snapshot was found
+            $products = Product::whereNotNull('old_price')->get();
+            foreach ($products as $prod) {
+                $prod->price = $prod->old_price;
+                $prod->old_price = null;
+                $prod->badge = null;
+                $prod->badge_color = null;
+                $prod->badge_style = 'solid';
+                $prod->save();
+                $restoredCount++;
+            }
+        }
+
+        StoreSettingService::update([
+            'active_campaign' => null,
+        ]);
+
+        return redirect()->route('admin.dashboard')->with('status', "✓ ការប្រម៉ូសិនត្រូវបានលុបចេញដោយជោគជ័យ! តម្លៃដើមរបស់ទំនិញចំនួន {$restoredCount} មុខ ត្រូវបានស្តារដូចដើមវិញ។");
     }
 
     public function export(): StreamedResponse

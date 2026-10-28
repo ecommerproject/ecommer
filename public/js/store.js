@@ -89,12 +89,25 @@ function renderProducts() {
             return Number(first.dataset.order) - Number(second.dataset.order);
         });
 
+        const isFeaturedGrid = grid.id === 'featured-grid';
+        const maxLimit = isFeaturedGrid ? 4 : Infinity;
+        let countInGrid = 0;
+
         cards.forEach((card) => {
-            const matchesCategory = productFilters.category === 'all' || card.dataset.category === productFilters.category;
+            const matchesCategory = isFeaturedGrid || catalogGrid
+                ? (productFilters.category === 'all' || card.dataset.category === productFilters.category)
+                : true;
             const matchesSearch = card.dataset.search.toLocaleLowerCase().includes(productFilters.search);
             const matchesFavorite = !productFilters.favoritesOnly || favoriteIds.has(card.dataset.productId);
-            card.hidden = !(matchesCategory && matchesSearch && matchesFavorite);
-            if (!card.hidden) visibleProducts += 1;
+            const matches = matchesCategory && matchesSearch && matchesFavorite;
+
+            if (matches && countInGrid < maxLimit) {
+                card.hidden = false;
+                countInGrid += 1;
+                visibleProducts += 1;
+            } else {
+                card.hidden = true;
+            }
             grid.append(card);
         });
     });
@@ -222,12 +235,7 @@ document.querySelector('#product-sort')?.addEventListener('change', (event) => {
     renderProducts();
 });
 
-document.querySelector('.menu-toggle')?.addEventListener('click', (event) => {
-    const button = event.currentTarget;
-    const navigation = document.querySelector('.main-nav');
-    const isOpen = navigation.classList.toggle('is-open');
-    button.setAttribute('aria-expanded', String(isOpen));
-});
+// Note: .menu-toggle is handled globally by window.toggleMobileNav(event) in app.blade.php
 
 document.querySelector('.category-sidebar .sidebar-title')?.addEventListener('click', (event) => {
     const sidebar = document.querySelector('.category-sidebar');
@@ -287,3 +295,26 @@ document.querySelector('.newsletter-form')?.addEventListener('submit', async (ev
 
 updateCart(readCart());
 renderProducts();
+
+// Modern Real-time Category Sidebar Quick Search
+const catSidebarSearch = document.getElementById('catSidebarSearch');
+if (catSidebarSearch) {
+    catSidebarSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const categoryButtons = document.querySelectorAll('.category-links-list .category-link');
+        let matchedCount = 0;
+
+        categoryButtons.forEach((btn) => {
+            const name = (btn.dataset.categoryName || btn.textContent).toLowerCase();
+            const matches = !query || name.includes(query);
+            btn.style.display = matches ? 'flex' : 'none';
+            if (matches) matchedCount++;
+        });
+
+        const badge = document.querySelector('.cat-search-badge');
+        if (badge) {
+            badge.textContent = String(matchedCount);
+        }
+    });
+}
+

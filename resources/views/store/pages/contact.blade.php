@@ -52,8 +52,8 @@
                 <div class="ch-card-body">
                     <span class="ch-tag">{{ $locale === 'km' ? 'ទូរស័ព្ទបន្ទាន់' : 'Direct Line' }}</span>
                     <h2>{{ $translations['contact_page']['phone_heading'] }}</h2>
-                    <p><a href="tel:+85512345678" class="ch-link-main">{{ $translations['contact_page']['phone'] }}</a></p>
-                    <a class="contact-card-btn emerald" href="tel:+85512345678">
+                    <p><a href="tel:+855714504547" class="ch-link-main">{{ $translations['contact_page']['phone'] }}</a></p>
+                    <a class="contact-card-btn emerald" href="tel:+855714504547">
                         <span>{{ $translations['contact_page']['call_action'] }}</span>
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </a>
@@ -175,7 +175,7 @@
                                     id="contact_phone_or_email"
                                     name="phone_or_email"
                                     class="contact-input"
-                                    placeholder="{{ $locale === 'km' ? '012 345 678 ឬ email@example.com' : '+855 12 345 678 or email' }}"
+                                    placeholder="{{ $locale === 'km' ? '071 450 4547 ឬ email@example.com' : '+855 71 450 4547 or email' }}"
                                     required
                                     value="{{ old('phone_or_email') }}"
                                 >
@@ -303,7 +303,7 @@
                         <svg class="faq-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </summary>
                     <div class="about-faq-answer">
-                        <p>{{ $locale === 'km' ? 'សម្រាប់បញ្ហាបន្ទាន់ លោកអ្នកអាចទូរស័ព្ទមកកាន់លេខ +855 12 345 678 ឬឆាតផ្ទាល់ទៅកាន់ Telegram (@daramarket)។ ក្រុមការងារយើងនឹងឆ្លើយតបក្នុងរយៈពេលក្រោម ៥ នាទី។' : 'For urgent queries, call us directly at +855 12 345 678 or message us on Telegram (@daramarket). Our agents typically reply in under 5 minutes.' }}</p>
+                        <p>{{ $locale === 'km' ? 'សម្រាប់បញ្ហាបន្ទាន់ លោកអ្នកអាចទូរស័ព្ទមកកាន់លេខ +855 71 450 4547 ឬឆាតផ្ទាល់ទៅកាន់ Telegram (@daramarket)។ ក្រុមការងារយើងនឹងឆ្លើយតបក្នុងរយៈពេលក្រោម ៥ នាទី។' : 'For urgent queries, call us directly at +855 71 450 4547 or message us on Telegram (@daramarket). Our agents typically reply in under 5 minutes.' }}</p>
                     </div>
                 </details>
 

@@ -1,4 +1,4 @@
-<article class="product-card" data-product-id="{{ $product['id'] }}" data-order="{{ $product['order'] }}" data-price="{{ $product['price'] }}" data-rating="{{ $product['rating'] }}" data-category="{{ $product['filter_key'] }}" data-search="{{ $product['name'] }} {{ $product['category'] }}">
+<article class="product-card" data-product-id="{{ $product['id'] }}" data-order="{{ $product['order'] }}" data-price="{{ $product['price'] }}" data-rating="{{ $product['rating'] }}" data-category="{{ $product['filter_key'] }}" data-search="{{ $product['name'] }} {{ $product['category'] }}" {{ !empty($isHidden) ? 'hidden' : '' }}>
     <div class="product-image-wrap">
         <a href="{{ route('store.products.show', $product['id']) }}" class="product-image-link" aria-label="{{ $product['name'] }}">
             <img
@@ -6,6 +6,7 @@
                 src="{{ $product['image'] }}"
                 alt="{{ $product['name'] }}"
                 loading="lazy"
+                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=640&q=85';"
             >
         </a>
         @if ($product['badge'])
@@ -17,8 +18,14 @@
                 } elseif ($badgeLabel === 'popular') {
                     $badgeLabel = app()->getLocale() === 'km' ? 'ពេញនិយម' : 'Popular';
                 }
+                $customColor = $product['badge_color'] ?? null;
+                $isPulse = ($product['badge_style'] ?? '') === 'pulse';
             @endphp
-            <span class="product-badge {{ $isDiscount ? 'discount-badge' : 'highlight-badge' }}">
+            <span class="product-badge {{ $isDiscount ? 'discount-badge' : 'highlight-badge' }} {{ $isPulse ? 'badge-pulse-glow' : '' }}"
+                @if ($customColor)
+                    style="background: {{ $customColor }}; border-color: rgba(255,255,255,0.4); color: #ffffff;"
+                @endif
+            >
                 @if ($isDiscount)
                     <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
                 @else

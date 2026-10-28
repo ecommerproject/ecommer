@@ -284,11 +284,116 @@
                             @error('category')<small class="admin-field-error">{{ $message }}</small>@enderror
                         </label>
 
-                        <label class="admin-field">
-                            <span>Badge / Promotion Tag (Optional)</span>
-                            <input id="input_badge" name="badge" type="text" maxlength="80" placeholder="e.g. Best Seller, -20%, Popular" value="{{ old('badge', $product->badge) }}">
+                        <div class="badge-customizer-studio">
+                            <div class="badge-studio-header">
+                                <label for="input_badge" class="badge-studio-label">
+                                    <span>🏷️ Badge / Promotion Tag (ស្លាកប្រូម៉ូសិនលើទំនិញ)</span>
+                                    <small class="badge-studio-sub">អាចកំណត់អក្សរ រូប Emoji ជ្រើសរើសពណ៌តាមចិត្ត និងដាក់ Effect ចលនាបាន</small>
+                                </label>
+                            </div>
+
+                            <!-- Main Text Input + Quick Emojis -->
+                            <div class="badge-input-combo-wrap">
+                                <div class="badge-text-input-row">
+                                    <input id="input_badge" name="badge" type="text" maxlength="80" placeholder="ឧទាហរណ៍៖ -10%, 🔥 Hot Deal, Best Seller, New" value="{{ old('badge', $product->badge) }}">
+                                    <button type="button" class="btn-badge-clear" onclick="clearProductBadge()" title="លុប Badge ចោល">✕</button>
+                                </div>
+
+                                <!-- Quick Emoji Bar -->
+                                <div class="badge-emoji-bar" title="ចុចដើម្បីថែមរូបតំណាង Emoji">
+                                    <span class="emoji-bar-label">Emoji ថ្មីៗ៖</span>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('🔥')">🔥</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('⚡')">⚡</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('✨')">✨</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('⭐')">⭐</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('💥')">💥</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('🎁')">🎁</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('🏷️')">🏷️</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('🚀')">🚀</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('💎')">💎</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('👑')">👑</button>
+                                    <button type="button" class="btn-emoji-insert" onclick="insertBadgeEmoji('🚚')">🚚</button>
+                                </div>
+                            </div>
                             @error('badge')<small class="admin-field-error">{{ $message }}</small>@enderror
-                        </label>
+
+                            <!-- Quick Preset Tags (ចុចដាក់ភ្លាមៗ) -->
+                            <div class="badge-quick-suggestions">
+                                <span class="badge-studio-mini-label">🎯 ស្លាកគំរូពេញនិយម (ចុចដាក់ភ្លាមៗ)៖</span>
+                                <div class="badge-suggestion-chips">
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('-10%', 'linear-gradient(135deg, #ef4444, #b91c1c)', 'pulse')">🔥 -10% Hot</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('-20%', 'linear-gradient(135deg, #f97316, #c2410c)', 'pulse')">⚡ -20% Flash</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('-50%', 'linear-gradient(135deg, #ec4899, #be185d)', 'pulse')">💥 -50% Mega</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('NEW ARRIVAL ✨', 'linear-gradient(135deg, #10b981, #047857)', 'solid')">✨ New Arrival</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('BEST SELLER ⭐', 'linear-gradient(135deg, #f59e0b, #b45309)', 'solid')">⭐ Best Seller</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('BUY 1 GET 1 🎁', 'linear-gradient(135deg, #8b5cf6, #6d28d9)', 'pulse')">🎁 Buy 1 Get 1</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('FREE SHIPPING 🚚', 'linear-gradient(135deg, #0ea5e9, #0369a1)', 'solid')">🚚 Free Shipping</button>
+                                    <button type="button" class="chip-preset-badge" onclick="applyPresetBadge('ទំនិញពេញនិយម 🇰🇭', 'linear-gradient(135deg, #14b8a6, #0f766e)', 'solid')">🇰🇭 ពេញនិយម</button>
+                                </div>
+                            </div>
+
+                            <!-- Hidden Fields for color & style -->
+                            <input type="hidden" id="input_badge_color" name="badge_color" value="{{ old('badge_color', $product->badge_color ?? '') }}">
+                            <input type="hidden" id="input_badge_style" name="badge_style" value="{{ old('badge_style', $product->badge_style ?? 'solid') }}">
+
+                            <!-- Color Palette Studio (ពណ៍ច្រើនអាចដូរតាមចិត្ត) -->
+                            <div class="badge-color-palette-section">
+                                <div class="badge-studio-mini-label-row">
+                                    <span class="badge-studio-mini-label">🎨 ជ្រើសរើសពណ៌ Badge (ជ្រើសរើសតាមចិត្ត)៖</span>
+                                    <span class="current-color-badge-text" id="currentColorLabel"></span>
+                                </div>
+
+                                <div class="badge-palette-grid">
+                                    <!-- 10 Presets -->
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #ef4444, #b91c1c)" title="Fire Crimson (ក្រហមភ្លើង)" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="setBadgeColor('linear-gradient(135deg, #ef4444, #b91c1c)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #f97316, #c2410c)" title="Sunset Orange (ទឹកក្រូចឆ្អៅ)" style="background: linear-gradient(135deg, #f97316, #c2410c);" onclick="setBadgeColor('linear-gradient(135deg, #f97316, #c2410c)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #f59e0b, #b45309)" title="Royal Gold (ពណ៌មាសប្រណីត)" style="background: linear-gradient(135deg, #f59e0b, #b45309);" onclick="setBadgeColor('linear-gradient(135deg, #f59e0b, #b45309)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #10b981, #047857)" title="Emerald Green (បៃតងត្បូង)" style="background: linear-gradient(135deg, #10b981, #047857);" onclick="setBadgeColor('linear-gradient(135deg, #10b981, #047857)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #0ea5e9, #0369a1)" title="Ocean Cyan (ខៀវសមុទ្រ)" style="background: linear-gradient(135deg, #0ea5e9, #0369a1);" onclick="setBadgeColor('linear-gradient(135deg, #0ea5e9, #0369a1)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #6366f1, #4338ca)" title="Cyber Indigo (ពណ៌ស្វាយ Indigo)" style="background: linear-gradient(135deg, #6366f1, #4338ca);" onclick="setBadgeColor('linear-gradient(135deg, #6366f1, #4338ca)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #8b5cf6, #6d28d9)" title="Royal Violet (ស្វាយរាជវង្ស)" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);" onclick="setBadgeColor('linear-gradient(135deg, #8b5cf6, #6d28d9)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #ec4899, #be185d)" title="Neon Rose (ផ្កាឈូកទាក់ទាញ)" style="background: linear-gradient(135deg, #ec4899, #be185d);" onclick="setBadgeColor('linear-gradient(135deg, #ec4899, #be185d)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #1e293b, #0f172a)" title="Midnight Onyx (ខ្មៅប្រណីត)" style="background: linear-gradient(135deg, #1e293b, #0f172a);" onclick="setBadgeColor('linear-gradient(135deg, #1e293b, #0f172a)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+                                    <button type="button" class="color-swatch-btn" data-color="linear-gradient(135deg, #f43f5e, #8b5cf6, #0ea5e9)" title="Rainbow Holographic (ឥន្ទធនូរលោង)" style="background: linear-gradient(135deg, #f43f5e, #8b5cf6, #0ea5e9);" onclick="setBadgeColor('linear-gradient(135deg, #f43f5e, #8b5cf6, #0ea5e9)', this)">
+                                        <span class="swatch-check">✓</span>
+                                    </button>
+
+                                    <!-- Custom Color Picker Box -->
+                                    <label class="custom-color-picker-label" title="ចុចដើម្បីជ្រើសរើសពណ៌ដោយខ្លួនឯង (Custom Color Picker)">
+                                        <input type="color" id="badge_native_color" value="{{ old('badge_color', (str_starts_with($product->badge_color ?? '', '#') ? $product->badge_color : '#ef4444')) }}" onchange="setCustomHexColor(this.value)">
+                                        <span class="custom-color-indicator" id="customColorIndicator">🎨 ពណ៌ផ្ទាល់ខ្លួន</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Effects & Animation (ថែមអីដែលថ្មីៗ) -->
+                            <div class="badge-effects-row">
+                                <label class="badge-effect-toggle" title="បើកចលនាភ្លឹបភ្លែតទាក់ទាញភ្នែក (Neon Pulse Glow)">
+                                    <input type="checkbox" id="badge_pulse_toggle" onchange="toggleBadgePulse(this.checked)" {{ old('badge_style', $product->badge_style) === 'pulse' ? 'checked' : '' }}>
+                                    <span class="effect-toggle-slider"></span>
+                                    <span class="effect-label">✨ Neon Pulse Animation (ចលនាភ្លឺភ្លឹបភ្លែតលើ Badge)</span>
+                                </label>
+                                <button type="button" class="btn-reset-badge-style" onclick="resetBadgeDefaults()">🔄 ពណ៌លំនាំដើម</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-divider"></div>
@@ -485,7 +590,7 @@
                     <div class="customer-product-mockup">
                         <div class="mockup-img-wrap">
                             <img id="preview_img" src="{{ old('image_url', $product->image_url ?? '') }}" alt="Preview" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'300\' height=\'240\' viewBox=\'0 0 300 240\'><rect width=\'300\' height=\'240\' fill=\'%23edf5ed\'/><text x=\'150\' y=\'120\' font-size=\'48\' text-anchor=\'middle\'>🛍️</text><text x=\'150\' y=\'150\' font-size=\'14\' fill=\'%237d8981\' text-anchor=\'middle\'>No image URL</text></svg>'">
-                            <span id="preview_badge" class="mockup-badge {{ old('badge', $product->badge) ? '' : 'is-hidden' }}">{{ old('badge', $product->badge ?? '') }}</span>
+                            <span id="preview_badge" class="mockup-badge {{ old('badge', $product->badge) ? '' : 'is-hidden' }} {{ old('badge_style', $product->badge_style) === 'pulse' ? 'badge-pulse-glow' : '' }}" style="{{ old('badge_color', $product->badge_color) ? 'background: ' . old('badge_color', $product->badge_color) . ';' : '' }}">{{ old('badge', $product->badge ?? '') }}</span>
                         </div>
                         <div class="mockup-body">
                             <div class="mockup-meta">
@@ -543,9 +648,11 @@
                     </div>
 
                     <textarea id="rawPasteInput" class="paste-textarea" rows="8" placeholder="ឧទាហរណ៍៖
-Wireless Mouse, កណ្តុរឥតខ្សែ, electronics, 15.00, 20.00, 50
-Canvas Tote Bag, កាបូបយួរស្ពាយ, fashion, 18.50, 25.00, 40
-Ceramic Coffee Mug, កែវកាហ្វេសេរ៉ាមិក, kitchen, 8.00, 12.00, 60"></textarea>
+Chanel No. 5 Parfum 100ml, ទឹកអប់ Chanel No. 5, perfumes, 115.00, 135.00, 25
+iPhone 16 Pro Max 256GB, ទូរស័ព្ទ iPhone 16 Pro Max, phones, 1299.00, 1399.00, 20
+MacBook Pro 16 M3 Max, កុំព្យូទ័រ MacBook Pro 16 M3, computers, 2499.00, 2699.00, 10
+Minimalist Cotton Hoodie, អាវរងា Hoodie សាច់កប្បាស, fashion, 35.00, 45.00, 50
+Glow Hydrating Serum 30ml, សេរ៉ូមបំប៉នស្បែកមុខ, beauty, 32.00, 40.00, 45"></textarea>
 
                     <div class="paste-actions-bar">
                         <button type="button" class="admin-primary-button button-with-glow" onclick="parsePasteIntoBatch()">
@@ -956,13 +1063,13 @@ function fillSampleProducts() {
             is_active: true
         },
         {
-            name_en: 'Stainless Steel Insulated Thermal Tumbler',
-            name_km: 'ដបទឹកដែកអ៊ីណុកក្តៅត្រជាក់ ២៤ម៉ោង',
-            category: 'kitchen',
-            price: 18.00,
-            old_price: 24.00,
-            stock: 60,
-            image_url: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=80',
+            name_en: 'Chanel No. 5 Classic Luxury Parfum 100ml',
+            name_km: 'ទឹកអប់ Chanel No. 5 ក្លិនក្រអូបបុរាណប្រណីត',
+            category: 'perfumes',
+            price: 115.00,
+            old_price: 135.00,
+            stock: 25,
+            image_url: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&auto=format&fit=crop&q=80',
             is_active: true
         }
     ];
@@ -974,7 +1081,7 @@ function fillSampleProducts() {
 function loadSamplePasteText() {
     const textarea = document.getElementById('rawPasteInput');
     if (!textarea) return;
-    textarea.value = `Wireless Gaming Mouse, កណ្តុរហ្គេមឥតខ្សែ, electronics, 22.50, 30.00, 45\nSport Running Shoes, ស្បែកជើងរត់ហាត់ប្រាណ, fashion, 42.00, 55.00, 35\nThermal Travel Flask, ដបទឹកក្តៅត្រជាក់រក្សាសីតុណ្ហភាព, kitchen, 16.00, 22.00, 60\nNatural Face Hydrating Serum, សេរ៉ូមបំប៉នស្បែកមុខធម្មជាតិ, beauty, 24.00, 32.00, 40\nCompact 4K Action Camera, កាមេរ៉ាខ្នាតតូច 4K, electronics, 85.00, 110.00, 20`;
+    textarea.value = `Chanel No. 5 Parfum 100ml, ទឹកអប់ Chanel No. 5, perfumes, 115.00, 135.00, 25\niPhone 16 Pro Max 256GB, ទូរស័ព្ទ iPhone 16 Pro Max, phones, 1299.00, 1399.00, 20\nMacBook Pro 16 M3 Max, កុំព្យូទ័រ MacBook Pro 16 M3, computers, 2499.00, 2699.00, 10\nMinimalist Cotton Hoodie, អាវរងា Hoodie សាច់កប្បាស, fashion, 35.00, 45.00, 50\nGlow Hydrating Serum 30ml, សេរ៉ូមបំប៉នស្បែកមុខ, beauty, 32.00, 40.00, 45`;
 }
 
 function parsePasteIntoBatch() {
@@ -1015,6 +1122,140 @@ function parsePasteIntoBatch() {
     }
 }
 
+// ==========================================================================
+// BADGE CUSTOMIZER STUDIO & LIVE PREVIEW FUNCTIONS
+// ==========================================================================
+function setBadgeColor(colorStr, btnElement) {
+    const inputColor = document.getElementById('input_badge_color');
+    if (inputColor) inputColor.value = colorStr;
+
+    // Highlight selected swatch
+    document.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('is-selected'));
+    if (btnElement) btnElement.classList.add('is-selected');
+
+    // Update label
+    const colorLabel = document.getElementById('currentColorLabel');
+    if (colorLabel) {
+        colorLabel.textContent = btnElement ? btnElement.getAttribute('title') || 'Custom Color' : 'Custom Color';
+    }
+
+    // Update native picker if hex
+    if (colorStr.startsWith('#')) {
+        const nativePicker = document.getElementById('badge_native_color');
+        if (nativePicker) nativePicker.value = colorStr;
+    }
+
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
+function setCustomHexColor(hex) {
+    const inputColor = document.getElementById('input_badge_color');
+    if (inputColor) inputColor.value = hex;
+
+    // Deselect preset swatches
+    document.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('is-selected'));
+
+    const colorLabel = document.getElementById('currentColorLabel');
+    if (colorLabel) {
+        colorLabel.textContent = 'Hex ' + hex;
+    }
+
+    const ind = document.getElementById('customColorIndicator');
+    if (ind) {
+        ind.textContent = hex;
+        ind.style.color = hex;
+    }
+
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
+function toggleBadgePulse(isChecked) {
+    const inputStyle = document.getElementById('input_badge_style');
+    if (inputStyle) {
+        inputStyle.value = isChecked ? 'pulse' : 'solid';
+    }
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
+function applyPresetBadge(text, color, style) {
+    const inputBadge = document.getElementById('input_badge');
+    if (inputBadge) {
+        inputBadge.value = text;
+    }
+    if (color) {
+        let matchedBtn = null;
+        document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+            if (btn.getAttribute('data-color') === color) {
+                matchedBtn = btn;
+            }
+        });
+        setBadgeColor(color, matchedBtn);
+    }
+    if (style) {
+        const toggle = document.getElementById('badge_pulse_toggle');
+        if (toggle) {
+            toggle.checked = (style === 'pulse');
+            toggleBadgePulse(toggle.checked);
+        }
+    }
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
+function insertBadgeEmoji(emoji) {
+    const inputBadge = document.getElementById('input_badge');
+    if (!inputBadge) return;
+    const start = inputBadge.selectionStart || inputBadge.value.length;
+    const end = inputBadge.selectionEnd || inputBadge.value.length;
+    const currentVal = inputBadge.value;
+    inputBadge.value = currentVal.substring(0, start) + emoji + ' ' + currentVal.substring(end);
+    inputBadge.focus();
+    inputBadge.setSelectionRange(start + emoji.length + 1, start + emoji.length + 1);
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
+function clearProductBadge() {
+    const inputBadge = document.getElementById('input_badge');
+    if (inputBadge) {
+        inputBadge.value = '';
+    }
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
+function resetBadgeDefaults() {
+    const inputColor = document.getElementById('input_badge_color');
+    const inputStyle = document.getElementById('input_badge_style');
+    const toggle = document.getElementById('badge_pulse_toggle');
+    const colorLabel = document.getElementById('currentColorLabel');
+
+    if (inputColor) inputColor.value = '';
+    if (inputStyle) inputStyle.value = 'solid';
+    if (toggle) toggle.checked = false;
+    if (colorLabel) colorLabel.textContent = '';
+
+    document.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('is-selected'));
+
+    const previewBadge = document.getElementById('preview_badge');
+    if (previewBadge) {
+        previewBadge.style.background = '';
+        previewBadge.classList.remove('badge-pulse-glow');
+    }
+    if (typeof window.triggerUpdatePreview === 'function') {
+        window.triggerUpdatePreview();
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function () {
     @if (!$product->exists)
@@ -1031,6 +1272,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputNameKm = document.getElementById('input_name_km');
     const inputCategory = document.getElementById('input_category');
     const inputBadge = document.getElementById('input_badge');
+    const inputBadgeColor = document.getElementById('input_badge_color');
+    const inputBadgeStyle = document.getElementById('input_badge_style');
     const inputPrice = document.getElementById('input_price');
     const inputOldPrice = document.getElementById('input_old_price');
     const inputRating = document.getElementById('input_rating');
@@ -1057,13 +1300,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputCategory && previewCategory) {
             previewCategory.textContent = inputCategory.options[inputCategory.selectedIndex]?.text.split(' ')[0] || 'Category';
         }
-        if (inputBadge && previewBadge) {
-            const val = inputBadge.value.trim();
+        if (previewBadge) {
+            const val = inputBadge ? inputBadge.value.trim() : '';
             if (val) {
                 previewBadge.textContent = val;
                 previewBadge.classList.remove('is-hidden');
             } else {
                 previewBadge.classList.add('is-hidden');
+            }
+
+            const currentColor = inputBadgeColor ? inputBadgeColor.value.trim() : '';
+            if (currentColor) {
+                previewBadge.style.background = currentColor;
+                previewBadge.style.borderColor = 'rgba(255,255,255,0.4)';
+            } else {
+                previewBadge.style.background = '';
+                previewBadge.style.borderColor = '';
+            }
+
+            if (inputBadgeStyle && inputBadgeStyle.value === 'pulse') {
+                previewBadge.classList.add('badge-pulse-glow');
+            } else {
+                previewBadge.classList.remove('badge-pulse-glow');
             }
         }
         if (inputPrice && previewPrice) {
@@ -1100,6 +1358,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    window.triggerUpdatePreview = updatePreview;
+
+    // Highlight existing selected color swatch if present on load
+    const existingColor = inputBadgeColor ? inputBadgeColor.value.trim() : '';
+    if (existingColor) {
+        let matched = false;
+        document.querySelectorAll('.color-swatch-btn').forEach(btn => {
+            if (btn.getAttribute('data-color') === existingColor) {
+                btn.classList.add('is-selected');
+                matched = true;
+                const colorLabel = document.getElementById('currentColorLabel');
+                if (colorLabel) colorLabel.textContent = btn.getAttribute('title') || 'Selected Color';
+            }
+        });
+        if (!matched && existingColor.startsWith('#')) {
+            const ind = document.getElementById('customColorIndicator');
+            if (ind) {
+                ind.textContent = existingColor;
+                ind.style.color = existingColor;
+            }
+        }
+    }
+
     [inputNameEn, inputNameKm, inputCategory, inputBadge, inputPrice, inputOldPrice, inputRating, inputImg].forEach(el => {
         if (el) {
             el.addEventListener('input', updatePreview);
@@ -1110,6 +1391,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (inputIsActive) {
         inputIsActive.addEventListener('change', updatePreview);
     }
+
+    updatePreview();
 });
 </script>
 @endsection

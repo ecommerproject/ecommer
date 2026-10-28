@@ -28,6 +28,14 @@
                 </svg>
                 <span>Download Report</span>
             </a>
+            <a href="{{ route('admin.settings.index', ['tab' => 'storefront']) }}" class="btn-download-report" style="background: rgba(22, 83, 55, 0.08); border-color: #b8dac2; color: #165337;" title="កែប្រែផ្ទាំង App ទាំងមូល">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>Edit App Widgets</span>
+            </a>
             <a href="{{ route('admin.products.create') }}" class="btn-add-item">
                 <span class="plus-icon">＋</span>
                 <span>Add Product</span>
@@ -342,25 +350,30 @@
                         <!-- Track Background -->
                         <circle cx="70" cy="70" r="54" fill="none" stroke="#E8ECE8" stroke-width="15"></circle>
 
-                        <!-- Electronics: 45% (Forest Green #245943) -->
-                        <circle cx="70" cy="70" r="54" fill="none" stroke="#245943" stroke-width="15"
-                                stroke-dasharray="152.68 339.29" stroke-dashoffset="0"
-                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Electronics" data-count="76"></circle>
+                        <!-- Phones: 25% (Electric Blue #3b82f6) -->
+                        <circle cx="70" cy="70" r="54" fill="none" stroke="#3b82f6" stroke-width="15"
+                                stroke-dasharray="84.82 339.29" stroke-dashoffset="0"
+                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Phones" data-count="42"></circle>
 
-                        <!-- Fashion: 30% (Accent Gold #d8a962) -->
-                        <circle cx="70" cy="70" r="54" fill="none" stroke="#d8a962" stroke-width="15"
-                                stroke-dasharray="101.78 339.29" stroke-dashoffset="-152.68"
-                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Fashion" data-count="50"></circle>
+                        <!-- Computers: 25% (Indigo #6366f1) -->
+                        <circle cx="70" cy="70" r="54" fill="none" stroke="#6366f1" stroke-width="15"
+                                stroke-dasharray="84.82 339.29" stroke-dashoffset="-84.82"
+                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Computers" data-count="40"></circle>
 
-                        <!-- Kitchen: 15% (Sage Green #5b8d6f) -->
-                        <circle cx="70" cy="70" r="54" fill="none" stroke="#5b8d6f" stroke-width="15"
-                                stroke-dasharray="50.89 339.29" stroke-dashoffset="-254.46"
-                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Kitchen" data-count="26"></circle>
+                        <!-- Perfumes: 20% (Fuchsia #d946ef) -->
+                        <circle cx="70" cy="70" r="54" fill="none" stroke="#d946ef" stroke-width="15"
+                                stroke-dasharray="67.86 339.29" stroke-dashoffset="-169.64"
+                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Perfumes" data-count="34"></circle>
 
-                        <!-- Beauty: 10% (Soft Sage #8cae8e) -->
-                        <circle cx="70" cy="70" r="54" fill="none" stroke="#8cae8e" stroke-width="15"
-                                stroke-dasharray="33.93 339.29" stroke-dashoffset="-305.35"
-                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Beauty" data-count="16"></circle>
+                        <!-- Fashion: 15% (Rose #ec4899) -->
+                        <circle cx="70" cy="70" r="54" fill="none" stroke="#ec4899" stroke-width="15"
+                                stroke-dasharray="50.89 339.29" stroke-dashoffset="-237.50"
+                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Fashion" data-count="26"></circle>
+
+                        <!-- Beauty: 15% (Emerald #10b981) -->
+                        <circle cx="70" cy="70" r="54" fill="none" stroke="#10b981" stroke-width="15"
+                                stroke-dasharray="50.89 339.29" stroke-dashoffset="-288.39"
+                                transform="rotate(-90 70 70)" class="donut-slice" data-cat="Beauty" data-count="26"></circle>
                     </svg>
                     <div class="donut-center-info">
                         <strong class="donut-count" id="donutCenterCount">{{ $totalOrders }}</strong>
@@ -370,37 +383,45 @@
 
                 <!-- Category Breakdown List for Dara Market -->
                 <div class="category-breakdown-list">
-                    <a href="{{ route('admin.products.index', ['category' => 'Electronics']) }}" class="cat-item" onmouseenter="highlightDonut('Electronics', 76)" onmouseleave="resetDonut()">
-                        <span class="cat-bullet" style="background: #245943;"></span>
+                    <a href="{{ route('admin.products.index', ['category' => 'phones']) }}" class="cat-item" onmouseenter="highlightDonut('Phones', 42)" onmouseleave="resetDonut()">
+                        <span class="cat-bullet" style="background: #3b82f6;"></span>
                         <div class="cat-details">
-                            <span class="cat-name">Electronics (អេឡិចត្រូនិក)</span>
-                            <small class="cat-orders">76 Orders • Popular</small>
+                            <span class="cat-name">Phones (ទូរស័ព្ទ)</span>
+                            <small class="cat-orders">42 Orders • Popular</small>
                         </div>
-                        <span class="cat-pct">45%</span>
+                        <span class="cat-pct">25%</span>
                     </a>
-                    <a href="{{ route('admin.products.index', ['category' => 'Fashion']) }}" class="cat-item" onmouseenter="highlightDonut('Fashion', 50)" onmouseleave="resetDonut()">
-                        <span class="cat-bullet" style="background: #d8a962;"></span>
+                    <a href="{{ route('admin.products.index', ['category' => 'computers']) }}" class="cat-item" onmouseenter="highlightDonut('Computers', 40)" onmouseleave="resetDonut()">
+                        <span class="cat-bullet" style="background: #6366f1;"></span>
                         <div class="cat-details">
-                            <span class="cat-name">Fashion (ម៉ូដសម្លៀកបំពាក់)</span>
-                            <small class="cat-orders">50 Orders</small>
+                            <span class="cat-name">Computers (កុំព្យូទ័រ)</span>
+                            <small class="cat-orders">40 Orders</small>
                         </div>
-                        <span class="cat-pct">30%</span>
+                        <span class="cat-pct">25%</span>
                     </a>
-                    <a href="{{ route('admin.products.index', ['category' => 'Kitchen']) }}" class="cat-item" onmouseenter="highlightDonut('Kitchen', 26)" onmouseleave="resetDonut()">
-                        <span class="cat-bullet" style="background: #5b8d6f;"></span>
+                    <a href="{{ route('admin.products.index', ['category' => 'perfumes']) }}" class="cat-item" onmouseenter="highlightDonut('Perfumes', 34)" onmouseleave="resetDonut()">
+                        <span class="cat-bullet" style="background: #d946ef;"></span>
                         <div class="cat-details">
-                            <span class="cat-name">Kitchen (សម្ភារៈផ្ទះបាយ)</span>
+                            <span class="cat-name">Perfumes (ទឹកអប់)</span>
+                            <small class="cat-orders">34 Orders</small>
+                        </div>
+                        <span class="cat-pct">20%</span>
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'fashion']) }}" class="cat-item" onmouseenter="highlightDonut('Fashion', 26)" onmouseleave="resetDonut()">
+                        <span class="cat-bullet" style="background: #ec4899;"></span>
+                        <div class="cat-details">
+                            <span class="cat-name">Fashion (ខោអាវ)</span>
                             <small class="cat-orders">26 Orders</small>
                         </div>
                         <span class="cat-pct">15%</span>
                     </a>
-                    <a href="{{ route('admin.products.index', ['category' => 'Beauty']) }}" class="cat-item" onmouseenter="highlightDonut('Beauty', 16)" onmouseleave="resetDonut()">
-                        <span class="cat-bullet" style="background: #8cae8e;"></span>
+                    <a href="{{ route('admin.products.index', ['category' => 'beauty']) }}" class="cat-item" onmouseenter="highlightDonut('Beauty', 26)" onmouseleave="resetDonut()">
+                        <span class="cat-bullet" style="background: #10b981;"></span>
                         <div class="cat-details">
                             <span class="cat-name">Beauty (ថែរក្សាសម្រស់)</span>
-                            <small class="cat-orders">16 Orders</small>
+                            <small class="cat-orders">26 Orders</small>
                         </div>
-                        <span class="cat-pct">10%</span>
+                        <span class="cat-pct">15%</span>
                     </a>
                 </div>
             </div>
@@ -409,11 +430,205 @@
             <div class="category-top-banner">
                 <div class="crown-icon-wrap">👑</div>
                 <div class="top-banner-copy">
-                    <strong>Top Category: Electronics</strong>
-                    <p>Accounts for 45% of total orders this week across Dara Market.</p>
+                    <strong>Top Category: Phones & Computers</strong>
+                    <p>Accounts for 50% of total catalog and top customer demand across Dara Market.</p>
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- Real-Time Operational Hub: Recent Orders & Stock Watch -->
+    <div class="dashboard-ops-grid" style="display: grid; grid-template-columns: minmax(0, 1.62fr) minmax(320px, 1fr); gap: 18px; margin-top: 18px; margin-bottom: 18px;">
+        <!-- Left: Recent Live Orders -->
+        <section class="food-card ops-orders-card">
+            <div class="card-head" style="margin-bottom: 14px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 34px; height: 34px; border-radius: 9px; background: #e8f3ec; color: #165337; display: grid; place-items: center; font-size: 16px;">
+                        📋
+                    </div>
+                    <div>
+                        <h3 class="card-title" style="font-size: 15px; margin: 0;">Recent Orders (ការកុម្ម៉ង់ទិញថ្មីៗ)</h3>
+                        <small style="color: var(--food-muted); font-size: 11px;">Real-time customer transactions across ABA, KHQR & COD</small>
+                    </div>
+                </div>
+                <a href="{{ route('admin.orders.index') }}" class="card-link-view" style="font-size: 12px; font-weight: 700; color: #165337; text-decoration: none;">
+                    View All Orders ({{ $totalOrders }}) →
+                </a>
+            </div>
+
+            <div class="recent-orders-table-wrap" style="overflow-x: auto;">
+                <table class="recent-orders-table" style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1.5px solid #eef2ef; color: #586b5e; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <th style="padding: 10px 8px 10px 0;">Order</th>
+                            <th style="padding: 10px 8px;">Customer</th>
+                            <th style="padding: 10px 8px;">Payment</th>
+                            <th style="padding: 10px 8px;">Total</th>
+                            <th style="padding: 10px 8px;">Status</th>
+                            <th style="padding: 10px 0 10px 8px; text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentOrders as $ord)
+                            @php
+                                $statusClass = match($ord->order_status) {
+                                    'delivered' => 'badge-green',
+                                    'processing' => 'badge-amber',
+                                    'cancelled' => 'badge-dark',
+                                    default => 'badge-red',
+                                };
+                                $statusLabel = match($ord->order_status) {
+                                    'delivered' => 'Delivered (បានប្រគល់)',
+                                    'processing' => 'Processing (កំពុងរៀបចំ)',
+                                    'cancelled' => 'Cancelled (បានបោះបង់)',
+                                    default => 'Pending (រង់ចាំ)',
+                                };
+                                $rielAmount = number_format($ord->total_amount * 4100);
+                            @endphp
+                            <tr style="border-bottom: 1px solid #f4f7f5; transition: background 0.15s ease;" onmouseenter="this.style.background='#fafcfa'" onmouseleave="this.style.background='transparent'">
+                                <td style="padding: 12px 8px 12px 0;">
+                                    <a href="{{ route('admin.orders.index', ['q' => $ord->order_number]) }}" style="font-weight: 700; color: #165337; text-decoration: none; display: block;">
+                                        {{ $ord->order_number }}
+                                    </a>
+                                    <small style="color: #8c9b90; font-size: 10.5px;">{{ $ord->created_at->format('d M, h:i A') }}</small>
+                                </td>
+                                <td style="padding: 12px 8px;">
+                                    <div style="font-weight: 600; color: #1e2c24;">{{ $ord->customer_name }}</div>
+                                    <small style="color: #6c7c71; font-size: 11px;">{{ $ord->customer_phone ?? 'N/A' }}</small>
+                                </td>
+                                <td style="padding: 12px 8px;">
+                                    <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 600; background: #f0f4f1; color: #284435;">
+                                        @if(str_contains(strtolower($ord->payment_method), 'bakong'))
+                                            🔴
+                                        @elseif(str_contains(strtolower($ord->payment_method), 'aba'))
+                                            🔵
+                                        @else
+                                            💵
+                                        @endif
+                                        {{ $ord->payment_method }}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px 8px;">
+                                    <div style="font-weight: 800; color: #165337;">${{ number_format($ord->total_amount, 2) }}</div>
+                                    <small style="color: #8c9b90; font-size: 10px;">≈ {{ $rielAmount }} ៛</small>
+                                </td>
+                                <td style="padding: 12px 8px;">
+                                    <span class="status-badge {{ $statusClass }}" style="padding: 4px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 700;">
+                                        {{ $statusLabel }}
+                                    </span>
+                                </td>
+                                <td style="padding: 12px 0 12px 8px; text-align: right;">
+                                    <a href="{{ route('admin.orders.index', ['q' => $ord->order_number]) }}" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; background: #eef5f0; color: #165337; text-decoration: none; border: 1px solid #d2e4d7;">
+                                        View →
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 24px; color: #8c9b90;">
+                                    មិនទាន់មានការកុម្ម៉ង់ទិញនៅឡើយទេ។
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Right: Low Stock Alert & Payment Distribution -->
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+            <!-- Low Stock Card -->
+            <section class="food-card ops-stock-card" style="padding: 18px 20px;">
+                <div class="card-head" style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 17px;">⚠️</span>
+                        <div>
+                            <h3 class="card-title" style="font-size: 14.5px; margin: 0;">Low Stock Alert (ស្តុកតិច)</h3>
+                            <small style="color: var(--food-muted); font-size: 10.5px;">Products requiring restock attention</small>
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.inventory.index') }}" class="card-link-view" style="font-size: 11.5px; font-weight: 700; color: #b45309; text-decoration: none;">
+                        Manage Stock →
+                    </a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 9px;">
+                    @forelse($lowStockProducts as $prod)
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #fdfaf6; border: 1px solid #fae8d0; border-radius: 9px; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                                <img src="{{ $prod->image_url ?? $prod->image }}" alt="{{ $prod->name_en }}" style="width: 36px; height: 36px; border-radius: 7px; object-fit: cover; flex-shrink: 0; background: #eee;">
+                                <div style="min-width: 0;">
+                                    <strong style="display: block; font-size: 12px; color: #1e2c24; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ $prod->name_en }}
+                                    </strong>
+                                    <small style="display: block; font-size: 10.5px; color: #7c6851; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ $prod->name_km }}
+                                    </small>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                <span style="display: inline-block; padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 800; background: #fef3c7; color: #b45309; border: 1px solid #fde68a;">
+                                    {{ $prod->stock }} left
+                                </span>
+                                <a href="{{ route('admin.products.edit', $prod->id) }}" title="Edit / Restock" style="text-decoration: none; font-size: 11px; font-weight: 700; color: #165337; padding: 3px 7px; background: #ffffff; border: 1px solid #d2e4d7; border-radius: 6px;">
+                                    +
+                                </a>
+                            </div>
+                        </div>
+                    @empty
+                        <div style="text-align: center; padding: 16px; color: #165337; font-size: 12px;">
+                            ✓ All items have healthy stock levels!
+                        </div>
+                    @endforelse
+                </div>
+            </section>
+
+            <!-- Payment Methods Breakdown -->
+            <section class="food-card ops-payments-card" style="padding: 18px 20px;">
+                <div class="card-head" style="margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 17px;">💳</span>
+                        <div>
+                            <h3 class="card-title" style="font-size: 14.5px; margin: 0;">Payment Breakdown (ការទូទាត់)</h3>
+                            <small style="color: var(--food-muted); font-size: 10.5px;">Share of revenue across gateways</small>
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.settings.index', ['tab' => 'payments']) }}" class="card-link-view" style="font-size: 11.5px; font-weight: 700; color: #165337; text-decoration: none;">
+                        Gateways ⚙
+                    </a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    @php
+                        $paymentColors = [
+                            'Bakong KHQR' => ['bar' => '#e11d48', 'bg' => '#ffe4e6', 'icon' => '🇰🇭'],
+                            'ABA PAY (KHQR)' => ['bar' => '#0284c7', 'bg' => '#e0f2fe', 'icon' => '🏦'],
+                            'Cash on Delivery' => ['bar' => '#16a34a', 'bg' => '#dcfce7', 'icon' => '💵'],
+                        ];
+                        $allPayTotal = max(1, $paymentMethodStats->sum('total'));
+                    @endphp
+                    @foreach($paymentMethodStats as $payStat)
+                        @php
+                            $cfg = $paymentColors[$payStat->payment_method] ?? ['bar' => '#6366f1', 'bg' => '#e0e7ff', 'icon' => '💳'];
+                            $pct = round(($payStat->total / $allPayTotal) * 100);
+                        @endphp
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; margin-bottom: 3px;">
+                                <span style="font-weight: 700; color: #1e2c24; display: flex; align-items: center; gap: 5px;">
+                                    <span>{{ $cfg['icon'] }}</span> {{ $payStat->payment_method }}
+                                </span>
+                                <span style="color: #4b5563; font-weight: 600;">
+                                    <strong>${{ number_format($payStat->total, 2) }}</strong> ({{ $pct }}%)
+                                </span>
+                            </div>
+                            <div style="width: 100%; height: 7px; background: #eef2ef; border-radius: 99px; overflow: hidden;">
+                                <div style="width: {{ $pct }}%; height: 100%; background: {{ $cfg['bar'] }}; border-radius: 99px;"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        </div>
     </div>
 
     <!-- Bottom Row: 3 Columns -->

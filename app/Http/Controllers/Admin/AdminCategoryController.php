@@ -15,33 +15,40 @@ class AdminCategoryController extends Controller
         $allProducts = Product::all();
 
         $categoryMetadata = [
-            'electronics' => [
+            'perfumes' => [
+                'icon' => 'sparkles',
+                'color' => '#d946ef',
+                'bg' => '#fdf4ff',
+                'description_en' => 'Luxury designer perfumes from Chanel, Dior, YSL, and Tom Ford with long-lasting scents.',
+                'description_km' => 'ទឹកអប់ម៉ាកល្បីៗ Chanel, Dior, YSL, Versace ក្លិនក្រអូបប្រណីតជាប់បានយូរ ២៤ ម៉ោង។',
+            ],
+            'phones' => [
                 'icon' => 'devices',
                 'color' => '#3b82f6',
-                'bg' => '#eef3ff',
-                'description_en' => 'Smart devices, headphones, audio equipment, and digital lifestyle accessories.',
-                'description_km' => 'ឧបករណ៍ឆ្លាតវៃ កាសស្តាប់ នាឡិកា និងគ្រឿងអេឡិចត្រូនិចទាន់សម័យ។',
+                'bg' => '#eff6ff',
+                'description_en' => 'Flagship smartphones: iPhone 16 Pro Max, Samsung Galaxy S24 Ultra & Google Pixel 9.',
+                'description_km' => 'ស្មាតហ្វូនស៊េរីថ្មី iPhone 16 Pro, Samsung S24, Pixel 9 កាមេរ៉ាគុណភាពខ្ពស់ និងបន្ទះឈីប AI។',
+            ],
+            'computers' => [
+                'icon' => 'desktop',
+                'color' => '#6366f1',
+                'bg' => '#eef2ff',
+                'description_en' => 'High-performance laptops: MacBook Pro M3, ROG Gaming, Dell XPS & ThinkPad.',
+                'description_km' => 'កុំព្យូទ័រយួរដៃ Apple MacBook Pro M3, ROG Gaming, Dell XPS សម្រាប់ធ្វើការ ឌីហ្សាញ និងលេងហ្គេម។',
             ],
             'fashion' => [
                 'icon' => 'shirt',
                 'color' => '#ec4899',
                 'bg' => '#fdf2f8',
-                'description_en' => 'Bags, backpacks, sneakers, eyewear, and contemporary apparel.',
-                'description_km' => 'កាបូបស្ពាយ ស្បែកជើង វ៉ែនតា និងសម្លៀកបំពាក់ទាន់សម័យ។',
-            ],
-            'kitchen' => [
-                'icon' => 'coffee',
-                'color' => '#d97706',
-                'bg' => '#fef3c7',
-                'description_en' => 'Insulated bottles, ceramic mugs, drinkware, and dining essentials.',
-                'description_km' => 'ដបទឹកកម្ដៅ កែវសេរ៉ាមិច និងសម្ភារៈផ្ទះបាយប្រណិត។',
+                'description_en' => 'Streetwear heavyweight hoodies, graphic tees, raw denim jeans, and jackets.',
+                'description_km' => 'សម្លៀកបំពាក់ អាវរងា Hoodie អាវយឺត ខោខូវប៊យ និងអាវក្រៅ Bomber ទាន់សម័យ។',
             ],
             'beauty' => [
                 'icon' => 'sparkles',
-                'color' => '#a855f7',
-                'bg' => '#f3e8ff',
-                'description_en' => 'Skincare products, daily cosmetics, personal wellness, and self-care.',
-                'description_km' => 'ផលិតផលថែរក្សាស្បែក គ្រឿងសម្អាង និងការថែទាំសម្រស់ប្រចាំថ្ងៃ។',
+                'color' => '#10b981',
+                'bg' => '#ecfdf5',
+                'description_en' => 'Botanical skincare, hydrating hyaluronic serums, night repair oils, and SPF50+ sunscreens.',
+                'description_km' => 'ផលិតផលថែរក្សាសម្រស់ សេរ៉ូមបំប៉នស្បែក គ្រីមផ្តល់សំណើម និងឡេការពារកម្ដៅថ្ងៃធម្មជាតិ ១០០%។',
             ],
         ];
 

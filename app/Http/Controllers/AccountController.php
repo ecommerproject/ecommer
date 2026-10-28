@@ -83,17 +83,29 @@ class AccountController extends Controller
             ]);
         }
 
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            try {
+                $googleUser = Socialite::driver('google')->user();
+            } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+                $googleUser = Socialite::driver('google')->stateless()->user();
+            }
+        } catch (\Throwable $e) {
+            return redirect()->route('login')->withErrors([
+                'google' => __('store.account.google_cancelled'),
+            ]);
+        }
+
         $rawUser = $googleUser->getRaw();
         $googleId = $googleUser->getId();
         $email = $googleUser->getEmail();
+        $isVerified = (bool) ($rawUser['email_verified'] ?? $rawUser['verified_email'] ?? false);
 
         if (
             ! is_string($googleId)
             || $googleId === ''
             || ! is_string($email)
             || filter_var($email, FILTER_VALIDATE_EMAIL) === false
-            || ($rawUser['verified_email'] ?? false) !== true
+            || ! $isVerified
         ) {
             return redirect()->route('login')->withErrors([
                 'google' => __('store.account.google_unverified'),
@@ -109,6 +121,8 @@ class AccountController extends Controller
             ]);
         }
 
+        $avatar = $googleUser->getAvatar();
+
         if ($user === null) {
             $name = $googleUser->getName();
             $user = new User([
@@ -117,12 +131,14 @@ class AccountController extends Controller
                     : Str::before($email, '@'),
                 'email' => $email,
                 'google_id' => $googleId,
+                'avatar' => $avatar,
                 'password' => Str::random(64),
             ]);
             $user->forceFill(['email_verified_at' => now()])->save();
-        } elseif ($user->google_id === null) {
+        } else {
             $user->forceFill([
                 'google_id' => $googleId,
+                'avatar' => $avatar ?: $user->avatar,
                 'email_verified_at' => $user->email_verified_at ?? now(),
             ])->save();
         }
@@ -174,14 +190,21 @@ class AccountController extends Controller
         $this->setLocale($request);
         $user = $request->user();
 
-        $orders = Order::query()
-            ->where('customer_email', $user->email)
-            ->latest()
-            ->take(8)
-            ->get();
+        $ordersQuery = Order::query()
+            ->where(function ($q) use ($user): void {
+                $q->where('customer_email', $user->email);
+                if (!empty($user->phone)) {
+                    $cleanPhone = preg_replace('/[^0-9]/', '', $user->phone);
+                    $q->orWhere('customer_phone', $user->phone);
+                    if ($cleanPhone !== '') {
+                        $q->orWhere('customer_phone', 'like', "%{$cleanPhone}%");
+                    }
+                }
+            });
 
-        $totalOrders = Order::query()->where('customer_email', $user->email)->count();
-        $totalSpent = Order::query()->where('customer_email', $user->email)->sum('total_amount');
+        $orders = (clone $ordersQuery)->latest()->take(20)->get();
+        $totalOrders = (clone $ordersQuery)->count();
+        $totalSpent = (clone $ordersQuery)->sum('total_amount');
 
         return view('store.pages.auth.account', [
             'locale' => app()->getLocale(),

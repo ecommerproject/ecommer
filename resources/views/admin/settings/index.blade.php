@@ -152,6 +152,20 @@
             </div>
         </a>
 
+        <a href="{{ route('admin.settings.index', ['tab' => 'storefront']) }}" class="settings-modern-tab {{ $tab === 'storefront' ? 'is-active' : '' }}">
+            <div class="tab-icon-wrap">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+            </div>
+            <div class="tab-label-group">
+                <span class="tab-title">Storefront & Widgets</span>
+                <span class="tab-desc">Deal of Day, Vouchers & Support</span>
+            </div>
+        </a>
+
         <a href="{{ route('admin.settings.index', ['tab' => 'profile']) }}" class="settings-modern-tab {{ $tab === 'profile' ? 'is-active' : '' }}">
             <div class="tab-icon-wrap">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
@@ -239,7 +253,7 @@
                                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                     Customer Hotline / Phone *
                                 </label>
-                                <input type="text" id="contact_phone" name="contact_phone" class="admin-form-input modern-input" value="{{ old('contact_phone', $settings['contact_phone']) }}" placeholder="+855 12 345 678" required>
+                                <input type="text" id="contact_phone" name="contact_phone" class="admin-form-input modern-input" value="{{ old('contact_phone', $settings['contact_phone']) }}" placeholder="+855 71 450 4547" required>
                                 <span class="field-hint">បង្ហាញនៅលើ Topbar Hotline និងបាត Footer។</span>
                             </div>
 
@@ -427,7 +441,7 @@
                         <span class="badge-status-pill badge-active">🇰🇭 Bakong Standard</span>
                     </div>
 
-                    <form action="{{ route('admin.settings.payments') }}" method="POST" class="settings-modern-form">
+                    <form action="{{ route('admin.settings.payments') }}" method="POST" enctype="multipart/form-data" class="settings-modern-form">
                         @csrf
                         @method('PUT')
 
@@ -454,11 +468,37 @@
                                 </div>
                             </div>
 
-                            <div class="gateway-subconfig-box" style="margin-top: -10px; margin-bottom: 16px;">
+                            <div class="gateway-subconfig-box" style="margin-top: -10px; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                                 <div class="admin-form-group">
-                                    <label class="admin-form-label" for="aba_merchant_id">ABA / Bakong Merchant Account ID</label>
-                                    <input type="text" id="aba_merchant_id" name="aba_merchant_id" class="admin-form-input modern-input" value="{{ old('aba_merchant_id', $settings['aba_merchant_id'] ?? 'DARA_MARKET_KHQR') }}" placeholder="DARA_MARKET_KHQR">
-                                    <span class="field-hint">Merchant ID សម្រាប់បង្កើត dynamic KHQR scan & pay។</span>
+                                    <label class="admin-form-label" for="bakong_account_id">Bakong Account ID / Phone</label>
+                                    <input type="text" id="bakong_account_id" name="bakong_account_id" class="admin-form-input modern-input" value="{{ old('bakong_account_id', $settings['bakong_account_id'] ?? 'dara_market@abaa') }}" placeholder="e.g. 0714504547@abaa ឬ username@abaa">
+                                    <span class="field-hint">Bakong Account សម្រាប់បង្កើត EMV KHQR Code ស្កេនបង់លុយពិតប្រាកដ។</span>
+                                </div>
+                                <div class="admin-form-group">
+                                    <label class="admin-form-label" for="aba_merchant_id">Merchant / Shop Display Name</label>
+                                    <input type="text" id="aba_merchant_id" name="aba_merchant_id" class="admin-form-input modern-input" value="{{ old('aba_merchant_id', $settings['aba_merchant_id'] ?? 'DARA MARKET') }}" placeholder="DARA MARKET">
+                                    <span class="field-hint">ឈ្មោះហាងដែលបង្ហាញនៅលើអេក្រង់ស្កេន KHQR។</span>
+                                </div>
+                                <div class="admin-form-group">
+                                    <label class="admin-form-label" for="aba_account_number">ABA Account Number (លេខកុងធនាគារ)</label>
+                                    <input type="text" id="aba_account_number" name="aba_account_number" class="admin-form-input modern-input" value="{{ old('aba_account_number', $settings['aba_account_number'] ?? '001 888 999') }}" placeholder="001 888 999">
+                                    <span class="field-hint">បង្ហាញជូនអតិថិជនពេលចង់ផ្ទេរប្រាក់ផ្ទាល់តាមលេខគណនី។</span>
+                                </div>
+                                <div class="admin-form-group">
+                                    <label class="admin-form-label" for="aba_account_name">Account Holder Name (ឈ្មោះម្ចាស់គណនី)</label>
+                                    <input type="text" id="aba_account_name" name="aba_account_name" class="admin-form-input modern-input" value="{{ old('aba_account_name', $settings['aba_account_name'] ?? 'DARA MARKET CO., LTD') }}" placeholder="DARA MARKET CO., LTD">
+                                    <span class="field-hint">ឈ្មោះម្ចាស់គណនីធនាគារ (Account Holder)។</span>
+                                </div>
+                                <div class="admin-form-group" style="grid-column: 1 / -1;">
+                                    <label class="admin-form-label" for="custom_khqr_image">Custom Official Standee QR Image (រូប QR ផ្លូវការរបស់ហាង បើមាន)</label>
+                                    <input type="file" id="custom_khqr_image" name="custom_khqr_image" class="admin-form-input modern-input" accept="image/*">
+                                    @if(!empty($settings['custom_khqr_image']))
+                                        <div style="margin-top: 6px; display: flex; align-items: center; gap: 10px;">
+                                            <img src="{{ $settings['custom_khqr_image'] }}" alt="Current QR" style="width: 50px; height: 50px; object-fit: contain; border: 1px solid #cbd5e1; border-radius: 6px;">
+                                            <span style="font-size: 12px; color: #16a34a; font-weight: 600;">✓ រូប QR ផ្លូវការត្រូវបានរក្សាទុក</span>
+                                        </div>
+                                    @endif
+                                    <span class="field-hint">អ្នកអាច Upload រូប KHQR ផ្លូវការរបស់ហាងដែលទាញយកពី ABA ឬធនាគារផ្ទាល់បាន។</span>
                                 </div>
                             </div>
 
@@ -487,7 +527,7 @@
                             <div class="gateway-subconfig-box" style="margin-top: -10px; margin-bottom: 16px;">
                                 <div class="admin-form-group">
                                     <label class="admin-form-label" for="wing_account_number">Wing Merchant Account Number / Phone</label>
-                                    <input type="text" id="wing_account_number" name="wing_account_number" class="admin-form-input modern-input" value="{{ old('wing_account_number', $settings['wing_account_number'] ?? '012 345 678') }}" placeholder="012 345 678">
+                                    <input type="text" id="wing_account_number" name="wing_account_number" class="admin-form-input modern-input" value="{{ old('wing_account_number', $settings['wing_account_number'] ?? '071 450 4547') }}" placeholder="071 450 4547">
                                 </div>
                             </div>
 
@@ -634,7 +674,247 @@
                     </form>
                 </section>
 
-            <!-- Tab 5: Admin Credentials & Security -->
+            <!-- Tab 5: Storefront & Widgets (Customizer for entire app) -->
+            @elseif ($tab === 'storefront')
+                <section class="admin-panel settings-premium-card">
+                    <div class="settings-card-header">
+                        <div class="header-icon-badge" style="background: rgba(22, 83, 55, 0.1); color: #165337;">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
+                            </svg>
+                        </div>
+                        <div class="header-text-content">
+                            <h3>Storefront Components & Sidebar Widgets Customizer</h3>
+                            <p>កែប្រែគ្រប់ Widget និងផ្នែកទាំងអស់នៃគេហទំព័រ (Deal of the Day, Voucher Coupon, Spotlight, Side Banner និងព័ត៌មានជំនួយ)។</p>
+                        </div>
+                        <span class="badge-status-pill badge-active">🎨 Live App Customizer</span>
+                    </div>
+
+                    <form action="{{ route('admin.settings.storefront') }}" method="POST" enctype="multipart/form-data" class="settings-modern-form">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Section 1: Flash Deal of the Day Widget -->
+                        <div class="form-section-title">
+                            <h4>⚡ 1. Flash Deal of the Day (ប្រូម៉ូសិនពិសេសប្រចាំថ្ងៃ)</h4>
+                            <p>Widget បង្ហាញនៅខាងឆ្វេងក្រោមប្រភេទមុខទំនិញ ជាមួយកម្មវិធីរាប់ថយក្រោយ</p>
+                        </div>
+
+                        <div class="admin-form-group">
+                            <div class="toggle-row-card">
+                                <div>
+                                    <strong>Enable Deal of the Day Widget</strong>
+                                    <p class="field-hint" style="margin: 4px 0 0 0;">បើកបង្ហាញប្រអប់ប្រូម៉ូសិនពិសេសប្រចាំថ្ងៃនៅលើគេហទំព័រ</p>
+                                </div>
+                                <label class="modern-toggle-switch">
+                                    <input type="checkbox" name="deal_active" value="1" @checked($settings['deal_active'] ?? true)>
+                                    <span class="modern-toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_kicker_km">ចំណងជើងផ្នែកខាងលើ (Kicker Badge)</label>
+                                <input type="text" id="deal_kicker_km" name="deal_kicker_km" class="admin-form-input modern-input" value="{{ old('deal_kicker_km', $settings['deal_kicker_km'] ?? 'ប្រូម៉ូសិនពិសេសថ្ងៃនេះ') }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_title_km">ឈ្មោះទំនិញ Deal (Product Title) *</label>
+                                <input type="text" id="deal_title_km" name="deal_title_km" class="admin-form-input modern-input" value="{{ old('deal_title_km', $settings['deal_title_km'] ?? 'កាសស្ដាប់ត្រចៀកឥតខ្សែ') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row-three-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_price">តម្លៃប្រូម៉ូសិន Sale Price ($) *</label>
+                                <input type="number" step="0.01" min="0" id="deal_price" name="deal_price" class="admin-form-input modern-input" value="{{ old('deal_price', $settings['deal_price'] ?? 32.00) }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_old_price">តម្លៃដើម Original Price ($) *</label>
+                                <input type="number" step="0.01" min="0" id="deal_old_price" name="deal_old_price" class="admin-form-input modern-input" value="{{ old('deal_old_price', $settings['deal_old_price'] ?? 42.00) }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_discount">ស្លាកបញ្ចុះតម្លៃ Discount Badge</label>
+                                <input type="text" id="deal_discount" name="deal_discount" class="admin-form-input modern-input" value="{{ old('deal_discount', $settings['deal_discount'] ?? '-24%') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row-three-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_sold_percent">ភាគរយលក់ដាច់ (% Sold)</label>
+                                <input type="number" min="0" max="100" id="deal_sold_percent" name="deal_sold_percent" class="admin-form-input modern-input" value="{{ old('deal_sold_percent', $settings['deal_sold_percent'] ?? 78) }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_stock_left">ចំនួនទំនិញនៅសល់ (Stock Left)</label>
+                                <input type="number" min="1" id="deal_stock_left" name="deal_stock_left" class="admin-form-input modern-input" value="{{ old('deal_stock_left', $settings['deal_stock_left'] ?? 5) }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="deal_countdown_hours">ម៉ោងរាប់ថយក្រោយ (Countdown Hours)</label>
+                                <input type="number" min="1" max="72" id="deal_countdown_hours" name="deal_countdown_hours" class="admin-form-input modern-input" value="{{ old('deal_countdown_hours', $settings['deal_countdown_hours'] ?? 6) }}" required>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-group">
+                            <label class="admin-form-label" for="deal_image">រូបភាពទំនិញ Deal Image URL</label>
+                            <input type="url" id="deal_image" name="deal_image" class="admin-form-input modern-input" value="{{ old('deal_image', $settings['deal_image'] ?? 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80') }}" placeholder="https://...">
+                            <span class="field-hint">ឬផ្ទុករូបភាពឡើងពីកុំព្យូទ័ររបស់អ្នក៖</span>
+                            <input type="file" name="deal_image_file" accept="image/*" class="admin-form-input modern-input" style="margin-top: 6px;">
+                        </div>
+
+                        <!-- Section 2: Special Voucher Coupon Card -->
+                        <div class="form-divider-modern">
+                            <div class="divider-icon">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+                                    <path d="M13 5v2"></path><path d="M13 17v2"></path><path d="M13 11v2"></path>
+                                </svg>
+                            </div>
+                            <div class="divider-text">
+                                <h4>🎟 2. Exclusive Voucher Coupon (ប័ណ្ណបញ្ចុះតម្លៃពិសេស)</h4>
+                                <p>Widget បង្ហាញនៅខាងស្ដាំជាមួយប៊ូតុង Copy កូដ និងបញ្ចុះតម្លៃ</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="voucher_code">
+                                    <span class="badge-discount-tag">VOUCHER CODE</span>
+                                    កូដប័ណ្ណបញ្ចុះតម្លៃ *
+                                </label>
+                                <input type="text" id="voucher_code" name="voucher_code" class="admin-form-input modern-input uppercase-code" value="{{ old('voucher_code', $settings['voucher_code'] ?? 'DARA20') }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="voucher_amount_text">ចំនួនបញ្ចុះតម្លៃ (Discount Heading) *</label>
+                                <input type="text" id="voucher_amount_text" name="voucher_amount_text" class="admin-form-input modern-input" value="{{ old('voucher_amount_text', $settings['voucher_amount_text'] ?? '$20.00 OFF') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="voucher_desc_km">ការពិពណ៌នាជាភាសាខ្មែរ *</label>
+                                <input type="text" id="voucher_desc_km" name="voucher_desc_km" class="admin-form-input modern-input" value="{{ old('voucher_desc_km', $settings['voucher_desc_km'] ?? 'បញ្ចុះតម្លៃ $20 លើការទិញចាប់ពី $80 ឡើងទៅ') }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="voucher_min_spend">ការចំណាយអប្បបរមា Min Spend ($)</label>
+                                <input type="number" step="0.01" min="0" id="voucher_min_spend" name="voucher_min_spend" class="admin-form-input modern-input" value="{{ old('voucher_min_spend', $settings['voucher_min_spend'] ?? 80.00) }}" required>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Spotlight & Side Feature Banners -->
+                        <div class="form-divider-modern">
+                            <div class="divider-icon">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                            <div class="divider-text">
+                                <h4>🌟 3. Spotlight & Side Feature Banners (ផ្ទាំងផ្សាយពាណិជ្ជកម្មចំហៀង)</h4>
+                                <p>ផ្ទាំងរូបភាពផ្សាយពាណិជ្ជកម្មនៅចំហៀងឆ្វេង និងស្តាំ</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="spotlight_title_km">ចំណងជើង Spotlight (ឆ្វេង) *</label>
+                                <input type="text" id="spotlight_title_km" name="spotlight_title_km" class="admin-form-input modern-input" value="{{ old('spotlight_title_km', $settings['spotlight_title_km'] ?? 'ទិញបានយ៉ាងងាយស្រួល') }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="spotlight_caption_km">ពាក្យស្លោក Spotlight Caption</label>
+                                <input type="text" id="spotlight_caption_km" name="spotlight_caption_km" class="admin-form-input modern-input" value="{{ old('spotlight_caption_km', $settings['spotlight_caption_km'] ?? 'ហាងអនឡាញដែលអ្នកទុកចិត្ត') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-group">
+                            <label class="admin-form-label" for="spotlight_image">រូបភាព Spotlight Image URL</label>
+                            <input type="url" id="spotlight_image" name="spotlight_image" class="admin-form-input modern-input" value="{{ old('spotlight_image', $settings['spotlight_image'] ?? 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80') }}">
+                            <input type="file" name="spotlight_image_file" accept="image/*" class="admin-form-input modern-input" style="margin-top: 6px;">
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="side_feature_title_km">ចំណងជើង Side Feature (ស្តាំ) *</label>
+                                <input type="text" id="side_feature_title_km" name="side_feature_title_km" class="admin-form-input modern-input" value="{{ old('side_feature_title_km', $settings['side_feature_title_km'] ?? 'បន្ថែមភាពស្រស់ស្អាតក្នុងថ្ងៃរបស់អ្នក') }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="side_feature_kicker_km">ស្លាក Kicker</label>
+                                <input type="text" id="side_feature_kicker_km" name="side_feature_kicker_km" class="admin-form-input modern-input" value="{{ old('side_feature_kicker_km', $settings['side_feature_kicker_km'] ?? 'ស្ទីលថ្មី') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-group">
+                            <label class="admin-form-label" for="side_feature_image">រូបភាព Side Feature Image URL</label>
+                            <input type="url" id="side_feature_image" name="side_feature_image" class="admin-form-input modern-input" value="{{ old('side_feature_image', $settings['side_feature_image'] ?? 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=600&q=80') }}">
+                            <input type="file" name="side_feature_image_file" accept="image/*" class="admin-form-input modern-input" style="margin-top: 6px;">
+                        </div>
+
+                        <!-- Section 4: Customer Support & Social Channels -->
+                        <div class="form-divider-modern">
+                            <div class="divider-icon">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                            </div>
+                            <div class="divider-text">
+                                <h4>📞 4. Need Help Card & Social Links (ជំនួយអតិថិជន & បណ្តាញសង្គម)</h4>
+                                <p>គ្រប់គ្រងការទាក់ទងមកកាន់ហាង លេខទូរស័ព្ទ និងតេឡេក្រាមជំនួយ</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="help_title_km">ចំណងជើងប្រអប់ជំនួយ *</label>
+                                <input type="text" id="help_title_km" name="help_title_km" class="admin-form-input modern-input" value="{{ old('help_title_km', $settings['help_title_km'] ?? 'ត្រូវការជំនួយមែនទេ?') }}" required>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="telegram_support">Telegram Support Link (តំណភ្ជាប់តេឡេក្រាម) *</label>
+                                <input type="url" id="telegram_support" name="telegram_support" class="admin-form-input modern-input" value="{{ old('telegram_support', $settings['telegram_support'] ?? 'https://t.me/daramarket_support') }}" placeholder="https://t.me/..." required>
+                            </div>
+                        </div>
+
+                        <div class="admin-form-group">
+                            <label class="admin-form-label" for="help_desc_km">ការពិពណ៌នាប្រអប់ជំនួយ *</label>
+                            <input type="text" id="help_desc_km" name="help_desc_km" class="admin-form-input modern-input" value="{{ old('help_desc_km', $settings['help_desc_km'] ?? 'ក្រុមការងារយើងរីករាយជួយអ្នកជ្រើសរើសទំនិញ។') }}" required>
+                        </div>
+
+                        <div class="form-row-two-col">
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="facebook_link">Facebook Page URL</label>
+                                <input type="url" id="facebook_link" name="facebook_link" class="admin-form-input modern-input" value="{{ old('facebook_link', $settings['facebook_link'] ?? 'https://facebook.com/daramarket') }}">
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-form-label" for="tiktok_link">TikTok Profile URL</label>
+                                <input type="url" id="tiktok_link" name="tiktok_link" class="admin-form-input modern-input" value="{{ old('tiktok_link', $settings['tiktok_link'] ?? 'https://tiktok.com/@daramarket') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-actions-bar-modern">
+                            <button type="submit" class="admin-primary-button button-with-glow">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                </svg>
+                                <span>Save All Storefront & Widget Settings</span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+            <!-- Tab 6: Admin Credentials & Security -->
             @elseif ($tab === 'profile')
                 <section class="admin-panel settings-premium-card">
                     <div class="settings-card-header">
@@ -752,7 +1032,7 @@
                             </div>
                         </div>
                         <div class="mock-phone-pill" id="mockPhone">
-                            <span>📞</span> <span id="mockPhoneVal">{{ $settings['contact_phone'] ?? '+855 12 345 678' }}</span>
+                            <span>📞</span> <span id="mockPhoneVal">{{ $settings['contact_phone'] ?? '+855 71 450 4547' }}</span>
                         </div>
                     </div>
 
@@ -845,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (phoneInput) {
         phoneInput.addEventListener('input', function() {
-            const val = this.value.trim() || '+855 12 345 678';
+            const val = this.value.trim() || '+855 71 450 4547';
             const el = document.getElementById('mockPhoneVal');
             if (el) el.textContent = val;
         });

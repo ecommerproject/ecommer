@@ -170,6 +170,27 @@
                     <span class="info-label">Payment Method</span>
                     <span class="info-val pay-method-badge">{{ $order->payment_method }}</span>
                 </div>
+
+                @if ($order->payment_proof)
+                    <div class="info-block" style="border-top: 1px dashed #e2e8f0; padding-top: 12px; margin-top: 12px;">
+                        <span class="info-label">📸 Bank Payment Receipt (បង្កាន់ដៃបង់ប្រាក់)</span>
+                        <div style="margin-top: 8px;">
+                            <a href="{{ $order->payment_proof }}" target="_blank" title="View Full Receipt">
+                                <img src="{{ $order->payment_proof }}" alt="Payment Receipt" style="width: 100%; max-height: 180px; object-fit: contain; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc;">
+                            </a>
+                            <div style="margin-top: 6px; font-size: 11px; color: #16a34a; font-weight: 700;">
+                                ✓ Customer Attached Slip
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                @if ($order->transaction_ref)
+                    <div class="info-block">
+                        <span class="info-label">Bank Transaction ID / Ref</span>
+                        <strong class="info-val" style="color: #245943; font-family: monospace;">#{{ $order->transaction_ref }}</strong>
+                    </div>
+                @endif
             </section>
         </aside>
     </div>

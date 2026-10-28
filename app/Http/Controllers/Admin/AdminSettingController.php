@@ -14,7 +14,7 @@ class AdminSettingController extends Controller
     public function index(Request $request): View
     {
         $tab = $request->query('tab', 'general');
-        $validTabs = ['general', 'shipping', 'payments', 'announcements', 'profile'];
+        $validTabs = ['general', 'shipping', 'payments', 'announcements', 'storefront', 'profile'];
         if (!in_array($tab, $validTabs, true)) {
             $tab = 'general';
         }
@@ -85,13 +85,23 @@ class AdminSettingController extends Controller
         $payload = [
             'enable_aba' => $request->boolean('enable_aba'),
             'aba_merchant_id' => $request->input('aba_merchant_id', 'DARA_MARKET_KHQR'),
+            'bakong_account_id' => $request->input('bakong_account_id', 'dara_market@abaa'),
+            'aba_account_number' => $request->input('aba_account_number', '001 888 999'),
+            'aba_account_name' => $request->input('aba_account_name', 'DARA MARKET CO., LTD'),
             'enable_wing' => $request->boolean('enable_wing'),
-            'wing_account_number' => $request->input('wing_account_number', '012 345 678'),
+            'wing_account_number' => $request->input('wing_account_number', '071 450 4547'),
             'enable_acleda' => $request->boolean('enable_acleda'),
             'acleda_account_name' => $request->input('acleda_account_name', 'DARA MARKET CO., LTD'),
             'enable_cod' => $request->boolean('enable_cod'),
             'cod_max_amount' => (float)$request->input('cod_max_amount', 500),
         ];
+
+        if ($request->hasFile('custom_khqr_image')) {
+            $path = $request->file('custom_khqr_image')->store('khqr', 'public');
+            $payload['custom_khqr_image'] = '/storage/' . $path;
+        } elseif ($request->filled('custom_khqr_image_url')) {
+            $payload['custom_khqr_image'] = $request->input('custom_khqr_image_url');
+        }
 
         StoreSettingService::update($payload);
 
@@ -112,6 +122,79 @@ class AdminSettingController extends Controller
 
         return redirect()->route('admin.settings.index', ['tab' => 'announcements'])
             ->with('status', 'របារដំណឹង និងប័ណ្ណបញ្ចុះតម្លៃត្រូវបានធ្វើបច្ចុប្បន្នភាព! (Store announcements updated)');
+    }
+
+    public function updateStorefront(Request $request): RedirectResponse
+    {
+        $payload = [
+            // Deal of the Day
+            'deal_active' => $request->boolean('deal_active'),
+            'deal_kicker_km' => $request->input('deal_kicker_km', 'ប្រូម៉ូសិនពិសេសថ្ងៃនេះ'),
+            'deal_title_km' => $request->input('deal_title_km', 'កាសស្ដាប់ត្រចៀកឥតខ្សែ'),
+            'deal_price' => (float)$request->input('deal_price', 32.00),
+            'deal_old_price' => (float)$request->input('deal_old_price', 42.00),
+            'deal_discount' => $request->input('deal_discount', '-24%'),
+            'deal_sold_percent' => (int)$request->input('deal_sold_percent', 78),
+            'deal_stock_left' => (int)$request->input('deal_stock_left', 5),
+            'deal_countdown_hours' => (int)$request->input('deal_countdown_hours', 6),
+
+            // Voucher Coupon
+            'voucher_active' => $request->boolean('voucher_active'),
+            'voucher_badge_km' => $request->input('voucher_badge_km', 'ប័ណ្ណបញ្ចុះតម្លៃពិសេស'),
+            'voucher_amount_text' => $request->input('voucher_amount_text', '$20.00 OFF'),
+            'voucher_desc_km' => $request->input('voucher_desc_km', 'បញ្ចុះតម្លៃ $20 លើការទិញចាប់ពី $80 ឡើងទៅ'),
+            'voucher_code' => strtoupper(trim((string)$request->input('voucher_code', 'DARA20'))),
+            'voucher_min_spend' => (float)$request->input('voucher_min_spend', 80.00),
+
+            // Spotlight Banner
+            'spotlight_active' => $request->boolean('spotlight_active'),
+            'spotlight_tag_km' => $request->input('spotlight_tag_km', 'ជម្រើសពេញនិយម'),
+            'spotlight_caption_km' => $request->input('spotlight_caption_km', 'ហាងអនឡាញដែលអ្នកទុកចិត្ត'),
+            'spotlight_title_km' => $request->input('spotlight_title_km', 'ទិញបានយ៉ាងងាយស្រួល'),
+            'spotlight_link' => $request->input('spotlight_link', '#featured'),
+
+            // Side Feature Banner
+            'side_feature_active' => $request->boolean('side_feature_active'),
+            'side_feature_pill_km' => $request->input('side_feature_pill_km', 'NEW IN'),
+            'side_feature_kicker_km' => $request->input('side_feature_kicker_km', 'ស្ទីលថ្មី'),
+            'side_feature_title_km' => $request->input('side_feature_title_km', 'បន្ថែមភាពស្រស់ស្អាតក្នុងថ្ងៃរបស់អ្នក'),
+            'side_feature_link' => $request->input('side_feature_link', '#featured'),
+
+            // Support & Socials
+            'help_active' => $request->boolean('help_active'),
+            'help_title_km' => $request->input('help_title_km', 'ត្រូវការជំនួយមែនទេ?'),
+            'help_desc_km' => $request->input('help_desc_km', 'ក្រុមការងារយើងរីករាយជួយអ្នកជ្រើសរើសទំនិញ។'),
+            'telegram_support' => $request->input('telegram_support', 'https://t.me/daramarket_support'),
+            'facebook_link' => $request->input('facebook_link', 'https://facebook.com/daramarket'),
+            'tiktok_link' => $request->input('tiktok_link', 'https://tiktok.com/@daramarket'),
+        ];
+
+        // Handle Image uploads or URL inputs
+        if ($request->hasFile('deal_image_file')) {
+            $path = $request->file('deal_image_file')->store('storefront', 'public');
+            $payload['deal_image'] = '/storage/' . $path;
+        } elseif ($request->filled('deal_image')) {
+            $payload['deal_image'] = $request->input('deal_image');
+        }
+
+        if ($request->hasFile('spotlight_image_file')) {
+            $path = $request->file('spotlight_image_file')->store('storefront', 'public');
+            $payload['spotlight_image'] = '/storage/' . $path;
+        } elseif ($request->filled('spotlight_image')) {
+            $payload['spotlight_image'] = $request->input('spotlight_image');
+        }
+
+        if ($request->hasFile('side_feature_image_file')) {
+            $path = $request->file('side_feature_image_file')->store('storefront', 'public');
+            $payload['side_feature_image'] = '/storage/' . $path;
+        } elseif ($request->filled('side_feature_image')) {
+            $payload['side_feature_image'] = $request->input('side_feature_image');
+        }
+
+        StoreSettingService::update($payload);
+
+        return redirect()->route('admin.settings.index', ['tab' => 'storefront'])
+            ->with('status', 'ផ្ទាំងទំព័រមុខ & Widgets ត្រូវបានធ្វើបច្ចុប្បន្នភាពដោយជោគជ័យ! (Storefront widgets updated successfully)');
     }
 
     public function updateProfile(Request $request): RedirectResponse

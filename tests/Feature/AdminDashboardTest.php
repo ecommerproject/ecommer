@@ -114,7 +114,7 @@ class AdminDashboardTest extends TestCase
         $this->post(route('admin.products.store'), [
             'name_en' => 'Admin Test Product',
             'name_km' => 'ផលិតផលសាកល្បង',
-            'category' => 'electronics',
+            'category' => 'phones',
             'price' => '24.50',
             'old_price' => '30',
             'rating' => '4.5',
@@ -136,7 +136,7 @@ class AdminDashboardTest extends TestCase
         $this->put(route('admin.products.update', $product), [
             'name_en' => 'Updated Admin Product',
             'name_km' => 'ផលិតផលបានកែប្រែ',
-            'category' => 'kitchen',
+            'category' => 'perfumes',
             'price' => '20',
             'old_price' => '',
             'rating' => '5',
@@ -148,7 +148,7 @@ class AdminDashboardTest extends TestCase
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
             'name_en' => 'Updated Admin Product',
-            'category' => 'kitchen',
+            'category' => 'perfumes',
             'is_new' => false,
             'is_active' => false,
         ]);

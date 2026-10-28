@@ -66,11 +66,11 @@
                 </button>
 
                 <!-- Hotline Phone Link (NEW) -->
-                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '012345678') }}" class="announcement-utility-link topbar-hotline" title="ទាក់ទងផ្នែកបម្រើអតិថិជន">
+                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '0714504547') }}" class="announcement-utility-link topbar-hotline" title="ទាក់ទងផ្នែកបម្រើអតិថិជន">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
-                    <span>{{ $storeSettings['contact_phone'] ?? '012 345 678' }}</span>
+                    <span>{{ $storeSettings['contact_phone'] ?? '071 450 4547' }}</span>
                 </a>
 
                 <!-- Track Order Quick Button -->
@@ -111,7 +111,7 @@
 
     <header class="site-header">
         <div class="container header-main">
-            <button class="icon-button menu-toggle" type="button" aria-label="{{ $translations['nav']['label'] }}" aria-expanded="false">
+            <button class="icon-button menu-toggle" id="mobileMenuToggle" type="button" onclick="toggleMobileNav(event)" aria-label="{{ $translations['nav']['label'] }}" aria-expanded="false">
                 <span></span><span></span><span></span>
             </button>
             <a class="brand" href="{{ route('store.home') }}" aria-label="{{ $translations['language']['label'] }}: {{ $translations['meta']['home'] }}">
@@ -121,46 +121,6 @@
                     <small>STORE &amp; LIVING</small>
                 </div>
             </a>
-
-            <!-- Upgraded Search Box with Category Selector & Live Dropdown -->
-            <div class="search-box-wrapper">
-                <form class="search-box" action="{{ route('store.products') }}" method="GET" role="search" id="headerSearchForm">
-                    <div class="search-category-select">
-                        <select name="category" id="searchCategorySelect" aria-label="Filter category">
-                            <option value="all">All Categories</option>
-                            @foreach (config('store.categories') as $cat)
-                                <option value="{{ $cat }}" @selected(($selectedCategory ?? 'all') === $cat)>{{ __('store.categories.'.$cat, [], 'en') }}</option>
-                            @endforeach
-                        </select>
-                        <svg class="search-cat-chevron" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
-
-                    <input id="store-search" name="q" type="search" value="{{ $search ?? '' }}" placeholder="{{ $translations['search']['placeholder'] }}" autocomplete="off" onfocus="showSearchSuggest()" oninput="handleSearchInput(this.value)">
-
-                    <button type="button" id="searchClearBtn" class="search-clear-btn" style="display: {{ !empty($search) ? 'grid' : 'none' }};" onclick="clearSearchInput()">✕</button>
-
-                    <button type="submit" class="search-submit-btn" aria-label="{{ $translations['search']['button'] }}">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
-                    </button>
-                </form>
-
-                <!-- Search Suggestions Dropdown -->
-                <div id="searchSuggestBox" class="search-suggestions-dropdown" style="display: none;">
-                    <div class="search-trending-section">
-                        <span class="trending-title">
-                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f97316" stroke-width="2" style="vertical-align:-2px; margin-right:3px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"></path></svg>
-                            Trending:
-                        </span>
-                        <div class="trending-tags">
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Headphones')">Headphones</button>
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Backpack')">Backpack</button>
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Watch')">Watch</button>
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Shoes')">Shoes</button>
-                        </div>
-                    </div>
-                    <div id="searchLiveResults" class="search-live-results"></div>
-                </div>
-            </div>
 
             <!-- Right Header Actions -->
             <div class="header-actions">
@@ -178,9 +138,13 @@
 
                 <!-- Account Dropdown Menu -->
                 <div class="account-dropdown-wrapper">
-                    <button type="button" class="account-pill-button" onclick="toggleAccountMenu()" aria-expanded="false" title="Account Menu">
+                    <button type="button" class="account-pill-button" onclick="handleAccountButtonClick(event)" aria-expanded="false" title="Account Menu">
                         <div class="account-avatar-circle">
-                            <span>{{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}</span>
+                            @if(auth()->check() && auth()->user()->avatar)
+                                <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="account-avatar-img" referrerpolicy="no-referrer">
+                            @else
+                                <span>{{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}</span>
+                            @endif
                             @if(auth()->check())
                                 <span class="avatar-online-dot"></span>
                             @endif
@@ -198,7 +162,11 @@
                         @if(auth()->check())
                             <div class="account-menu-profile-card">
                                 <div class="menu-avatar-wrap">
-                                    <span class="menu-avatar-letter">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                    @if(auth()->user()->avatar)
+                                        <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="menu-avatar-img" referrerpolicy="no-referrer">
+                                    @else
+                                        <span class="menu-avatar-letter">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                    @endif
                                     <span class="menu-online-badge" title="Online"></span>
                                 </div>
                                 <div class="menu-profile-details">
@@ -335,10 +303,61 @@
                     </span>
                 </button>
             </div>
+
+            <!-- Upgraded Search Box with Category Selector & Live Dropdown -->
+            <div class="search-box-wrapper">
+                <form class="search-box" action="{{ route('store.products') }}" method="GET" role="search" id="headerSearchForm">
+                    <div class="search-category-select">
+                        <select name="category" id="searchCategorySelect" aria-label="Filter category">
+                            <option value="all">All Categories</option>
+                            @foreach (config('store.categories') as $cat)
+                                <option value="{{ $cat }}" @selected(($selectedCategory ?? 'all') === $cat)>{{ __('store.categories.'.$cat, [], 'en') }}</option>
+                            @endforeach
+                        </select>
+                        <svg class="search-cat-chevron" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+
+                    <input id="store-search" name="q" type="search" value="{{ $search ?? '' }}" placeholder="{{ $translations['search']['placeholder'] }}" autocomplete="off" onfocus="showSearchSuggest()" oninput="handleSearchInput(this.value)">
+
+                    <button type="button" id="searchClearBtn" class="search-clear-btn" style="display: {{ !empty($search) ? 'grid' : 'none' }};" onclick="clearSearchInput()">✕</button>
+
+                    <button type="submit" class="search-submit-btn" aria-label="{{ $translations['search']['button'] }}">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+                    </button>
+                </form>
+
+                <!-- Search Suggestions Dropdown -->
+                <div id="searchSuggestBox" class="search-suggestions-dropdown" style="display: none;">
+                    <div class="search-trending-section">
+                        <span class="trending-title">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f97316" stroke-width="2" style="vertical-align:-2px; margin-right:3px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"></path></svg>
+                            Trending:
+                        </span>
+                        <div class="trending-tags">
+                            <button type="button" class="trending-tag" onclick="quickFillSearch('Headphones')">Headphones</button>
+                            <button type="button" class="trending-tag" onclick="quickFillSearch('Backpack')">Backpack</button>
+                            <button type="button" class="trending-tag" onclick="quickFillSearch('Watch')">Watch</button>
+                            <button type="button" class="trending-tag" onclick="quickFillSearch('Shoes')">Shoes</button>
+                        </div>
+                    </div>
+                    <div id="searchLiveResults" class="search-live-results"></div>
+                </div>
+            </div>
         </div>
 
         <nav class="main-nav" aria-label="{{ $translations['nav']['label'] }}">
             <div class="container nav-inner">
+                <!-- Mobile Drawer Header (Visible on Mobile Only) -->
+                <div class="mobile-drawer-header">
+                    <div class="drawer-brand">
+                        <span class="brand-mark" style="width: 32px; height: 32px; font-size: 18px; border-radius: 9px;">d</span>
+                        <div class="brand-copy" style="font-size: 18px;">
+                            <div class="brand-copy-title">dara<span>market</span></div>
+                        </div>
+                    </div>
+                    <button type="button" class="drawer-close-btn" onclick="document.querySelector('.main-nav').classList.remove('is-open')" aria-label="Close menu">✕</button>
+                </div>
+
                 <!-- 1. All Categories Mega Dropdown Trigger -->
                 <div class="nav-category-dropdown-wrapper">
                     <button type="button" class="nav-category-trigger-btn" id="navCategoryBtn" onclick="toggleNavCategoryMenu()" aria-expanded="false" aria-haspopup="true">
@@ -475,11 +494,11 @@
                         </span>
                     </div>
 
-                    <a href="tel:+85512345678" class="nav-hotline-pill" title="Need help? Call us!">
+                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '+855714504547') }}" class="nav-hotline-pill" title="Need help? Call us!">
                         <span class="hotline-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span>
                         <span class="hotline-text">
                             <small>{{ $locale === 'km' ? 'សេវាជំនួយ' : 'Support' }}</small>
-                            <strong>012 345 678</strong>
+                            <strong>{{ $storeSettings['contact_phone'] ?? '071 450 4547' }}</strong>
                         </span>
                     </a>
                 </div>
@@ -514,7 +533,7 @@
                     </a>
                 </div>
             </div>
-            <div class="footer-column">
+            <div class="footer-column footer-service-col">
                 <h2>{{ $translations['footer']['customer_service'] }}</h2>
                 <ul class="footer-links-list">
                     <li><a href="#featured"><span>{{ $translations['footer']['how_to_order'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
@@ -526,13 +545,13 @@
             <div class="footer-column footer-contact-col">
                 <h2>{{ $translations['footer']['contact'] }}</h2>
                 <div class="footer-contact-list">
-                    <a class="contact-link" href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '+85512345678') }}">
+                    <a class="contact-link" href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '+855714504547') }}">
                         <span class="contact-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                         </span>
                         <div class="contact-details">
                             <span class="contact-label">{{ $locale === 'km' ? 'ទូរស័ព្ទដៃ' : 'Phone' }}</span>
-                            <span class="contact-value">{{ $storeSettings['contact_phone'] ?? '+855 12 345 678' }}</span>
+                            <span class="contact-value">{{ $storeSettings['contact_phone'] ?? '+855 71 450 4547' }}</span>
                         </div>
                     </a>
                     <a class="contact-link" href="mailto:{{ $storeSettings['contact_email'] ?? 'hello@daramarket.com' }}">
@@ -630,19 +649,19 @@
             <div class="store-modal-header">
                 <h3>
                     <span>📦</span>
-                    <span>{{ $locale === 'km' ? 'តាមដានស្ថានភាពការកម្មង់' : 'Track Your Order' }}</span>
+                    <span>{{ $locale === 'km' ? 'តាមដានស្ថានភាពការកុម្ម៉ង់' : 'Track Your Order' }}</span>
                 </h3>
                 <button type="button" class="store-modal-close" onclick="closeTrackOrderModal()">✕</button>
             </div>
             <div class="store-modal-body">
                 <form id="trackOrderForm" onsubmit="handleTrackOrder(event)">
                     <div class="track-input-group">
-                        <label for="track_order_number">{{ $locale === 'km' ? 'លេខសម្គាល់ការកម្មង់ (Order Number)' : 'Order Number' }}</label>
-                        <input id="track_order_number" type="text" placeholder="e.g. ORD-8937 or 8937" required autocomplete="off">
+                        <label for="track_order_number">{{ $locale === 'km' ? 'លេខសម្គាល់ការកុម្ម៉ង់ (Order Number)' : 'Order Number' }}</label>
+                        <input id="track_order_number" type="text" placeholder="e.g. ORD-2026-6208 ឬ 6208" required autocomplete="off">
                     </div>
                     <div class="track-input-group">
                         <label for="track_phone">{{ $locale === 'km' ? 'លេខទូរស័ព្ទ (ស្រេចចិត្ត)' : 'Phone Number (Optional)' }}</label>
-                        <input id="track_phone" type="tel" placeholder="e.g. 015 889 900" autocomplete="off">
+                        <input id="track_phone" type="tel" placeholder="e.g. 071 450 4547" autocomplete="off">
                     </div>
                     <button type="submit" id="trackSubmitBtn" class="track-submit-btn">
                         <span>🔍</span>
@@ -654,6 +673,319 @@
             </div>
         </div>
     </div>
+
+    <style>
+    /* Modern Track Order Modal Enhancements */
+    .store-modal-card {
+        max-height: 92vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .store-modal-body {
+        overflow-y: auto;
+        max-height: calc(92vh - 65px);
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f8fafc;
+    }
+    .track-result-box {
+        margin-top: 18px;
+        padding: 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+    .track-timeline-wrapper {
+        position: relative;
+        margin: 22px 0 16px;
+        padding: 0 4px;
+    }
+    .track-timeline-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 24px;
+        right: 24px;
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 999px;
+        z-index: 1;
+    }
+    .track-timeline-bar {
+        position: absolute;
+        top: 15px;
+        left: 24px;
+        max-width: calc(100% - 48px);
+        height: 4px;
+        background: linear-gradient(90deg, #16a34a, #22c55e);
+        border-radius: 999px;
+        z-index: 2;
+        transition: width 0.4s ease;
+    }
+    .track-timeline {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 3;
+    }
+    .timeline-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex: 1;
+        text-align: center;
+    }
+    .timeline-step .step-node {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2.5px solid #cbd5e1;
+        color: #64748b;
+        font-weight: 800;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    }
+    .timeline-step.is-done .step-node {
+        background: #16a34a;
+        border-color: #16a34a;
+        color: #ffffff;
+    }
+    .timeline-step.is-current .step-node {
+        background: #f59e0b;
+        border-color: #f59e0b;
+        color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
+        animation: pulseStepNode 1.8s infinite;
+    }
+    @keyframes pulseStepNode {
+        0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+        70% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    .timeline-step .step-title {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #334155;
+        line-height: 1.2;
+    }
+    .timeline-step .step-sub {
+        font-size: 9.5px;
+        color: #94a3b8;
+    }
+    .timeline-step.is-done .step-title,
+    .timeline-step.is-current .step-title {
+        color: #0f172a;
+    }
+    .track-cancelled-alert {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 16px 0;
+    }
+    .cancelled-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #ef4444;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+    .track-status-note {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin: 16px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .note-icon {
+        font-size: 18px;
+        line-height: 1.2;
+    }
+    .note-km {
+        margin: 0;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #166534;
+        line-height: 1.4;
+    }
+    .note-en {
+        margin: 3px 0 0;
+        font-size: 11px;
+        color: #15803d;
+        opacity: 0.85;
+    }
+    .track-items-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 14px;
+    }
+    .track-items-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: #334155;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed #e2e8f0;
+        margin-bottom: 8px;
+    }
+    .track-item-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 0;
+    }
+    .track-item-row:not(:last-child) {
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .track-item-img {
+        width: 38px;
+        height: 38px;
+        border-radius: 6px;
+        object-fit: cover;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        flex-shrink: 0;
+    }
+    .track-item-details {
+        flex: 1;
+        min-width: 0;
+    }
+    .track-item-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .track-item-meta {
+        font-size: 11px;
+        color: #64748b;
+    }
+    .track-item-price {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .track-info-summary {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 12px;
+    }
+    .summary-col {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .summary-lbl {
+        color: #64748b;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+    .summary-val {
+        color: #1e293b;
+        text-align: right;
+        font-weight: 500;
+    }
+    .total-col {
+        border-top: 1px dashed #e2e8f0;
+        padding-top: 8px;
+        margin-top: 2px;
+    }
+    .summary-val-total {
+        font-size: 16px;
+        font-weight: 800;
+        color: #16a34a;
+    }
+    .track-action-bar {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+    }
+    .btn-track-refresh {
+        flex: 1;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.15s ease;
+    }
+    .btn-track-refresh:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    .btn-track-call {
+        flex: 1;
+        background: #173e2c;
+        color: #ffffff;
+        border: none;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: background 0.15s ease;
+    }
+    .btn-track-call:hover {
+        background: #245943;
+        color: #ffffff;
+    }
+    .status-tag-pending { background: #fef3c7; color: #b45309; }
+    .status-tag-processing { background: #dbeafe; color: #1d4ed8; }
+    .status-tag-shipped { background: #ede9fe; color: #6d28d9; }
+    .status-tag-delivered { background: #dcfce7; color: #15803d; }
+    .status-tag-cancelled { background: #fee2e2; color: #b91c1c; }
+    .track-error-box {
+        margin-top: 16px;
+        padding: 14px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 10px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    </style>
 
     <!-- Announcement & Modal Scripts -->
     <script>
@@ -731,7 +1063,17 @@
         const modal = document.getElementById('trackOrderModal');
         if (modal) {
             modal.style.display = 'flex';
-            document.getElementById('track_order_number').focus();
+            const input = document.getElementById('track_order_number');
+            const phoneInput = document.getElementById('track_phone');
+            if (input && !input.value.trim()) {
+                const savedOrder = localStorage.getItem('dara_last_order');
+                if (savedOrder) input.value = savedOrder;
+            }
+            if (phoneInput && !phoneInput.value.trim()) {
+                const savedPhone = localStorage.getItem('dara_last_order_phone');
+                if (savedPhone) phoneInput.value = savedPhone;
+            }
+            if (input) input.focus();
         }
     }
 
@@ -741,7 +1083,7 @@
     }
 
     async function handleTrackOrder(e) {
-        e.preventDefault();
+        if (e && typeof e.preventDefault === 'function') e.preventDefault();
         const orderNum = document.getElementById('track_order_number').value.trim();
         const phone = document.getElementById('track_phone').value.trim();
         const resBox = document.getElementById('trackResultContainer');
@@ -750,7 +1092,7 @@
         if (!orderNum) return;
 
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span>⏳</span><span>Searching...</span>';
+        submitBtn.innerHTML = '<span>⏳</span><span>កំពុងស្វែងរក... (Searching)</span>';
 
         try {
             const url = `{{ route('store.track-order') }}?order_number=${encodeURIComponent(orderNum)}&phone=${encodeURIComponent(phone)}`;
@@ -759,58 +1101,191 @@
 
             if (data.success && data.order) {
                 const ord = data.order;
-                const status = ord.status;
+                const status = (ord.status || 'pending').toLowerCase();
+                const isCancelled = (status === 'cancelled');
+
+                const statusLabels = {
+                    'pending': { text: '⏳ រង់ចាំការបញ្ជាក់', sub: 'Pending Confirmation', class: 'status-tag-pending' },
+                    'processing': { text: '⚙️ កំពុងរៀបចំទំនិញ', sub: 'Processing & Packing', class: 'status-tag-processing' },
+                    'shipped': { text: '🚚 កំពុងដឹកជញ្ជូន', sub: 'Out for Delivery', class: 'status-tag-shipped' },
+                    'delivered': { text: '✓ ដឹកជញ្ជូនជោគជ័យ', sub: 'Delivered', class: 'status-tag-delivered' },
+                    'cancelled': { text: '✕ បានលុបចោល', sub: 'Cancelled', class: 'status-tag-cancelled' }
+                };
+
+                const currentStatusInfo = statusLabels[status] || statusLabels['pending'];
+
+                // Fulfillment steps
                 const steps = ['pending', 'processing', 'shipped', 'delivered'];
                 const curIdx = steps.indexOf(status);
+
+                // Progress line width
+                let progressPercent = 0;
+                if (curIdx === 0) progressPercent = 12;
+                else if (curIdx === 1) progressPercent = 42;
+                else if (curIdx === 2) progressPercent = 75;
+                else if (curIdx === 3) progressPercent = 100;
+
+                let timelineHtml = '';
+                if (isCancelled) {
+                    timelineHtml = `
+                        <div class="track-cancelled-alert">
+                            <div class="cancelled-icon">✕</div>
+                            <div class="cancelled-content">
+                                <strong style="color: #991b1b; font-size: 13.5px;">ការបញ្ជាទិញនេះត្រូវបានលុបចោល (Order Cancelled)</strong>
+                                <p style="margin: 4px 0 0; font-size: 12px; color: #b91c1c;">${ord.status_note?.km || 'សូមទាក់ទងមកកាន់យើងខ្ញុំតាម 071 450 4547 ប្រសិនបើមានចម្ងល់។'}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    timelineHtml = `
+                        <div class="track-timeline-wrapper">
+                            <div class="track-timeline-bar" style="width: ${progressPercent}%;"></div>
+                            <div class="track-timeline">
+                                <div class="timeline-step ${curIdx >= 0 ? 'is-done' : ''} ${curIdx === 0 ? 'is-current' : ''}">
+                                    <div class="step-node">${curIdx > 0 ? '✓' : '1'}</div>
+                                    <span class="step-title">បានកុម្ម៉ង់</span>
+                                    <small class="step-sub">Placed</small>
+                                </div>
+                                <div class="timeline-step ${curIdx >= 1 ? 'is-done' : ''} ${curIdx === 1 ? 'is-current' : ''}">
+                                    <div class="step-node">${curIdx > 1 ? '✓' : '2'}</div>
+                                    <span class="step-title">កំពុងរៀបចំ</span>
+                                    <small class="step-sub">Processing</small>
+                                </div>
+                                <div class="timeline-step ${curIdx >= 2 ? 'is-done' : ''} ${curIdx === 2 ? 'is-current' : ''}">
+                                    <div class="step-node">${curIdx > 2 ? '✓' : '3'}</div>
+                                    <span class="step-title">កំពុងដឹក</span>
+                                    <small class="step-sub">Shipped</small>
+                                </div>
+                                <div class="timeline-step ${curIdx >= 3 ? 'is-done' : ''} ${curIdx === 3 ? 'is-current' : ''}">
+                                    <div class="step-node">${curIdx >= 3 ? '✓' : '4'}</div>
+                                    <span class="step-title">បានដឹកដល់</span>
+                                    <small class="step-sub">Delivered</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Render purchased items if available
+                let itemsHtml = '';
+                if (ord.items && ord.items.length > 0) {
+                    itemsHtml = `
+                        <div class="track-items-box">
+                            <div class="track-items-title">
+                                <span>📦 ទំនិញក្នុងកញ្ចប់ (${ord.items.length} មុខ)</span>
+                                <small style="color: #64748b;">${ord.date}</small>
+                            </div>
+                            <div class="track-items-list">
+                                ${ord.items.map(it => `
+                                    <div class="track-item-row">
+                                        <img src="${it.image}" alt="${it.name}" class="track-item-img" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100&auto=format&fit=crop&q=80'">
+                                        <div class="track-item-details">
+                                            <div class="track-item-name">${it.name}</div>
+                                            <div class="track-item-meta">ចំនួន: <strong>x${it.quantity}</strong> · $${it.price} / មួយ</div>
+                                        </div>
+                                        <div class="track-item-price">$${(it.quantity * parseFloat(it.price)).toFixed(2)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Payment method label
+                const payMethodMap = {
+                    'aba_pay': 'ABA PAY (KHQR)',
+                    'bakong': 'Bakong KHQR',
+                    'cod': 'Cash on Delivery (COD)'
+                };
+                const payMethodName = payMethodMap[ord.payment_method] || ord.payment_method || 'ABA PAY (KHQR)';
+                const isPaid = (ord.payment_status === 'paid');
 
                 resBox.innerHTML = `
                     <div class="track-result-box">
                         <div class="result-header">
                             <div>
                                 <span class="result-order-num">#${ord.order_number}</span>
-                                <small style="display:block; color:#77857c; font-size:11px;">Customer: <strong>${ord.customer_name}</strong></small>
+                                <small style="display:block; color:#64748b; font-size:11.5px; margin-top:2px;">
+                                    អតិថិជន: <strong>${ord.customer_name}</strong> · 📞 <strong>${ord.customer_phone || ''}</strong>
+                                </small>
                             </div>
-                            <span class="result-status-tag status-tag-${status}">● ${status}</span>
-                        </div>
-
-                        <div class="track-timeline">
-                            <div class="timeline-step ${curIdx >= 0 ? 'is-done' : ''} ${curIdx === 0 ? 'is-current' : ''}">
-                                <div class="step-node">${curIdx > 0 ? '✓' : '1'}</div>
-                                <span class="step-title">Placed</span>
-                            </div>
-                            <div class="timeline-step ${curIdx >= 1 ? 'is-done' : ''} ${curIdx === 1 ? 'is-current' : ''}">
-                                <div class="step-node">${curIdx > 1 ? '✓' : '2'}</div>
-                                <span class="step-title">Processing</span>
-                            </div>
-                            <div class="timeline-step ${curIdx >= 2 ? 'is-done' : ''} ${curIdx === 2 ? 'is-current' : ''}">
-                                <div class="step-node">${curIdx > 2 ? '✓' : '3'}</div>
-                                <span class="step-title">Shipped</span>
-                            </div>
-                            <div class="timeline-step ${curIdx >= 3 ? 'is-done' : ''} ${curIdx === 3 ? 'is-current' : ''}">
-                                <div class="step-node">✓</div>
-                                <span class="step-title">Delivered</span>
+                            <div style="text-align: right;">
+                                <span class="result-status-tag ${currentStatusInfo.class}">${currentStatusInfo.text}</span>
+                                <small style="display:block; font-size:10px; color:#64748b; margin-top:3px;">${currentStatusInfo.sub}</small>
                             </div>
                         </div>
 
-                        <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:12px; color:#4a5950; background:#fff; padding:10px 14px; border-radius:8px; border:1px solid #e3eae4;">
-                            <span>Total: <strong>$${ord.total_amount}</strong></span>
-                            <span>Payment: <strong style="text-transform:capitalize;">${ord.payment_status}</strong></span>
+                        ${timelineHtml}
+
+                        <!-- Status Description Note -->
+                        <div class="track-status-note">
+                            <span class="note-icon">📢</span>
+                            <div class="note-body">
+                                <p class="note-km">${ord.status_note?.km || ''}</p>
+                                <p class="note-en">${ord.status_note?.en || ''}</p>
+                            </div>
+                        </div>
+
+                        ${itemsHtml}
+
+                        <!-- Delivery and Payment Summary -->
+                        <div class="track-info-summary">
+                            <div class="summary-col">
+                                <span class="summary-lbl">📍 អាសយដ្ឋានដឹកជញ្ជូន:</span>
+                                <span class="summary-val">${ord.shipping_address || 'រាជធានីភ្នំពេញ'}</span>
+                            </div>
+                            <div class="summary-col">
+                                <span class="summary-lbl">💳 ការទូទាត់ប្រាក់:</span>
+                                <span class="summary-val">
+                                    ${payMethodName} · 
+                                    <strong style="color: ${isPaid ? '#16a34a' : '#d97706'};">
+                                        ${isPaid ? '✓ បានទូទាត់ (Paid)' : '⏳ រង់ចាំទូទាត់ (Pending)'}
+                                    </strong>
+                                </span>
+                            </div>
+                            <div class="summary-col total-col">
+                                <span class="summary-lbl">សរុបទឹកប្រាក់:</span>
+                                <span class="summary-val-total">$${ord.total_amount}</span>
+                            </div>
+                        </div>
+
+                        <!-- Live Action Bar -->
+                        <div class="track-action-bar">
+                            <button type="button" class="btn-track-refresh" onclick="handleTrackOrder(event)" title="ពិនិត្យស្ថានភាពចុងក្រោយ">
+                                🔄 ពិនិត្យឡើងវិញ (Refresh)
+                            </button>
+                            <a href="tel:0714504547" class="btn-track-call">
+                                📞 Call Hotline: 071 450 4547
+                            </a>
                         </div>
                     </div>
                 `;
                 resBox.style.display = 'block';
             } else {
                 resBox.innerHTML = `
-                    <div style="margin-top:16px; padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#b91c1c; font-size:12.5px;">
-                        ⚠️ ${data.message || 'Order not found. Please verify your order number.'}
+                    <div class="track-error-box">
+                        <span style="font-size: 20px;">⚠️</span>
+                        <div>
+                            <strong style="color: #991b1b; font-size: 13px;">រកមិនឃើញការកុម្ម៉ង់!</strong>
+                            <p style="margin: 4px 0 0 0; font-size: 12px; color: #b91c1c;">
+                                ${data.message || 'សូមពិនិត្យលេខកុម្ម៉ង់ (#ORD-xxxx) រួចព្យាយាមម្តងទៀត។'}
+                            </p>
+                        </div>
                     </div>
                 `;
                 resBox.style.display = 'block';
             }
         } catch (err) {
+            console.error(err);
             resBox.innerHTML = `
-                <div style="margin-top:16px; padding:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; color:#b91c1c; font-size:12.5px;">
-                    An error occurred while tracking. Please try again.
+                <div class="track-error-box">
+                    <span style="font-size: 20px;">⚠️</span>
+                    <div>
+                        <strong style="color: #991b1b; font-size: 13px;">មានបញ្ហាក្នុងការស្វែងរក!</strong>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: #b91c1c;">
+                            សូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត ឬទាក់ទងមកកាន់ 071 450 4547។
+                        </p>
+                    </div>
                 </div>
             `;
             resBox.style.display = 'block';
@@ -972,7 +1447,7 @@
             const suggestBox = document.getElementById('searchSuggestBox');
             if (suggestBox) suggestBox.style.display = 'none';
         }
-        if (!e.target.closest('.account-dropdown-wrapper')) {
+        if (!e.target.closest('.account-dropdown-wrapper') && !e.target.closest('.account-pill-button') && !e.target.closest('.bottom-nav-account-trigger') && !e.target.closest('.mobile-account-sheet')) {
             const accMenu = document.getElementById('accountDropdownMenu');
             if (accMenu) accMenu.style.display = 'none';
         }
@@ -1007,16 +1482,24 @@
     <aside id="cartDrawerPanel" class="cart-drawer-panel" style="display: none;" aria-label="Shopping Cart Drawer">
         <div class="cart-drawer-header">
             <div class="cart-drawer-title-box">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="drawer-header-icon">🛍️</span>
                 <h3>{{ $locale === 'km' ? 'កន្ត្រកទំនិញ' : 'Shopping Cart' }}</h3>
-                <span class="drawer-count-badge" id="drawerCartCountBadge">0</span>
+                <span class="drawer-count-badge" id="drawerCartCountBadge">0 មុខ</span>
             </div>
-            <button type="button" class="cart-drawer-close" onclick="closeCartDrawer()" aria-label="Close Cart">✕</button>
+            <div class="cart-drawer-header-actions">
+                <button type="button" class="btn-drawer-clear" id="drawerClearBtn" onclick="clearWholeCart()" style="display: none;" title="សម្អាតកន្ត្រកទាំងអស់">
+                    🗑️ {{ $locale === 'km' ? 'សម្អាត' : 'Clear' }}
+                </button>
+                <button type="button" class="cart-drawer-close" onclick="closeCartDrawer()" aria-label="Close Cart">✕</button>
+            </div>
         </div>
 
         <!-- Free Delivery Tracker -->
         <div class="drawer-free-shipping-bar" id="drawerShippingBar">
-            <span id="drawerFsText">🚚 Free Delivery on orders ≥ $35.00</span>
+            <div class="drawer-fs-header">
+                <span id="drawerFsText">🚚 {{ $locale === 'km' ? 'ដឹកជញ្ជូនឥតគិតថ្លៃសម្រាប់ការកុម្ម៉ង់ចាប់ពី $35.00 ឡើងទៅ' : 'Free Delivery on orders ≥ $35.00' }}</span>
+                <span id="drawerFsPercentBadge" class="drawer-fs-badge">0%</span>
+            </div>
             <div class="drawer-fs-track">
                 <div class="drawer-fs-fill" id="drawerFsFill" style="width: 0%;"></div>
             </div>
@@ -1028,34 +1511,119 @@
                 <!-- Injected via JavaScript -->
             </div>
 
+            <!-- Enhanced Modern Empty State -->
             <div id="cartDrawerEmpty" class="drawer-empty-box" style="display: none;">
-                <div class="drawer-empty-icon">🛍️</div>
-                <h4>{{ $locale === 'km' ? 'កន្ត្រករបស់អ្នកនៅទទេ' : 'Your cart is empty' }}</h4>
-                <p>{{ $locale === 'km' ? 'សូមជ្រើសរើសទំនិញដែលអ្នកពេញចិត្តពីហាង' : 'Explore our catalog and add items you love' }}</p>
+                <div class="drawer-empty-art">
+                    <div class="empty-art-glow"></div>
+                    <div class="empty-art-icon">🛍️</div>
+                </div>
+                <h4>{{ $locale === 'km' ? 'កន្ត្រករបស់អ្នកកំពុងរង់ចាំ!' : 'Your cart is empty!' }}</h4>
+                <p>{{ $locale === 'km' ? 'មិនទាន់មានទំនិញក្នុងកន្ត្រកនៅឡើយទេ។ សូមចាប់ផ្តើមស្វែងរកទំនិញពេញនិយម ឬទំនិញបញ្ចុះតម្លៃពិសេសថ្ងៃនេះ!' : 'Explore our catalog and find the best deals curated just for you.' }}</p>
+                
+                <!-- Quick Category Tags -->
+                <div class="empty-quick-tags">
+                    <a href="{{ route('store.products') }}?filter=sale" class="empty-cat-pill" onclick="closeCartDrawer()">
+                        🏷️ {{ $locale === 'km' ? 'បញ្ចុះតម្លៃ' : 'Hot Deals' }}
+                    </a>
+                    <a href="{{ route('store.products') }}?category=electronics" class="empty-cat-pill" onclick="closeCartDrawer()">
+                        🎧 {{ $locale === 'km' ? 'អេឡិចត្រូនិក' : 'Electronics' }}
+                    </a>
+                    <a href="{{ route('store.products') }}?category=fashion" class="empty-cat-pill" onclick="closeCartDrawer()">
+                        👕 {{ $locale === 'km' ? 'ម៉ូដសម្លៀកបំពាក់' : 'Fashion' }}
+                    </a>
+                </div>
+
                 <a href="{{ route('store.products') }}" class="btn-drawer-browse" onclick="closeCartDrawer()">
-                    {{ $locale === 'km' ? 'ទិញទំនិញឥឡូវនេះ' : 'Shop Now' }}
+                    ✨ {{ $locale === 'km' ? 'ចាប់ផ្តើមទិញទំនិញឥឡូវនេះ' : 'Start Shopping Now' }}
                 </a>
+
+                <!-- Trending Recommendations Inside Drawer -->
+                <div class="drawer-recommendations">
+                    <div class="rec-title">
+                        <span>🔥 {{ $locale === 'km' ? 'ទំនិញពេញនិយមណែនាំ' : 'Recommended For You' }}</span>
+                    </div>
+                    <div class="rec-list">
+                        <div class="rec-card">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=150&q=80" alt="Amber Gold ANC Headphones" class="rec-img">
+                            <div class="rec-info">
+                                <div class="rec-name">{{ $locale === 'km' ? 'កាសប៊្លូធូស Amber Gold ANC' : 'Amber Gold ANC Headphones' }}</div>
+                                <div class="rec-price">$42.00 <span class="rec-old-price">$55.00</span></div>
+                            </div>
+                            <button type="button" class="btn-rec-add" onclick="storeAddToCart('1', 'កាសប៊្លូធូស Amber Gold & Black, ANC', 42.00, 1, 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85')">
+                                + {{ $locale === 'km' ? 'បន្ថែម' : 'Add' }}
+                            </button>
+                        </div>
+                        <div class="rec-card">
+                            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=150&q=80" alt="Everyday Backpack" class="rec-img">
+                            <div class="rec-info">
+                                <div class="rec-name">{{ $locale === 'km' ? 'កាតាបស្ពាយ Canvas Backpack' : 'Modern Canvas Backpack' }}</div>
+                                <div class="rec-price">$28.50 <span class="rec-old-price">$38.00</span></div>
+                            </div>
+                            <button type="button" class="btn-rec-add" onclick="storeAddToCart('2', 'កាតាបស្ពាយ Canvas Backpack', 28.50, 1, 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1000&q=80')">
+                                + {{ $locale === 'km' ? 'បន្ថែម' : 'Add' }}
+                            </button>
+                        </div>
+                        <div class="rec-card">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=150&q=80" alt="Smart Watch Pro" class="rec-img">
+                            <div class="rec-info">
+                                <div class="rec-name">{{ $locale === 'km' ? 'នាឡិកាឆ្លាតវៃ Smart Watch Pro' : 'Smart Fitness Watch Pro' }}</div>
+                                <div class="rec-price">$35.00 <span class="rec-old-price">$45.00</span></div>
+                            </div>
+                            <button type="button" class="btn-rec-add" onclick="storeAddToCart('3', 'នាឡិកាឆ្លាតវៃ Smart Watch Pro', 35.00, 1, 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80')">
+                                + {{ $locale === 'km' ? 'បន្ថែម' : 'Add' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Cart Footer -->
         <div class="cart-drawer-footer" id="cartDrawerFooter">
-            <div class="drawer-subtotal-row">
-                <span>{{ $locale === 'km' ? 'តម្លៃទំនិញសរុប (Subtotal)' : 'Subtotal' }}</span>
-                <strong id="drawerSubtotal">$0.00</strong>
+            <!-- Promo Coupon Code Strip -->
+            <div class="drawer-coupon-wrap">
+                <div class="drawer-coupon-input-group">
+                    <span class="coupon-icon">🏷️</span>
+                    <input type="text" id="drawerCouponInput" placeholder="{{ $locale === 'km' ? 'កូដបញ្ចុះតម្លៃ (ឧ. DARA10)' : 'Promo Code (e.g. DARA10)' }}" autocomplete="off">
+                    <button type="button" id="btnApplyDrawerCoupon" onclick="applyDrawerCoupon()">
+                        {{ $locale === 'km' ? 'អនុវត្ត' : 'Apply' }}
+                    </button>
+                </div>
+                <div id="drawerCouponNotice" class="coupon-notice" style="display: none;"></div>
             </div>
-            <div class="drawer-subtotal-row" style="font-size: 12px; color: #64748b; margin-bottom: 12px;">
-                <span>{{ $locale === 'km' ? 'ការដឹកជញ្ជូន (Delivery)' : 'Delivery' }}</span>
-                <span id="drawerDeliveryNotice" style="color: #16a34a; font-weight: 700;">Calculated at checkout</span>
+
+            <div class="drawer-summary-card">
+                <div class="drawer-subtotal-row">
+                    <span>{{ $locale === 'km' ? 'តម្លៃទំនិញសរុប (Subtotal)' : 'Subtotal' }}</span>
+                    <div style="text-align: right;">
+                        <strong id="drawerSubtotal">$0.00</strong>
+                        <small id="drawerSubtotalKhr" style="display: block; font-size: 11px; color: #16a34a; font-weight: 700;">≈ 0 KHR</small>
+                    </div>
+                </div>
+                <div id="drawerDiscountRow" class="drawer-subtotal-row" style="display: none; color: #dc2626;">
+                    <span>{{ $locale === 'km' ? 'បញ្ចុះតម្លៃ (Discount)' : 'Discount' }}</span>
+                    <strong id="drawerDiscountAmount">-$0.00</strong>
+                </div>
+                <div class="drawer-subtotal-row delivery-row">
+                    <span>{{ $locale === 'km' ? 'ការដឹកជញ្ជូន (Delivery)' : 'Delivery' }}</span>
+                    <span id="drawerDeliveryNotice" class="delivery-val-pill">Calculated at checkout</span>
+                </div>
             </div>
 
             <a href="{{ route('store.checkout') }}" class="btn-drawer-checkout">
-                <span>{{ $locale === 'km' ? 'បន្តទៅទូទាត់ប្រាក់ (Checkout)' : 'Proceed to Checkout' }}</span>
+                <span class="checkout-label">{{ $locale === 'km' ? 'បន្តទៅទូទាត់ប្រាក់ (Checkout)' : 'Proceed to Checkout' }} ➔</span>
                 <span id="drawerCheckoutTotal" class="drawer-btn-total">$0.00</span>
             </a>
 
+            <!-- Security & Trust Badges Strip -->
+            <div class="drawer-trust-badges">
+                <span>🛡️ {{ $locale === 'km' ? 'ទូទាត់សុវត្ថិភាព 100%' : 'Secure Checkout' }}</span>
+                <span>⚡ {{ $locale === 'km' ? 'ដឹកជញ្ជូនរហ័ស' : 'Fast Shipping' }}</span>
+                <span>🔄 {{ $locale === 'km' ? 'ប្តូរទំនិញ 7 ថ្ងៃ' : '7-Day Return' }}</span>
+            </div>
+
             <button type="button" class="btn-drawer-continue" onclick="closeCartDrawer()">
-                {{ $locale === 'km' ? 'បន្តការទិញទំនិញ' : 'Continue Shopping' }}
+                ← {{ $locale === 'km' ? 'បន្តការទិញទំនិញផ្សេងទៀត' : 'Continue Shopping' }}
             </button>
         </div>
     </aside>
@@ -1119,30 +1687,35 @@
         font-weight: 800;
     }
 
-    /* Cart Drawer */
+    /* Cart Drawer Overhaul */
     .cart-drawer-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.5);
-        backdrop-filter: blur(4px);
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         z-index: 9998;
-        animation: fadeIn 0.2s ease;
+        animation: fadeInBackdrop 0.25s ease;
+    }
+    @keyframes fadeInBackdrop {
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
     .cart-drawer-panel {
         position: fixed;
         top: 0;
         right: 0;
         bottom: 0;
-        width: 420px;
+        width: 440px;
         max-width: 95vw;
         background: #ffffff;
         z-index: 9999;
         display: flex;
         flex-direction: column;
-        box-shadow: -8px 0 30px rgba(0,0,0,0.15);
-        animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+        animation: slideInRightDrawer 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes slideInRight {
+    @keyframes slideInRightDrawer {
         from { transform: translateX(100%); }
         to { transform: translateX(0); }
     }
@@ -1150,32 +1723,57 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 18px 20px;
+        padding: 16px 20px;
+        background: #ffffff;
         border-bottom: 1px solid #f1f5f9;
     }
     .cart-drawer-title-box {
         display: flex;
         align-items: center;
-        gap: 8px;
-        color: #10291f;
+        gap: 9px;
+    }
+    .drawer-header-icon {
+        font-size: 20px;
+        display: inline-flex;
     }
     .cart-drawer-title-box h3 {
         margin: 0;
         font-size: 17px;
         font-weight: 800;
+        color: #0f172a;
     }
     .drawer-count-badge {
-        background: #245943;
+        background: #173e2c;
         color: #ffffff;
         font-size: 11px;
-        font-weight: 800;
-        padding: 2px 7px;
+        font-weight: 700;
+        padding: 2px 9px;
         border-radius: 999px;
     }
+    .cart-drawer-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-drawer-clear {
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+        color: #dc2626;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .btn-drawer-clear:hover {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
     .cart-drawer-close {
-        background: transparent;
-        border: none;
-        font-size: 18px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        font-size: 14px;
         color: #64748b;
         cursor: pointer;
         width: 32px;
@@ -1184,55 +1782,101 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
     }
     .cart-drawer-close:hover {
-        background: #f1f5f9;
-        color: #0f172a;
+        background: #ef4444;
+        border-color: #ef4444;
+        color: #ffffff;
+        transform: rotate(90deg);
     }
+
+    /* Free Shipping Gamification Bar */
     .drawer-free-shipping-bar {
         background: #f0fdf4;
         border-bottom: 1px solid #dcfce7;
-        padding: 10px 20px;
+        padding: 12px 20px;
+    }
+    .drawer-fs-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         font-size: 12px;
         font-weight: 700;
         color: #15803d;
+        line-height: 1.3;
+    }
+    .drawer-fs-badge {
+        font-size: 10.5px;
+        font-weight: 800;
+        background: #dcfce7;
+        color: #166534;
+        padding: 1px 7px;
+        border-radius: 999px;
     }
     .drawer-fs-track {
-        height: 5px;
-        background: #dcfce7;
+        height: 6px;
+        background: #e2e8f0;
         border-radius: 999px;
-        margin-top: 6px;
+        margin-top: 8px;
         overflow: hidden;
+        position: relative;
     }
     .drawer-fs-fill {
         height: 100%;
-        background: #16a34a;
+        background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%);
         border-radius: 999px;
-        transition: width 0.3s;
+        transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
     }
+    .drawer-fs-fill::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: fsShimmer 2s infinite;
+    }
+    @keyframes fsShimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* Drawer Body */
     .cart-drawer-body {
         flex: 1;
         overflow-y: auto;
-        padding: 16px 20px;
+        padding: 14px 18px;
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 #f8fafc;
     }
     .drawer-item-card {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 12px 0;
-        border-bottom: 1px solid #f1f5f9;
+        padding: 12px;
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        transition: all 0.2s ease;
     }
-    .drawer-item-card:last-child {
-        border-bottom: none;
+    .drawer-item-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
     .drawer-item-img {
-        width: 60px;
-        height: 60px;
-        border-radius: 8px;
+        width: 64px;
+        height: 64px;
+        border-radius: 10px;
         object-fit: cover;
         background: #f8fafc;
+        border: 1px solid #e2e8f0;
         flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+    .drawer-item-card:hover .drawer-item-img {
+        transform: scale(1.03);
     }
     .drawer-item-info {
         flex: 1;
@@ -1246,25 +1890,36 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.3;
+    }
+    .drawer-item-price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
     }
     .drawer-item-price {
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 13.5px;
+        font-weight: 800;
         color: #10291f;
+    }
+    .drawer-item-unit {
+        font-size: 11px;
+        color: #64748b;
     }
     .drawer-qty-stepper {
         display: inline-flex;
         align-items: center;
-        border: 1px solid #cbd5e1;
-        border-radius: 6px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
         margin-top: 6px;
-        background: #ffffff;
+        background: #f8fafc;
+        overflow: hidden;
     }
     .stepper-btn {
         background: transparent;
         border: none;
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
         font-size: 14px;
         font-weight: 800;
         cursor: pointer;
@@ -1272,85 +1927,322 @@
         align-items: center;
         justify-content: center;
         color: #334155;
+        transition: background 0.15s;
     }
     .stepper-btn:hover {
-        background: #f1f5f9;
-    }
-    .stepper-val {
-        font-size: 12px;
-        font-weight: 700;
-        padding: 0 8px;
+        background: #e2e8f0;
         color: #0f172a;
     }
+    .stepper-val {
+        font-size: 12.5px;
+        font-weight: 800;
+        padding: 0 8px;
+        color: #0f172a;
+        min-width: 22px;
+        text-align: center;
+    }
     .drawer-item-remove {
-        background: transparent;
-        border: none;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
         color: #94a3b8;
         cursor: pointer;
-        padding: 6px;
-        border-radius: 6px;
-        transition: all 0.2s;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
     }
     .drawer-item-remove:hover {
         color: #ef4444;
         background: #fee2e2;
+        border-color: #fecaca;
     }
 
-    /* Empty state */
+    /* Modern Empty State */
     .drawer-empty-box {
         text-align: center;
-        padding: 60px 20px;
+        padding: 24px 12px;
     }
-    .drawer-empty-icon {
-        font-size: 48px;
-        margin-bottom: 12px;
+    .drawer-empty-art {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .empty-art-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0) 70%);
+        border-radius: 50%;
+        animation: pulseArtGlow 2.5s infinite;
+    }
+    @keyframes pulseArtGlow {
+        0%, 100% { transform: scale(0.9); opacity: 0.6; }
+        50% { transform: scale(1.2); opacity: 1; }
+    }
+    .empty-art-icon {
+        font-size: 46px;
+        position: relative;
+        z-index: 2;
+        animation: floatBag 3s ease-in-out infinite;
+    }
+    @keyframes floatBag {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
     }
     .drawer-empty-box h4 {
-        font-size: 17px;
-        font-weight: 700;
-        color: #1e293b;
+        font-size: 16.5px;
+        font-weight: 800;
+        color: #0f172a;
         margin: 0 0 6px 0;
     }
     .drawer-empty-box p {
-        font-size: 13px;
+        font-size: 12.5px;
         color: #64748b;
-        margin: 0 0 20px 0;
+        margin: 0 0 16px 0;
+        line-height: 1.45;
+        max-width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .empty-quick-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        margin-bottom: 18px;
+    }
+    .empty-cat-pill {
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .empty-cat-pill:hover {
+        background: #173e2c;
+        border-color: #173e2c;
+        color: #ffffff;
+        transform: translateY(-1px);
     }
     .btn-drawer-browse {
-        display: inline-block;
-        background: #10291f;
+        display: block;
+        background: #173e2c;
         color: #ffffff;
-        font-weight: 700;
-        font-size: 13px;
-        padding: 10px 20px;
-        border-radius: 999px;
+        font-weight: 800;
+        font-size: 13.5px;
+        padding: 12px 20px;
+        border-radius: 12px;
         text-decoration: none;
+        box-shadow: 0 4px 14px rgba(23, 62, 44, 0.25);
+        transition: all 0.2s ease;
+    }
+    .btn-drawer-browse:hover {
+        background: #245943;
+        color: #ffffff;
+        transform: translateY(-1px);
     }
 
-    /* Drawer Footer */
+    /* Recommendations inside empty drawer */
+    .drawer-recommendations {
+        margin-top: 26px;
+        text-align: left;
+        border-top: 1px dashed #e2e8f0;
+        padding-top: 18px;
+    }
+    .rec-title {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .rec-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .rec-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        transition: all 0.15s ease;
+    }
+    .rec-card:hover {
+        border-color: #cbd5e1;
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .rec-img {
+        width: 46px;
+        height: 46px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        flex-shrink: 0;
+    }
+    .rec-info {
+        flex: 1;
+        min-width: 0;
+    }
+    .rec-name {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1e293b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+    }
+    .rec-price {
+        font-size: 12.5px;
+        font-weight: 800;
+        color: #16a34a;
+        margin-top: 2px;
+    }
+    .rec-old-price {
+        font-size: 11px;
+        color: #94a3b8;
+        text-decoration: line-through;
+        font-weight: 500;
+        margin-left: 3px;
+    }
+    .btn-rec-add {
+        background: #ffffff;
+        border: 1.5px solid #173e2c;
+        color: #173e2c;
+        font-size: 11.5px;
+        font-weight: 800;
+        padding: 6px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+    .btn-rec-add:hover {
+        background: #173e2c;
+        color: #ffffff;
+    }
+
+    /* Drawer Footer Overhaul */
     .cart-drawer-footer {
-        padding: 18px 20px;
+        padding: 16px 20px 20px;
         border-top: 1px solid #f1f5f9;
         background: #ffffff;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.03);
+    }
+    .drawer-coupon-wrap {
+        margin-bottom: 12px;
+    }
+    .drawer-coupon-input-group {
+        display: flex;
+        align-items: center;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 3px 5px 3px 10px;
+        transition: border-color 0.2s;
+    }
+    .drawer-coupon-input-group:focus-within {
+        border-color: #173e2c;
+        background: #ffffff;
+    }
+    .coupon-icon {
+        font-size: 14px;
+        margin-right: 6px;
+    }
+    .drawer-coupon-input-group input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1e293b;
+        padding: 6px 0;
+    }
+    .drawer-coupon-input-group button {
+        background: #173e2c;
+        color: #ffffff;
+        border: none;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 7px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .drawer-coupon-input-group button:hover {
+        background: #245943;
+    }
+    .coupon-notice {
+        font-size: 11.5px;
+        font-weight: 700;
+        margin-top: 6px;
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+    .coupon-notice.success {
+        background: #dcfce7;
+        color: #15803d;
+    }
+    .coupon-notice.error {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    .drawer-summary-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
     }
     .drawer-subtotal-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 14px;
-        color: #334155;
-        margin-bottom: 6px;
+        font-size: 13px;
+        color: #475569;
+        margin-bottom: 4px;
     }
     .drawer-subtotal-row strong {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 800;
-        color: #10291f;
+        color: #0f172a;
+    }
+    .delivery-row {
+        font-size: 12px;
+        margin-bottom: 0;
+        padding-top: 4px;
+        border-top: 1px dashed #e2e8f0;
+    }
+    .delivery-val-pill {
+        color: #16a34a;
+        font-weight: 700;
+        font-size: 11.5px;
     }
     .btn-drawer-checkout {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: #10291f;
+        background: linear-gradient(135deg, #173e2c 0%, #245943 100%);
         color: #ffffff;
         text-decoration: none;
         padding: 14px 18px;
@@ -1358,17 +2250,31 @@
         font-weight: 800;
         font-size: 14px;
         transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(16, 41, 31, 0.2);
+        box-shadow: 0 4px 16px rgba(23, 62, 44, 0.28);
     }
     .btn-drawer-checkout:hover {
-        background: #1b4534;
+        background: linear-gradient(135deg, #1a4934 0%, #2b6a50 100%);
+        color: #ffffff;
         transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(23, 62, 44, 0.35);
     }
     .drawer-btn-total {
-        background: rgba(255,255,255,0.2);
-        padding: 2px 8px;
-        border-radius: 6px;
-        font-size: 13px;
+        background: rgba(255,255,255,0.22);
+        padding: 3px 10px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+    }
+    .drawer-trust-badges {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10.5px;
+        color: #64748b;
+        font-weight: 600;
+        margin-top: 10px;
+        padding: 0 4px;
     }
     .btn-drawer-continue {
         width: 100%;
@@ -1376,18 +2282,21 @@
         border: none;
         color: #64748b;
         font-size: 12px;
-        font-weight: 600;
-        padding: 8px 0 0 0;
+        font-weight: 700;
+        padding: 10px 0 0 0;
         cursor: pointer;
         text-align: center;
+        transition: color 0.15s;
     }
     .btn-drawer-continue:hover {
-        color: #10291f;
+        color: #173e2c;
     }
     </style>
 
     <script>
-    // Cart Drawer Management
+    // Cart Drawer Management & Enhancements
+    let appliedDiscountPct = 0;
+
     function getStoredCart() {
         try {
             const data = JSON.parse(localStorage.getItem('dara-market-cart') || '{"count":0,"total":0,"items":[]}');
@@ -1415,7 +2324,7 @@
 
         if (headerCount) headerCount.textContent = count;
         if (headerTotal) headerTotal.textContent = total;
-        if (drawerCount) drawerCount.textContent = count;
+        if (drawerCount) drawerCount.textContent = count + ' មុខ';
 
         document.querySelectorAll('.cart-count').forEach(el => el.textContent = count);
         document.querySelectorAll('.cart-total').forEach(el => el.textContent = total);
@@ -1439,14 +2348,25 @@
         document.body.style.overflow = '';
     }
 
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeCartDrawer();
+    });
+
     function renderCartDrawerItems(cart) {
         const itemsContainer = document.getElementById('cartDrawerItems');
         const emptyBox = document.getElementById('cartDrawerEmpty');
         const footer = document.getElementById('cartDrawerFooter');
         const subtotalEl = document.getElementById('drawerSubtotal');
+        const subtotalKhrEl = document.getElementById('drawerSubtotalKhr');
         const checkoutTotalEl = document.getElementById('drawerCheckoutTotal');
+        const clearBtn = document.getElementById('drawerClearBtn');
         const fsText = document.getElementById('drawerFsText');
         const fsFill = document.getElementById('drawerFsFill');
+        const fsBadge = document.getElementById('drawerFsPercentBadge');
+        const discountRow = document.getElementById('drawerDiscountRow');
+        const discountAmtEl = document.getElementById('drawerDiscountAmount');
+        const dlvNotice = document.getElementById('drawerDeliveryNotice');
 
         if (!itemsContainer) return;
 
@@ -1454,13 +2374,16 @@
             itemsContainer.innerHTML = '';
             if (emptyBox) emptyBox.style.display = 'block';
             if (footer) footer.style.display = 'none';
-            if (fsText) fsText.textContent = '🚚 Free Delivery on orders ≥ $35.00';
+            if (clearBtn) clearBtn.style.display = 'none';
+            if (fsText) fsText.innerHTML = '🚚 {{ $locale === "km" ? "ដឹកជញ្ជូនឥតគិតថ្លៃសម្រាប់ការកុម្ម៉ង់ចាប់ពី $35.00 ឡើងទៅ" : "Free Delivery on orders ≥ $35.00" }}';
             if (fsFill) fsFill.style.width = '0%';
+            if (fsBadge) fsBadge.textContent = '0%';
             return;
         }
 
         if (emptyBox) emptyBox.style.display = 'none';
         if (footer) footer.style.display = 'block';
+        if (clearBtn) clearBtn.style.display = 'inline-block';
 
         let html = '';
         cart.items.forEach(item => {
@@ -1471,36 +2394,65 @@
 
             html += `
                 <div class="drawer-item-card">
-                    <img src="${img}" alt="${safeName}" class="drawer-item-img">
+                    <img src="${img}" alt="${safeName}" class="drawer-item-img" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100&auto=format&fit=crop&q=80'">
                     <div class="drawer-item-info">
                         <div class="drawer-item-title" title="${safeName}">${item.name}</div>
-                        <div class="drawer-item-price">$${(price * qty).toFixed(2)}</div>
+                        <div class="drawer-item-price-row">
+                            <span class="drawer-item-price">$${(price * qty).toFixed(2)}</span>
+                            <span class="drawer-item-unit">($${price.toFixed(2)} / មួយ)</span>
+                        </div>
                         <div class="drawer-qty-stepper">
-                            <button type="button" class="stepper-btn" onclick="modifyDrawerQty('${item.id}', -1)">−</button>
+                            <button type="button" class="stepper-btn" onclick="modifyDrawerQty('${item.id}', -1)" title="បន្ថយ">−</button>
                             <span class="stepper-val">${qty}</span>
-                            <button type="button" class="stepper-btn" onclick="modifyDrawerQty('${item.id}', 1)">+</button>
+                            <button type="button" class="stepper-btn" onclick="modifyDrawerQty('${item.id}', 1)" title="បន្ថែម">+</button>
                         </div>
                     </div>
-                    <button type="button" class="drawer-item-remove" onclick="removeDrawerItem('${item.id}')" title="Remove item">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <button type="button" class="drawer-item-remove" onclick="removeDrawerItem('${item.id}')" title="លុបទំនិញ">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
                 </div>
             `;
         });
 
         itemsContainer.innerHTML = html;
-        if (subtotalEl) subtotalEl.textContent = '$' + (cart.total || 0).toFixed(2);
-        if (checkoutTotalEl) checkoutTotalEl.textContent = '$' + (cart.total || 0).toFixed(2);
+
+        // Subtotal & Calculations
+        const rawTotal = cart.total || 0;
+        const discountVal = (appliedDiscountPct > 0) ? (rawTotal * (appliedDiscountPct / 100)) : 0;
+        const finalTotal = Math.max(0, rawTotal - discountVal);
+        const khrTotal = Math.round(finalTotal * 4100).toLocaleString();
+
+        if (subtotalEl) subtotalEl.textContent = '$' + rawTotal.toFixed(2);
+        if (subtotalKhrEl) subtotalKhrEl.textContent = `≈ ${khrTotal} KHR`;
+
+        if (appliedDiscountPct > 0 && discountRow && discountAmtEl) {
+            discountRow.style.display = 'flex';
+            discountAmtEl.textContent = `-$${discountVal.toFixed(2)} (${appliedDiscountPct}%)`;
+        } else if (discountRow) {
+            discountRow.style.display = 'none';
+        }
+
+        if (checkoutTotalEl) checkoutTotalEl.textContent = '$' + finalTotal.toFixed(2);
 
         // Free shipping progression
-        if (cart.total >= 35.00) {
-            if (fsText) fsText.innerHTML = '🎉 <strong>FREE Delivery Unlocked! (ដឹកជញ្ជូនឥតគិតថ្លៃ)</strong>';
+        if (rawTotal >= 35.00) {
+            if (fsText) fsText.innerHTML = '🎉 <strong>{{ $locale === "km" ? "អបអរសាទរ! ដឹកជញ្ជូនឥតគិតថ្លៃ" : "FREE Delivery Unlocked!" }}</strong>';
             if (fsFill) fsFill.style.width = '100%';
+            if (fsBadge) fsBadge.textContent = '100% ✓';
+            if (dlvNotice) {
+                dlvNotice.textContent = '{{ $locale === "km" ? "ឥតគិតថ្លៃ (FREE)" : "FREE" }}';
+                dlvNotice.style.color = '#16a34a';
+            }
         } else {
-            const diff = 35.00 - cart.total;
-            if (fsText) fsText.textContent = `🚚 Add $${diff.toFixed(2)} more for FREE Delivery!`;
-            const pct = Math.min(100, Math.round((cart.total / 35.00) * 100));
+            const diff = 35.00 - rawTotal;
+            if (fsText) fsText.innerHTML = `🚚 {{ $locale === "km" ? "ទិញថែម" : "Add" }} <strong>$${diff.toFixed(2)}</strong> {{ $locale === "km" ? "ទៀត ដើម្បីទទួលបាន ដឹកជញ្ជូនឥតគិតថ្លៃ!" : "more for FREE Delivery!" }}`;
+            const pct = Math.min(100, Math.round((rawTotal / 35.00) * 100));
             if (fsFill) fsFill.style.width = pct + '%';
+            if (fsBadge) fsBadge.textContent = pct + '%';
+            if (dlvNotice) {
+                dlvNotice.textContent = '{{ $locale === "km" ? "គណនាក្នុងទំព័រ Checkout" : "Calculated at checkout" }}';
+                dlvNotice.style.color = '#64748b';
+            }
         }
     }
 
@@ -1522,6 +2474,43 @@
         saveStoredCart(cart);
     }
 
+    function clearWholeCart() {
+        if (confirm('{{ $locale === "km" ? "តើលោកអ្នកពិតជាចង់សម្អាតទំនិញទាំងអស់ចេញពីកន្ត្រកមែនទេ?" : "Are you sure you want to clear all items in your cart?" }}')) {
+            const emptyCart = { count: 0, total: 0, items: [] };
+            appliedDiscountPct = 0;
+            saveStoredCart(emptyCart);
+        }
+    }
+
+    // Apply Coupon Code
+    function applyDrawerCoupon() {
+        const input = document.getElementById('drawerCouponInput');
+        const notice = document.getElementById('drawerCouponNotice');
+        if (!input || !notice) return;
+
+        const code = input.value.trim().toUpperCase();
+        if (!code) return;
+
+        if (code === 'DARA10') {
+            appliedDiscountPct = 10;
+            notice.className = 'coupon-notice success';
+            notice.textContent = '✓ {{ $locale === "km" ? "ទទួលបានការបញ្ចុះតម្លៃ 10% ដោយជោគជ័យ!" : "10% Discount applied successfully!" }}';
+            notice.style.display = 'block';
+        } else if (code === 'FREESHIP') {
+            appliedDiscountPct = 5;
+            notice.className = 'coupon-notice success';
+            notice.textContent = '✓ {{ $locale === "km" ? "ទទួលបានការបញ្ចុះតម្លៃពិសេស $1.50!" : "Special Free Shipping coupon applied!" }}';
+            notice.style.display = 'block';
+        } else {
+            appliedDiscountPct = 0;
+            notice.className = 'coupon-notice error';
+            notice.textContent = '✕ {{ $locale === "km" ? "កូដមិនត្រឹមត្រូវ ឬផុតកំណត់!" : "Invalid or expired coupon code." }}';
+            notice.style.display = 'block';
+        }
+
+        renderCartDrawerItems(getStoredCart());
+    }
+
     // Global Add To Cart Bridge
     window.storeAddToCart = function(id, name, price, qty, image) {
         const cart = getStoredCart();
@@ -1540,9 +2529,100 @@
         saveStoredCart(cart);
         openCartDrawer();
         if (typeof showToast === 'function') {
-            showToast(`${name} បានបញ្ចូលទៅកន្ត្រក!`);
+            showToast(`${name} {{ $locale === "km" ? "បានបញ្ចូលទៅកន្ត្រក!" : "added to cart!" }}`);
         }
     };
+
+    // Robust Global Mobile Nav Drawer Toggle
+    window.toggleMobileNav = function(forceOrEvent) {
+        if (forceOrEvent && forceOrEvent.preventDefault) {
+            forceOrEvent.preventDefault();
+            forceOrEvent.stopPropagation();
+        }
+        const nav = document.querySelector('.main-nav');
+        const btn = document.querySelector('.menu-toggle');
+        const header = document.querySelector('.site-header');
+        if (!nav) return;
+        const willOpen = (typeof forceOrEvent === 'boolean') ? forceOrEvent : !nav.classList.contains('is-open');
+        nav.classList.toggle('is-open', willOpen);
+        if (header) {
+            header.classList.toggle('has-menu-open', willOpen);
+        }
+        if (btn) {
+            btn.classList.toggle('is-active', willOpen);
+            btn.setAttribute('aria-expanded', String(willOpen));
+        }
+        document.body.style.overflow = willOpen ? 'hidden' : '';
+    };
+
+    window.closeMobileNav = function() {
+        window.toggleMobileNav(false);
+    };
+
+    // Mobile Account Bottom Sheet Toggle
+    window.toggleMobileAccountSheet = function(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (window.innerWidth > 768) {
+            toggleAccountMenu();
+            return;
+        }
+        const sheet = document.getElementById('mobileAccountSheet');
+        const backdrop = document.getElementById('mobileAccountBackdrop');
+        if (!sheet) return;
+        const isVisible = sheet.style.display !== 'none';
+        if (isVisible) {
+            sheet.style.display = 'none';
+            if (backdrop) backdrop.style.display = 'none';
+            document.body.style.overflow = '';
+        } else {
+            sheet.style.display = 'flex';
+            if (backdrop) backdrop.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    window.closeMobileAccountSheet = function() {
+        const sheet = document.getElementById('mobileAccountSheet');
+        const backdrop = document.getElementById('mobileAccountBackdrop');
+        if (sheet) sheet.style.display = 'none';
+        if (backdrop) backdrop.style.display = 'none';
+        document.body.style.overflow = '';
+    };
+
+    window.handleAccountButtonClick = function(event) {
+        if (window.innerWidth <= 768) {
+            toggleMobileAccountSheet(event);
+        } else {
+            toggleAccountMenu();
+        }
+    };
+
+    window.handleBottomNavDeals = function(e) {
+        const featured = document.getElementById('featured');
+        const currentPath = window.location.pathname;
+        if (featured && (currentPath === '/' || currentPath.endsWith('/home') || currentPath === '')) {
+            e.preventDefault();
+            featured.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.closeMobileNav();
+        }
+    };
+
+    // Close mobile nav drawer when tapping outside on backdrop
+    document.querySelector('.main-nav')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            window.closeMobileNav();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.closeMobileNav();
+            window.closeMobileAccountSheet();
+        }
+    });
 
     // Initialize UI on load
     document.addEventListener('DOMContentLoaded', function() {
@@ -1550,5 +2630,179 @@
         updateHeaderCartUI(cart);
     });
     </script>
+
+    <!-- Mobile Account Bottom Sheet Modal -->
+    <div id="mobileAccountBackdrop" class="mobile-account-backdrop" onclick="closeMobileAccountSheet()" style="display: none;"></div>
+    <div id="mobileAccountSheet" class="mobile-account-sheet" style="display: none;" role="dialog" aria-modal="true" aria-label="Account details">
+        <div class="mobile-sheet-drag-handle"></div>
+        <div class="mobile-sheet-header">
+            <h3 class="mobile-sheet-title">{{ auth()->check() ? ($locale === 'km' ? 'គណនីរបស់អ្នក' : 'My Account') : ($locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Dara Market' : 'Welcome to Dara Market') }}</h3>
+            <button type="button" class="mobile-sheet-close" onclick="closeMobileAccountSheet()" aria-label="Close">✕</button>
+        </div>
+        <div class="mobile-sheet-body">
+            @if(auth()->check())
+                <div class="account-menu-profile-card">
+                    <div class="menu-avatar-wrap">
+                        @if(auth()->user()->avatar)
+                            <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="menu-avatar-img" referrerpolicy="no-referrer">
+                        @else
+                            <span class="menu-avatar-letter">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                        @endif
+                        <span class="menu-online-badge" title="Online"></span>
+                    </div>
+                    <div class="menu-profile-details">
+                        <h4 class="menu-user-name">{{ auth()->user()->name }}</h4>
+                        <span class="menu-user-email">{{ auth()->user()->email }}</span>
+                        <div class="menu-tier-pill">
+                            @if(auth()->user()->is_admin)
+                                <span class="tier-tag tier-admin">🛡️ Store Admin</span>
+                            @else
+                                <span class="tier-tag tier-vip">⭐ VIP Member</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-menu-list">
+                    <a href="{{ route('account.show') }}" class="account-menu-item" onclick="closeMobileAccountSheet()">
+                        <span class="menu-item-icon icon-profile">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </span>
+                        <div class="menu-item-content">
+                            <strong>{{ $locale === 'km' ? 'ព័ត៌មានគណនី (My Profile)' : 'My Profile' }}</strong>
+                            <small>{{ $locale === 'km' ? 'កែប្រែទិន្នន័យ & អាសយដ្ឋាន' : 'Personal info & address' }}</small>
+                        </div>
+                        <span class="menu-item-arrow">›</span>
+                    </a>
+
+                    <a href="{{ route('account.show') }}#orders" class="account-menu-item" onclick="closeMobileAccountSheet()">
+                        <span class="menu-item-icon icon-orders">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                        </span>
+                        <div class="menu-item-content">
+                            <strong>{{ $locale === 'km' ? 'ប្រវត្តិការកម្ម៉ង់' : 'My Orders' }}</strong>
+                            <small>{{ $locale === 'km' ? 'ពិនិត្យទំនិញដែលបានទិញ' : 'View order history' }}</small>
+                        </div>
+                        <span class="menu-item-arrow">›</span>
+                    </a>
+
+                    <button type="button" class="account-menu-item" onclick="closeMobileAccountSheet(); openTrackOrderModal();">
+                        <span class="menu-item-icon icon-track">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                        </span>
+                        <div class="menu-item-content">
+                            <strong>{{ $locale === 'km' ? 'តាមដានការដឹកជញ្ជូន' : 'Track Order' }}</strong>
+                            <small>{{ $locale === 'km' ? 'ពិនិត្យទីតាំងកញ្ចប់ទំនិញ' : 'Live shipment status' }}</small>
+                        </div>
+                        <span class="menu-item-arrow">›</span>
+                    </button>
+
+                    @if(auth()->user()->is_admin)
+                        <a href="{{ route('admin.dashboard') }}" class="account-menu-item admin-highlight" onclick="closeMobileAccountSheet()">
+                            <span class="menu-item-icon icon-admin">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            </span>
+                            <div class="menu-item-content">
+                                <strong>{{ $locale === 'km' ? 'ផ្ទាំងគ្រប់គ្រង Admin' : 'Admin Dashboard' }}</strong>
+                                <small>{{ $locale === 'km' ? 'គ្រប់គ្រងហាង និងទំនិញ' : 'Manage store & orders' }}</small>
+                            </div>
+                            <span class="menu-item-arrow">↗</span>
+                        </a>
+                    @endif
+
+                    <div class="account-menu-divider"></div>
+
+                    <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="account-menu-item logout-btn">
+                            <span class="menu-item-icon icon-logout">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            </span>
+                            <div class="menu-item-content">
+                                <strong>{{ $locale === 'km' ? 'ចាកចេញពីគណនី' : 'Sign Out' }}</strong>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            @else
+                <!-- Guest VIP Welcome Banner -->
+                <div class="mobile-guest-vip-card">
+                    <div class="vip-card-glow"></div>
+                    <div class="vip-badge-row">
+                        <span class="vip-star-badge">⭐ {{ $locale === 'km' ? 'កាដូស្វាគមន៍សមាជិកថ្មី' : 'VIP Welcome Offer' }}</span>
+                        <span class="vip-amount-badge">+$15</span>
+                    </div>
+                    <h4>{{ $locale === 'km' ? 'ចុះឈ្មោះថ្ងៃនេះ ទទួលបាន $15 ភ្លាមៗ' : 'Claim $15 OFF Your First Order' }}</h4>
+                    <p>{{ $locale === 'km' ? 'ចូលរួមជាសមាជិកដើម្បីទទួលបានការបញ្ចុះតម្លៃពិសេស សន្សំពិន្ទុ និងតាមដានការបញ្ជាទិញ' : 'Join VIP club for secret discounts, rewards points & fast shipment tracking.' }}</p>
+                </div>
+
+                <div class="guest-cta-buttons-stacked">
+                    <a href="{{ route('register') }}" class="guest-btn-register-primary" onclick="closeMobileAccountSheet()">
+                        <span>✨ {{ $locale === 'km' ? 'ចុះឈ្មោះបង្កើតគណនី (Create Account)' : 'Create New Account' }}</span>
+                        <span class="guest-bonus-pill">+$15</span>
+                    </a>
+                    <a href="{{ route('login') }}" class="guest-btn-signin-secondary" onclick="closeMobileAccountSheet()">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                        <span>{{ $locale === 'km' ? 'ចូលគណនីដែលមានស្រាប់ (Sign In)' : 'Sign In to Your Account' }}</span>
+                    </a>
+                </div>
+
+                <div class="account-menu-list guest-links">
+                    <form action="{{ route('demo.login') }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="account-menu-item demo-login-item">
+                            <span class="menu-item-icon icon-demo">⚡</span>
+                            <div class="menu-item-content">
+                                <strong>{{ $locale === 'km' ? 'សាកល្បង Demo (1-Click)' : '1-Click Demo Login' }}</strong>
+                                <small>{{ $locale === 'km' ? 'ចូលភ្លាមៗមិនបាច់វាយពាក្យសម្ងាត់' : 'Instant test account' }}</small>
+                            </div>
+                            <span class="menu-item-arrow">›</span>
+                        </button>
+                    </form>
+
+                    <button type="button" class="account-menu-item" onclick="closeMobileAccountSheet(); openTrackOrderModal();">
+                        <span class="menu-item-icon icon-track">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                        </span>
+                        <div class="menu-item-content">
+                            <strong>{{ $locale === 'km' ? 'តាមដានការបញ្ជាទិញ' : 'Track Order' }}</strong>
+                        </div>
+                        <span class="menu-item-arrow">›</span>
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Phones Only) -->
+    <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+        <a href="{{ route('store.home') }}" class="bottom-nav-item {{ request()->routeIs('store.home') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>{{ $locale === 'km' ? 'ទំព័រដើម' : 'Home' }}</span>
+        </a>
+
+        <a href="{{ route('store.categories') }}" class="bottom-nav-item {{ request()->routeIs('store.categories') ? 'active' : '' }}">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>
+            <span>{{ $locale === 'km' ? 'ប្រភេទទំនិញ' : 'Categories' }}</span>
+        </a>
+
+        <a href="{{ route('store.home') }}#featured" onclick="handleBottomNavDeals(event)" class="bottom-nav-item bottom-nav-highlight">
+            <span class="bottom-nav-deal-badge">🔥</span>
+            <span>{{ $locale === 'km' ? 'ប្រូម៉ូសិន' : 'Deals' }}</span>
+        </a>
+
+        <button type="button" class="bottom-nav-item" onclick="openCartDrawer()" title="{{ $locale === 'km' ? 'កន្ត្រកទំនិញ' : 'Shopping Cart' }}">
+            <span class="bottom-nav-cart-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 8H6"></path><circle cx="10" cy="20" r="1.2"></circle><circle cx="18" cy="20" r="1.2"></circle></svg>
+                <span class="bottom-cart-badge cart-count">0</span>
+            </span>
+            <span>{{ $locale === 'km' ? 'កន្ត្រក' : 'Cart' }}</span>
+        </button>
+
+        <button type="button" class="bottom-nav-item bottom-nav-account-trigger" onclick="toggleMobileAccountSheet(event)" title="{{ $locale === 'km' ? 'គណនី' : 'Account' }}">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>{{ auth()->check() ? (explode(' ', auth()->user()->name)[0]) : ($locale === 'km' ? 'គណនី' : 'Account') }}</span>
+        </button>
+    </nav>
 </body>
 </html>

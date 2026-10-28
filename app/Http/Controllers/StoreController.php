@@ -101,57 +101,62 @@ class StoreController extends Controller
         $isShoe = str_contains($nameLower, 'shoe') || str_contains($nameLower, 'sneaker') || str_contains($nameLower, 'pegasus') || str_contains($nameLower, 'runner');
         $isBag = str_contains($nameLower, 'bag') || str_contains($nameLower, 'backpack') || str_contains($nameLower, 'duffle');
 
-        $baseQuery = Product::active()->where('id', '!=', $product->id);
+        $baseQuery = Product::active()->where('id', '!=', $product->id)->where('category', $product->category);
 
         if ($product->category === 'fashion') {
             if ($isShirt) {
-                $relatedQuery = (clone $baseQuery)->where('category', 'fashion')
-                    ->where(function ($q): void {
-                        $q->where('name_en', 'like', '%shirt%')
-                            ->orWhere('name_en', 'like', '%hoodie%')
-                            ->orWhere('name_en', 'like', '%tee%')
-                            ->orWhere('name_en', 'like', '%polo%');
-                    });
+                $relatedQuery = (clone $baseQuery)->where(function ($q): void {
+                    $q->where('name_en', 'like', '%shirt%')
+                        ->orWhere('name_en', 'like', '%hoodie%')
+                        ->orWhere('name_en', 'like', '%tee%')
+                        ->orWhere('name_en', 'like', '%polo%');
+                });
             } elseif ($isShoe) {
-                $relatedQuery = (clone $baseQuery)->where('category', 'fashion')
-                    ->where(function ($q): void {
-                        $q->where('name_en', 'like', '%shoe%')
-                            ->orWhere('name_en', 'like', '%sneaker%')
-                            ->orWhere('name_en', 'like', '%runner%')
-                            ->orWhere('name_en', 'like', '%pegasus%');
-                    });
+                $relatedQuery = (clone $baseQuery)->where(function ($q): void {
+                    $q->where('name_en', 'like', '%shoe%')
+                        ->orWhere('name_en', 'like', '%sneaker%')
+                        ->orWhere('name_en', 'like', '%runner%')
+                        ->orWhere('name_en', 'like', '%pegasus%');
+                });
             } elseif ($isBag) {
-                $relatedQuery = (clone $baseQuery)->where('category', 'fashion')
-                    ->where(function ($q): void {
-                        $q->where('name_en', 'like', '%bag%')
-                            ->orWhere('name_en', 'like', '%backpack%')
-                            ->orWhere('name_en', 'like', '%duffle%');
-                    });
+                $relatedQuery = (clone $baseQuery)->where(function ($q): void {
+                    $q->where('name_en', 'like', '%bag%')
+                        ->orWhere('name_en', 'like', '%backpack%')
+                        ->orWhere('name_en', 'like', '%duffle%');
+                });
             } else {
-                $relatedQuery = (clone $baseQuery)->where('category', 'fashion');
+                $relatedQuery = clone $baseQuery;
+            }
+        } elseif ($product->category === 'beauty') {
+            $isPerfume = str_contains($nameLower, 'parfum') || str_contains($nameLower, 'perfume') || str_contains($nameLower, 'eau') || str_contains($nameLower, 'noir') || str_contains($nameLower, 'fragrance') || str_contains($nameLower, 'sauvage') || str_contains($product->name_km, 'ទឹកអប់');
+            if ($isPerfume) {
+                // If perfume, prioritize other perfumes in Beauty first!
+                $relatedQuery = (clone $baseQuery)->where(function ($q): void {
+                    $q->where('name_en', 'like', '%parfum%')
+                        ->orWhere('name_en', 'like', '%perfume%')
+                        ->orWhere('name_en', 'like', '%fragrance%')
+                        ->orWhere('name_en', 'like', '%eau%')
+                        ->orWhere('name_en', 'like', '%sauvage%')
+                        ->orWhere('name_km', 'like', '%ទឹកអប់%');
+                });
+            } else {
+                $relatedQuery = clone $baseQuery;
             }
         } else {
-            $relatedQuery = (clone $baseQuery)->where('category', $product->category);
+            $relatedQuery = clone $baseQuery;
         }
 
         $relatedList = $relatedQuery->orderBy('sort_order')->take(4)->get();
 
+        // Fill remaining slots ONLY from the SAME CATEGORY (Never mix from other categories!)
         if ($relatedList->count() < 4) {
             $existingIds = array_merge([$product->id], $relatedList->pluck('id')->all());
-            $fillers = (clone $baseQuery)->where('category', $product->category)
+            $fillers = (clone $baseQuery)
                 ->whereNotIn('id', $existingIds)
                 ->orderBy('sort_order')
                 ->take(4 - $relatedList->count())
                 ->get();
             $relatedList = $relatedList->concat($fillers);
-        }
-
-        if ($relatedList->count() < 4) {
-            $existingIds = array_merge([$product->id], $relatedList->pluck('id')->all());
-            $allFillers = (clone $baseQuery)->whereNotIn('id', $existingIds)
-                ->take(4 - $relatedList->count())
-                ->get();
-            $relatedList = $relatedList->concat($allFillers);
         }
 
         $relatedProducts = $relatedList->values()->map(
@@ -213,41 +218,50 @@ class StoreController extends Controller
         $products = $this->catalogProducts();
 
         $metaConfig = [
+            'perfumes' => [
+                'icon' => 'perfumes',
+                'description_km' => 'ទឹកអប់ម៉ាកល្បីៗ Chanel, Dior, YSL, Versace ក្លិនក្រអូបប្រណីតជាប់បានយូរ ២៤ ម៉ោង',
+                'description_en' => 'Luxury designer perfumes from Chanel, Dior, YSL & Tom Ford with 24h lasting scent',
+                'tags_km' => ['ទឹកអប់បុរស', 'ទឹកអប់នារី', 'Chanel', 'Dior'],
+                'tags_en' => ['Parfum', 'Fragrance', 'Chanel', 'Dior'],
+                'gradient' => 'linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(219, 39, 119, 0.02) 100%)',
+                'badge' => $locale === 'km' ? 'ប្រណីត ១០០%' : '100% Authentic',
+            ],
+            'phones' => [
+                'icon' => 'phones',
+                'description_km' => 'ទូរស័ព្ទស្មាតហ្វូនស៊េរីថ្មី iPhone 16 Pro Max, Samsung Galaxy S24, Pixel 9 Pro',
+                'description_en' => 'Latest flagship smartphones: iPhone 16 Pro Max, Samsung S24 Ultra & Pixel 9',
+                'tags_km' => ['iPhone 16', 'Galaxy AI', 'Pixel 9', '5G AI'],
+                'tags_en' => ['iPhone', 'Galaxy AI', 'Smartphones', '5G'],
+                'gradient' => 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%)',
+                'badge' => $locale === 'km' ? 'ធានា ១ ឆ្នាំ' : '1 Year Warranty',
+            ],
+            'computers' => [
+                'icon' => 'computers',
+                'description_km' => 'កុំព្យូទ័រយួរដៃ Apple MacBook Pro M3, ROG Gaming, Dell XPS, ThinkPad',
+                'description_en' => 'High-performance laptops: MacBook Pro M3, ROG Gaming, Dell XPS & ThinkPad',
+                'tags_km' => ['MacBook M3', 'Gaming RTX', 'Dell XPS', 'Ultrabook'],
+                'tags_en' => ['MacBook', 'Gaming Laptops', 'OLED', 'Workstations'],
+                'gradient' => 'linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(67, 56, 202, 0.02) 100%)',
+                'badge' => $locale === 'km' ? 'កម្លាំងខ្លាំង' : 'Pro Performance',
+            ],
             'fashion' => [
                 'icon' => 'fashion',
-                'description_km' => 'សម្លៀកបំពាក់ អាវយឺត ស្បែកជើង និងកាបូបស្ពាយរចនាបទប្រណីត',
-                'description_en' => 'Trendy apparel, urban sneakers, premium backpacks & bags',
-                'tags_km' => ['អាវយឺត', 'ស្បែកជើង', 'កាបូប', 'Hoodie'],
-                'tags_en' => ['Shirts', 'Sneakers', 'Bags', 'Hoodies'],
+                'description_km' => 'សម្លៀកបំពាក់ អាវរងា Hoodie អាវយឺត ខោខូវប៊យ និងអាវក្រៅ Bomber',
+                'description_en' => 'Trendy streetwear hoodies, graphic tees, raw denim jeans & bomber jackets',
+                'tags_km' => ['Hoodie', 'អាវយឺត', 'ខូវប៊យ', 'អាវក្រៅ'],
+                'tags_en' => ['Hoodies', 'T-Shirts', 'Denim', 'Jackets'],
                 'gradient' => 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.02) 100%)',
-                'badge' => $locale === 'km' ? 'ពេញនិយមបំផុត' : 'Most Popular',
-            ],
-            'electronics' => [
-                'icon' => 'electronics',
-                'description_km' => 'កាសស្តាប់ត្រចៀកឥតខ្សែ ឧបករណ៍សម្លេង Hi-Res និងកាមេរ៉ាទំនើប',
-                'description_en' => 'Hi-Res wireless audio, studio headphones, and tech gadgets',
-                'tags_km' => ['កាស Bluetooth', 'Hi-Res Audio', 'កាមេរ៉ា'],
-                'tags_en' => ['Wireless Audio', 'Noise Cancelling', 'Cameras'],
-                'gradient' => 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.02) 100%)',
-                'badge' => $locale === 'km' ? 'បច្ចេកវិទ្យាថ្មី' : 'Smart Tech',
-            ],
-            'kitchen' => [
-                'icon' => 'kitchen',
-                'description_km' => 'សម្ភារៈផ្ទះបាយ កែវកាហ្វេសេរ៉ាមិច និងដបទឹករក្សាកម្តៅ',
-                'description_en' => 'Artisan ceramics, insulated tumblers & modern dining',
-                'tags_km' => ['ដបទឹករក្សាកម្ដៅ', 'កែវ Ceramic', 'សម្ភារៈផ្ទះបាយ'],
-                'tags_en' => ['Drinkware', 'Ceramics', 'Kitchenware'],
-                'gradient' => 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.02) 100%)',
-                'badge' => $locale === 'km' ? 'ផ្ទះទំនើប' : 'Home Living',
+                'badge' => $locale === 'km' ? 'ស្ទីលទាន់សម័យ' : 'Streetwear Style',
             ],
             'beauty' => [
                 'icon' => 'beauty',
-                'description_km' => 'សេរ៉ូមបំប៉នស្បែក គ្រីមផ្តល់សំណើម និងទឹកអប់ក្លិនក្រអូបប្រណីត',
-                'description_en' => 'Botanical serums, hydrating moisturizers & artisan perfumes',
-                'tags_km' => ['សេរ៉ូមមុខ', 'ទឹកអប់', 'គ្រីមផ្តល់សំណើម'],
-                'tags_en' => ['Facial Serums', 'Perfumes', 'Skincare'],
-                'gradient' => 'linear-gradient(135deg, rgba(236, 72, 153, 0.08) 0%, rgba(219, 39, 119, 0.02) 100%)',
-                'badge' => $locale === 'km' ? 'សរីរាង្គ 100%' : '100% Organic',
+                'description_km' => 'ផលិតផលថែរក្សាសម្រស់ សេរ៉ូមបំប៉នស្បែក គ្រីមផ្តល់សំណើម និងឡេការពារកម្ដៅថ្ងៃ',
+                'description_en' => 'Dermatologist-tested skincare: botanical serums, hydra-creams & SPF50+ sunscreens',
+                'tags_km' => ['សេរ៉ូមមុខ', 'គ្រីមផ្តល់សំណើម', 'ឡេការពារកម្តៅថ្ងៃ', 'Organic'],
+                'tags_en' => ['Hydrating Serums', 'Night Repair', 'Sunscreen', 'Organic'],
+                'gradient' => 'linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.02) 100%)',
+                'badge' => $locale === 'km' ? 'សរីរាង្គ ១០០%' : '100% Organic',
             ],
         ];
 
@@ -354,30 +368,74 @@ class StoreController extends Controller
         if ($orderNumber === '') {
             return response()->json([
                 'success' => false,
-                'message' => 'Please enter an order number.',
+                'message' => 'សូមបញ្ចូលលេខសម្គាល់ការកុម្ម៉ង់ (Please enter an order number).',
             ], 422);
         }
 
-        $cleanNumber = ltrim($orderNumber, '#');
+        $cleanNumber = trim(ltrim($orderNumber, '#'));
 
         $query = \App\Models\Order::query()
             ->where(function ($q) use ($cleanNumber): void {
                 $q->where('order_number', $cleanNumber)
-                    ->orWhere('order_number', 'ORD-'.$cleanNumber);
+                    ->orWhere('order_number', 'ORD-'.$cleanNumber)
+                    ->orWhere('order_number', 'ORD-2026-'.$cleanNumber)
+                    ->orWhere('order_number', 'like', '%'.$cleanNumber);
             });
 
         if ($phone !== '') {
-            $query->where('customer_phone', 'like', "%{$phone}%");
+            $digitsPhone = preg_replace('/[^0-9]/', '', $phone);
+            if (strlen($digitsPhone) >= 6) {
+                $lastDigits = substr($digitsPhone, -7);
+                $query->where(function ($q) use ($phone, $lastDigits): void {
+                    $q->where('customer_phone', 'like', "%{$phone}%")
+                        ->orWhere('customer_phone', 'like', "%{$lastDigits}%");
+                });
+            }
         }
 
-        $order = $query->first();
+        $order = $query->latest()->first();
 
         if (! $order) {
             return response()->json([
                 'success' => false,
-                'message' => 'Order not found. Please verify your order number (#ORD-xxxx) and try again.',
+                'message' => 'រកមិនឃើញការកុម្ម៉ង់នេះទេ! សូមពិនិត្យលេខកុម្ម៉ង់ (#ORD-xxxx) រួចព្យាយាមម្តងទៀត។ (Order not found. Please verify your order number and try again.)',
             ], 404);
         }
+
+        $items = [];
+        if (is_array($order->items)) {
+            foreach ($order->items as $it) {
+                $items[] = [
+                    'name' => html_entity_decode($it['name'] ?? 'Item', ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                    'price' => number_format((float) ($it['price'] ?? 0), 2),
+                    'quantity' => (int) ($it['quantity'] ?? 1),
+                    'image' => $it['image'] ?? 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=100&auto=format&fit=crop&q=80',
+                ];
+            }
+        }
+
+        $statusNotes = [
+            'pending' => [
+                'km' => 'ការបញ្ជាទិញត្រូវបានកត់ត្រាទុកក្នុងប្រព័ន្ធ។ ក្រុមការងារយើងនឹងទាក់ទងបញ្ជាក់ក្នុងពេលឆាប់ៗ។',
+                'en' => 'Order placed successfully. Our team will verify and confirm shortly.',
+            ],
+            'processing' => [
+                'km' => 'ទំនិញរបស់អ្នកកំពុងត្រូវបានត្រួតពិនិត្យគុណភាព និងវេចខ្ចប់យ៉ាងយកចិត្តទុកដាក់ក្នុងស្តុក។',
+                'en' => 'Your items are being carefully inspected and packed for dispatch.',
+            ],
+            'shipped' => [
+                'km' => 'ទំនិញបានចេញដំណើរហើយ! អ្នកដឹកជញ្ជូននឹងទាក់ទងតាមទូរស័ព្ទមុនពេលទៅដល់។',
+                'en' => 'Your order is on the way! The courier will call you prior to arrival.',
+            ],
+            'delivered' => [
+                'km' => 'ទំនិញត្រូវបានប្រគល់ជូនរួចរាល់ដោយជោគជ័យ។ សូមអរគុណសម្រាប់ការគាំទ្រ!',
+                'en' => 'Order successfully delivered. Thank you for shopping with Dara Market!',
+            ],
+            'cancelled' => [
+                'km' => 'ការបញ្ជាទិញត្រូវបានលុបចោល។ សូមទាក់ទងមកកាន់យើងខ្ញុំតាម 071 450 4547 ប្រសិនបើមានចម្ងល់។',
+                'en' => 'This order has been cancelled. Please contact 071 450 4547 for assistance.',
+            ],
+        ];
 
         return response()->json([
             'success' => true,
@@ -385,12 +443,16 @@ class StoreController extends Controller
                 'order_number' => $order->order_number,
                 'customer_name' => $order->customer_name,
                 'customer_phone' => $order->customer_phone,
+                'shipping_address' => $order->shipping_address,
                 'status' => $order->order_status,
                 'payment_status' => $order->payment_status,
                 'payment_method' => $order->payment_method,
                 'total_amount' => number_format((float) $order->total_amount, 2),
                 'items_count' => $order->items_count,
+                'items' => $items,
+                'status_note' => $statusNotes[$order->order_status] ?? $statusNotes['pending'],
                 'date' => $order->created_at->format('d M Y, h:i A'),
+                'updated_at' => $order->updated_at ? $order->updated_at->format('d M Y, h:i A') : $order->created_at->format('d M Y, h:i A'),
             ],
         ]);
     }
@@ -592,117 +654,140 @@ class StoreController extends Controller
                     'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=1000&q=85',
                 ];
             }
-        } elseif ($categoryKey === 'electronics') {
-            if (str_contains($nameLower, 'headphone')) {
-                $brand = 'AudioMax Wireless';
-                $brandLogo = 'audio';
-                $subtitle = $locale === 'km' ? 'កាសបំពាក់ប្រព័ន្ធកាត់សម្លេងរំខាន ANC & Hi-Res Sound' : 'Hi-Res Active Noise Cancelling Headphones';
-                $breadcrumbs = $locale === 'km'
-                    ? ['អេឡិចត្រូនិច', 'ឧបករណ៍សម្លេង', 'AudioMax']
-                    : ['Electronics', 'Audio', 'AudioMax'];
-                $sizes = ['Standard Bluetooth', 'ANC Noise-Cancelling', 'Studio Pro Edition'];
-                $defaultSize = 'ANC Noise-Cancelling';
-                $sizeType = 'edition';
-                $colors = [
-                    [
-                        'name' => $locale === 'km' ? 'ខ្មៅមាស Amber Gold & Black' : 'Amber Gold & Black',
-                        'code' => '#b45309',
-                        'image' => 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                    [
-                        'name' => $locale === 'km' ? 'ពណ៌សសុទ្ធ Pure Pearl White' : 'Pure Pearl White',
-                        'code' => '#f4f4f5',
-                        'image' => 'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                    [
-                        'name' => $locale === 'km' ? 'ពណ៌ខៀវ Midnight Blue' : 'Midnight Blue',
-                        'code' => '#1e3a8a',
-                        'image' => 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                ];
-                $gallery = [
-                    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=85',
-                    'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=1000&q=85',
-                    'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=1000&q=85',
-                ];
-            } elseif (str_contains($nameLower, 'watch')) {
-                $brand = 'Chronos Time';
-                $brandLogo = 'watch';
-                $subtitle = $locale === 'km' ? 'នាឡិកាដៃឆ្លាតវៃអេក្រង់ច្បាស់ និងថាមពលថ្មបានយូរ' : 'Minimalist Smart Activity Watch';
-                $breadcrumbs = $locale === 'km'
-                    ? ['អេឡិចត្រូនិច', 'នាឡិកាឆ្លាតវៃ', 'Chronos']
-                    : ['Electronics', 'Wearables', 'Chronos'];
-                $sizes = ['40mm Silicone', '44mm Silicone Sport', '44mm Leather Classic'];
-                $defaultSize = '44mm Silicone Sport';
-                $sizeType = 'edition';
-                $colors = [
-                    [
-                        'name' => $locale === 'km' ? 'ពណ៌ស Frost White' : 'Frost White',
-                        'code' => '#e4e4e7',
-                        'image' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                    [
-                        'name' => $locale === 'km' ? 'ប្រផេះ Space Gray' : 'Space Gray',
-                        'code' => '#4b5563',
-                        'image' => 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                    [
-                        'name' => $locale === 'km' ? 'ពណ៌មាស Rose Gold' : 'Rose Gold',
-                        'code' => '#fb7185',
-                        'image' => 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                ];
-                $gallery = [
-                    'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=85',
-                    'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=1000&q=85',
-                    'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85',
-                ];
-            } else {
-                $brand = 'AlphaOptic 4K';
-                $brandLogo = 'camera';
-                $subtitle = $locale === 'km' ? 'កាមេរ៉ាឌីជីថលទំហំតូច និងថតវីដេអូ 4K 60fps' : 'Ultra-compact 4K 60fps Creator Camera';
-                $breadcrumbs = $locale === 'km'
-                    ? ['អេឡិចត្រូនិច', 'កាមេរ៉ា និងថតរូប', 'AlphaOptic']
-                    : ['Electronics', 'Cameras', 'AlphaOptic'];
-                $sizes = ['Body Only', 'Lens Kit (24-70mm)', 'Creator Vlogging Kit'];
-                $defaultSize = 'Lens Kit (24-70mm)';
-                $sizeType = 'bundle';
-                $colors = [
-                    [
-                        'name' => $locale === 'km' ? 'ខ្មៅ Matte Black' : 'Matte Black',
-                        'code' => '#18181b',
-                        'image' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=85',
-                    ],
-                ];
-                $gallery = [
-                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=85',
-                ];
+        } elseif ($categoryKey === 'perfumes') {
+            $brand = 'Maison De Luxe';
+            if (str_contains($nameLower, 'chanel')) {
+                $brand = 'Chanel Paris';
+            } elseif (str_contains($nameLower, 'dior')) {
+                $brand = 'Dior Beauty';
+            } elseif (str_contains($nameLower, 'tom ford')) {
+                $brand = 'Tom Ford Private Blend';
+            } elseif (str_contains($nameLower, 'versace')) {
+                $brand = 'Versace Fragrances';
+            } elseif (str_contains($nameLower, 'ysl') || str_contains($nameLower, 'laurent')) {
+                $brand = 'Yves Saint Laurent';
+            } elseif (str_contains($nameLower, 'armani')) {
+                $brand = 'Giorgio Armani';
             }
-        } elseif ($categoryKey === 'kitchen') {
-            $brand = 'EcoKitchen Living';
-            $brandLogo = 'home';
-            $subtitle = $locale === 'km' ? 'សម្ភារៈផ្ទះបាយ និងកែវទំនើបប្រកបដោយសោភ័ណភាព' : 'Premium Stainless & Artisan Ceramics';
+            $brandLogo = 'fragrance';
+            $subtitle = $locale === 'km' ? 'ទឹកអប់ក្លិនក្រអូបប្រណីតជាប់បានយូរ ២៤ ម៉ោង' : 'Long-Lasting 24H Luxury Eau De Parfum';
             $breadcrumbs = $locale === 'km'
-                ? ['ផ្ទះបាយ', 'សម្ភារៈប្រើប្រាស់', 'EcoKitchen']
-                : ['Kitchen & Dining', 'Drinkware', 'EcoKitchen'];
-            $sizes = ['350ml (Small)', '500ml (Standard)', '750ml (Large)'];
-            $defaultSize = '500ml (Standard)';
-            $sizeType = 'capacity';
+                ? ['ទឹកអប់', 'ទឹកអប់ប្រណីត', $brand]
+                : ['Perfumes', 'Luxury Fragrances', $brand];
+            $sizes = ['30ml (Travel)', '50ml (Standard)', '100ml (Deluxe)'];
+            $defaultSize = '50ml (Standard)';
+            $sizeType = 'volume';
             $colors = [
                 [
-                    'name' => $locale === 'km' ? 'ប្រផេះ Matte Slate' : 'Matte Slate',
-                    'code' => '#64748b',
+                    'name' => $locale === 'km' ? 'ក្លិនដើម Noir Classic' : 'Noir Classic',
+                    'code' => '#18181b',
                     'image' => $product->image_url,
-                ],
-                [
-                    'name' => $locale === 'km' ? 'សមុទ្រ Ocean Navy' : 'Ocean Navy',
-                    'code' => '#1e3a8a',
-                    'image' => 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=1000&q=85',
                 ],
             ];
             $gallery = [
                 $product->image_url,
-                'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=1000&q=85',
+                'https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1000&q=85',
+                'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1000&q=85',
+            ];
+        } elseif ($categoryKey === 'phones') {
+            $brand = 'Apple Flagship';
+            if (str_contains($nameLower, 'samsung')) {
+                $brand = 'Samsung Galaxy';
+            } elseif (str_contains($nameLower, 'pixel')) {
+                $brand = 'Google Pixel';
+            } elseif (str_contains($nameLower, 'xiaomi')) {
+                $brand = 'Xiaomi Leica';
+            } elseif (str_contains($nameLower, 'oneplus')) {
+                $brand = 'OnePlus Never Settle';
+            }
+            $brandLogo = 'phone';
+            $subtitle = $locale === 'km' ? 'ស្មាតហ្វូនស៊េរីថ្មី កាមេរ៉ាគុណភាពខ្ពស់ និងបន្ទះឈីប AI ល្បឿនលឿន' : 'Flagship 5G Smartphone with Pro Camera & AI';
+            $breadcrumbs = $locale === 'km'
+                ? ['ទូរស័ព្ទ', 'ស្មាតហ្វូន', $brand]
+                : ['Phones', 'Smartphones', $brand];
+            $sizes = ['128GB Storage', '256GB Storage', '512GB Storage', '1TB Pro'];
+            $defaultSize = '256GB Storage';
+            $sizeType = 'storage';
+            $colors = [
+                [
+                    'name' => $locale === 'km' ? 'ពណ៌ដើម Titanium / Onyx' : 'Titanium / Onyx',
+                    'code' => '#374151',
+                    'image' => $product->image_url,
+                ],
+                [
+                    'name' => $locale === 'km' ? 'ពណ៌ Midnight' : 'Midnight Blue',
+                    'code' => '#1e3a8a',
+                    'image' => 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1000&q=85',
+                ],
+            ];
+            $gallery = [
+                $product->image_url,
+                'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=1000&q=85',
+                'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=1000&q=85',
+            ];
+        } elseif ($categoryKey === 'computers') {
+            $brand = 'Apple Silicon';
+            if (str_contains($nameLower, 'rog') || str_contains($nameLower, 'asus')) {
+                $brand = 'ASUS Republic of Gamers';
+            } elseif (str_contains($nameLower, 'dell') || str_contains($nameLower, 'xps')) {
+                $brand = 'Dell Precision';
+            } elseif (str_contains($nameLower, 'thinkpad') || str_contains($nameLower, 'lenovo')) {
+                $brand = 'Lenovo ThinkPad';
+            } elseif (str_contains($nameLower, 'spectre') || str_contains($nameLower, 'hp')) {
+                $brand = 'HP Premium';
+            } elseif (str_contains($nameLower, 'razer')) {
+                $brand = 'Razer Blade Chroma';
+            } elseif (str_contains($nameLower, 'surface') || str_contains($nameLower, 'microsoft')) {
+                $brand = 'Microsoft Surface';
+            } elseif (str_contains($nameLower, 'predator') || str_contains($nameLower, 'acer')) {
+                $brand = 'Acer Predator';
+            }
+            $brandLogo = 'computer';
+            $subtitle = $locale === 'km' ? 'កុំព្យូទ័រយួរដៃកម្លាំងខ្លាំង សម្រាប់ធ្វើការ ឌីហ្សាញ និងលេងហ្គេម' : 'High-Performance Workstation & Gaming Laptop';
+            $breadcrumbs = $locale === 'km'
+                ? ['កុំព្យូទ័រ', 'Laptops & PCs', $brand]
+                : ['Computers', 'Laptops', $brand];
+            $sizes = ['16GB RAM / 512GB SSD', '32GB RAM / 1TB SSD', '64GB RAM / 2TB SSD'];
+            $defaultSize = '32GB RAM / 1TB SSD';
+            $sizeType = 'configuration';
+            $colors = [
+                [
+                    'name' => $locale === 'km' ? 'ពណ៌ Space Black / Gray' : 'Space Black / Gray',
+                    'code' => '#18181b',
+                    'image' => $product->image_url,
+                ],
+                [
+                    'name' => $locale === 'km' ? 'ពណ៌ Silver Aluminum' : 'Silver Aluminum',
+                    'code' => '#9ca3af',
+                    'image' => 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1000&q=85',
+                ],
+            ];
+            $gallery = [
+                $product->image_url,
+                'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1000&q=85',
+                'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=1000&q=85',
+            ];
+        } elseif ($categoryKey === 'beauty') {
+            $brand = 'Lumière Botanical Skincare';
+            $brandLogo = 'beauty';
+            $subtitle = $locale === 'km' ? 'សេរ៉ូម និងគ្រីមបំប៉នស្បែកធម្មជាតិ 100% Organic Dermatologist Tested' : '100% Organic Dermatologist Tested Botanical Formula';
+            $breadcrumbs = $locale === 'km'
+                ? ['ថែរក្សាសម្រស់', 'ថែរក្សាស្បែកមុខ', 'Lumière']
+                : ['Beauty & Skincare', 'Facial Care', 'Lumière'];
+            $sizes = ['30ml (Standard)', '50ml (Value Size)', '100ml (Jumbo)'];
+            $defaultSize = '50ml (Value Size)';
+            $sizeType = 'volume';
+            $colors = [
+                [
+                    'name' => $locale === 'km' ? 'រូបមន្តដើម Pure Glow' : 'Pure Glow',
+                    'code' => '#10b981',
+                    'image' => $product->image_url,
+                ],
+            ];
+            $gallery = [
+                $product->image_url,
+                'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1000&q=85',
+                'https://images.unsplash.com/photo-1608248597359-597495b54d3d?auto=format&fit=crop&w=1000&q=85',
             ];
         } else {
             $brand = 'Dara Selection';
@@ -740,6 +825,8 @@ class StoreController extends Controller
             'default_size' => $defaultSize,
             'size_type' => $sizeType,
             'badge' => $product->badge,
+            'badge_color' => $product->badge_color,
+            'badge_style' => $product->badge_style ?? 'solid',
         ];
     }
 }

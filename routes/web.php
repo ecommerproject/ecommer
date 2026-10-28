@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function (): void {
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 Route::prefix('admin')->name('admin.')->middleware([EnsureUserIsAdmin::class])->group(function (): void {
     Route::get('/inventory-report.csv', [AdminDashboardController::class, 'export'])->name('report.export');
+    Route::post('/promotions/apply', [AdminDashboardController::class, 'applyPromotion'])->name('promotions.apply');
+    Route::post('/promotions/clear', [AdminDashboardController::class, 'clearPromotion'])->name('promotions.clear');
     Route::get('/inventory/export', [AdminInventoryController::class, 'exportCsv'])->name('inventory.export');
     Route::post('/inventory/bulk-stock', [AdminInventoryController::class, 'bulkStock'])->name('inventory.bulk');
     Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
@@ -97,6 +99,7 @@ Route::prefix('admin')->name('admin.')->middleware([EnsureUserIsAdmin::class])->
     Route::put('/settings/shipping', [AdminSettingController::class, 'updateShipping'])->name('settings.shipping');
     Route::put('/settings/payments', [AdminSettingController::class, 'updatePayments'])->name('settings.payments');
     Route::put('/settings/announcements', [AdminSettingController::class, 'updateAnnouncements'])->name('settings.announcements');
+    Route::put('/settings/storefront', [AdminSettingController::class, 'updateStorefront'])->name('settings.storefront');
     Route::put('/settings/profile', [AdminSettingController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/settings/reset', [AdminSettingController::class, 'resetDefaults'])->name('settings.reset');
 });
@@ -119,6 +122,9 @@ Route::get('/api/search', [StoreController::class, 'searchApi'])->name('store.ap
 Route::get('/checkout', [CheckoutController::class, 'checkout'])->name('store.checkout');
 Route::post('/checkout', [CheckoutController::class, 'placeOrder'])->name('store.checkout.place');
 Route::get('/order-success/{order}', [CheckoutController::class, 'orderSuccess'])->name('store.order.success');
+Route::post('/order/{order}/upload-receipt', [CheckoutController::class, 'uploadReceipt'])
+    ->middleware('throttle:20,1')
+    ->name('store.order.upload-receipt');
 Route::post('/newsletter/subscribe', [NewsletterSubscriptionController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('newsletter.subscribe');

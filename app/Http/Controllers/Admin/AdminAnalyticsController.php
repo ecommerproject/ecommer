@@ -79,12 +79,13 @@ class AdminAnalyticsController extends Controller
         });
 
         // Category breakdown
-        $categoriesConfig = config('store.categories', ['electronics', 'fashion', 'kitchen', 'beauty']);
+        $categoriesConfig = config('store.categories', ['perfumes', 'phones', 'computers', 'fashion', 'beauty']);
         $categoryColors = [
-            'electronics' => '#245943',
-            'fashion' => '#d8a962',
-            'kitchen' => '#2563eb',
-            'beauty' => '#e11d48',
+            'perfumes' => '#d946ef',
+            'phones' => '#3b82f6',
+            'computers' => '#6366f1',
+            'fashion' => '#ec4899',
+            'beauty' => '#10b981',
         ];
 
         $categoryStats = collect($categoriesConfig)->map(function (string $catKey) use ($categoryColors): array {
@@ -194,7 +195,7 @@ class AdminAnalyticsController extends Controller
                     'order_number' => 'ORD-9012',
                     'customer_name' => 'Sokha Chan',
                     'customer_email' => 'sokha.chan@gmail.com',
-                    'customer_phone' => '012 345 678',
+                    'customer_phone' => '071 450 4547',
                     'shipping_address' => 'St. 271, Khan Meanchey, Phnom Penh',
                     'total_amount' => 124.00,
                     'payment_method' => 'ABA KHQR',

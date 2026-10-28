@@ -22,6 +22,8 @@ class Order extends Model
         'order_status',
         'items',
         'notes',
+        'payment_proof',
+        'transaction_ref',
     ];
 
     protected function casts(): array
@@ -54,5 +56,12 @@ class Order extends Model
         }
 
         return (int) array_sum(array_column($this->items, 'quantity'));
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('id', $value)
+            ->orWhere('order_number', $value)
+            ->firstOrFail();
     }
 }

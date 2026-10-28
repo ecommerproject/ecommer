@@ -252,6 +252,13 @@
                                         ✕ {{ ucfirst($order->payment_status) }}
                                     @endif
                                 </span>
+                                @if ($order->payment_proof)
+                                    <div style="margin-top: 4px;">
+                                        <a href="{{ $order->payment_proof }}" target="_blank" style="font-size: 11px; color: #245943; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;" title="View Payment Proof Slip">
+                                            📸 Slip
+                                        </a>
+                                    </div>
+                                @endif
                             </td>
                             <td>
                                 <select id="orderStatusSelect-{{ $order->id }}" 
@@ -773,7 +780,7 @@ async function submitAdminCreateOrder(e) {
                 </div>
                 <div>
                     <label style="display: block; font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 5px;">Customer Phone (លេខទូរស័ព្ទ / Telegram) *</label>
-                    <input type="tel" name="customer_phone" required placeholder="012 345 678" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 9px 12px; font-size: 13px; box-sizing: border-box;">
+                    <input type="tel" name="customer_phone" required placeholder="071 450 4547" style="width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 9px 12px; font-size: 13px; box-sizing: border-box;">
                 </div>
             </div>
 

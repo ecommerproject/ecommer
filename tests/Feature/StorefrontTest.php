@@ -92,7 +92,7 @@ class StorefrontTest extends TestCase
         $this->get(route('store.contact'))
             ->assertOk()
             ->assertSee('ទាក់ទងមកយើង')
-            ->assertSee('href="tel:+85512345678"', false)
+            ->assertSee('href="tel:+855714504547"', false)
             ->assertSee('href="mailto:hello@daramarket.com"', false)
             ->assertSee('ភ្នំពេញ ប្រទេសកម្ពុជា')
             ->assertSee('class="nav-item active" href="'.route('store.contact').'"', false);

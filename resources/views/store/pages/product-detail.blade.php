@@ -5,15 +5,28 @@
 @section('content')
 <div class="product-detail-page">
     <div class="container">
-        {{-- Breadcrumb Navigation (Nike Style) --}}
+        {{-- Breadcrumb Navigation (Luxury Minimalist Trail) --}}
         <nav class="pdp-breadcrumbs" aria-label="Breadcrumb">
-            <a href="{{ route('store.home') }}">{{ $translations['nav']['home'] ?? 'Home' }}</a>
-            <span class="pdp-crumb-separator">•</span>
-            <a href="{{ route('store.products') }}?category={{ $product['category_key'] }}">{{ $product['category_name'] }}</a>
+            <a href="{{ route('store.home') }}" class="pdp-crumb-home">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>{{ $translations['nav']['home'] ?? 'Home' }}</span>
+            </a>
+            <span class="pdp-crumb-separator">/</span>
+            <a href="{{ route('store.products') }}?category={{ $product['category_key'] }}" class="pdp-crumb-cat">{{ $product['category_name'] }}</a>
             @if (!empty($product['breadcrumbs']))
-                @foreach ($product['breadcrumbs'] as $crumb)
-                    <span class="pdp-crumb-separator">•</span>
-                    <span class="pdp-crumb-active">{{ $crumb }}</span>
+                @php
+                    $filteredCrumbs = array_values(array_filter($product['breadcrumbs'], function($c) use ($product) {
+                        return mb_strtolower(trim($c)) !== mb_strtolower(trim($product['category_name']));
+                    }));
+                    $totalCrumbs = count($filteredCrumbs);
+                @endphp
+                @foreach ($filteredCrumbs as $cIdx => $crumb)
+                    <span class="pdp-crumb-separator">/</span>
+                    @if ($cIdx === $totalCrumbs - 1)
+                        <span class="pdp-crumb-active" title="{{ $crumb }}">{{ $crumb }}</span>
+                    @else
+                        <span class="pdp-crumb-item">{{ $crumb }}</span>
+                    @endif
                 @endforeach
             @endif
         </nav>
@@ -22,7 +35,7 @@
         <div class="pdp-layout">
             {{-- Left Column: Interactive Multi-Angle Gallery --}}
             <div class="pdp-gallery-container">
-                {{-- Vertical Thumbnails Strip (Left on Desktop) --}}
+                {{-- Vertical Thumbnails Strip (Left on Desktop, Horizontal underneath on Mobile) --}}
                 <div class="pdp-thumbnails-strip" id="pdp-thumbnails" role="tablist" aria-label="Product image angles">
                     @foreach ($product['gallery'] as $index => $imgUrl)
                         <button
@@ -48,8 +61,14 @@
                             } elseif ($badgeLabel === 'popular') {
                                 $badgeLabel = $locale === 'km' ? 'ពេញនិយម' : 'Popular';
                             }
+                            $customColor = $product['badge_color'] ?? null;
+                            $isPulse = ($product['badge_style'] ?? '') === 'pulse';
                         @endphp
-                        <span class="pdp-hero-badge {{ $isDiscount ? 'discount' : 'bestseller' }}">
+                        <span class="pdp-hero-badge {{ $isDiscount ? 'discount' : 'bestseller' }} {{ $isPulse ? 'badge-pulse-glow' : '' }}"
+                            @if ($customColor)
+                                style="background: {{ $customColor }}; border-color: rgba(255,255,255,0.4); color: #ffffff;"
+                            @endif
+                        >
                             @if ($isDiscount)
                                 <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
                             @else
@@ -74,20 +93,30 @@
 
             {{-- Right Column: Brand, Title, Swatches, Sizes & Purchase Actions --}}
             <div class="pdp-details-container">
-                {{-- Brand Row (Nike Logo Badge) --}}
+                {{-- Brand Row (Flagship Official Partner Capsule) --}}
                 <div class="pdp-brand-row">
-                    <div class="pdp-brand-badge">
-                        @if (strtolower($product['brand']) === 'nike')
-                            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                                <path d="M21.707 5.293c-.27-.27-.69-.32-1.01-.12L4.35 15.39c-1.35.84-1.92 2.51-1.31 3.99.58 1.41 1.99 2.29 3.51 2.29 1.15 0 2.29-.5 3.12-1.42L21.71 6.71c.39-.39.39-1.02 0-1.42z"/>
-                            </svg>
-                        @elseif (str_contains(strtolower($product['brand']), 'apparel') || str_contains(strtolower($product['brand']), 'cloth'))
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/></svg>
-                        @else
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
-                        @endif
+                    <div class="pdp-brand-pill">
+                        <div class="pdp-brand-badge">
+                            @if (strtolower($product['brand']) === 'nike')
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                    <path d="M21.707 5.293c-.27-.27-.69-.32-1.01-.12L4.35 15.39c-1.35.84-1.92 2.51-1.31 3.99.58 1.41 1.99 2.29 3.51 2.29 1.15 0 2.29-.5 3.12-1.42L21.71 6.71c.39-.39.39-1.02 0-1.42z"/>
+                                </svg>
+                            @elseif (str_contains(strtolower($product['brand']), 'apparel') || str_contains(strtolower($product['brand']), 'cloth'))
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/></svg>
+                            @else
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                            @endif
+                        </div>
+                        <span class="pdp-brand-name">{{ $product['brand'] }}</span>
+                        <span class="pdp-brand-verified" title="Official Verified Partner">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span>{{ $locale === 'km' ? 'ហាងផ្លូវការ' : 'Official Store' }}</span>
+                        </span>
                     </div>
-                    <span class="pdp-brand-name">{{ $product['brand'] }}</span>
+                    <div class="pdp-stock-status-pill">
+                        <span class="pdp-stock-pulse"></span>
+                        <span>{{ $locale === 'km' ? 'មានក្នុងស្តុក' : 'In Stock' }}</span>
+                    </div>
                 </div>
 
                 {{-- Product Title & Subtitle --}}
@@ -105,6 +134,8 @@
                     </div>
                     <span class="pdp-rating-val">{{ number_format($product['rating'], 1) }}</span>
                     <span class="pdp-reviews-count">{{ $product['reviews_count'] }} {{ $locale === 'km' ? 'ការវាយតម្លៃ' : 'reviews' }}</span>
+                    <span class="pdp-rating-divider">•</span>
+                    <span class="pdp-rating-satisfaction">{{ $locale === 'km' ? 'ពេញចិត្ត 99.8%' : '99.8% Satisfied' }}</span>
                 </div>
 
                 {{-- Price Block --}}
@@ -113,7 +144,10 @@
                     @if ($product['old_price'] !== null)
                         <del class="pdp-old-price">${{ number_format($product['old_price'], 2) }}</del>
                         @if ($product['discount_percent'])
-                            <span class="pdp-save-badge">-{{ $product['discount_percent'] }}%</span>
+                            <span class="pdp-save-badge">
+                                <svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 5a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>
+                                <span>-{{ $product['discount_percent'] }}%</span>
+                            </span>
                         @endif
                     @endif
                 </div>
@@ -181,49 +215,68 @@
                     </div>
                 @endif
 
-                {{-- Quantity + Add to Cart + Wishlist --}}
+                {{-- Quantity + Add to Cart + Direct Buy Actions --}}
                 <div class="pdp-purchase-actions">
-                    <div class="pdp-qty-stepper">
-                        <button type="button" class="qty-btn" id="pdp-qty-minus" aria-label="Decrease quantity">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        </button>
-                        <input type="number" id="pdp-qty-input" value="1" min="1" max="99" aria-label="Quantity">
-                        <button type="button" class="qty-btn" id="pdp-qty-plus" aria-label="Increase quantity">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <div class="pdp-actions-top-row">
+                        <div class="pdp-qty-stepper">
+                            <button type="button" class="qty-btn" id="pdp-qty-minus" aria-label="Decrease quantity">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </button>
+                            <input type="number" id="pdp-qty-input" value="1" min="1" max="99" aria-label="Quantity">
+                            <button type="button" class="qty-btn" id="pdp-qty-plus" aria-label="Increase quantity">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </button>
+                        </div>
+
+                        {{-- Favorite Wishlist Toggle Button --}}
+                        <button
+                            type="button"
+                            class="pdp-btn-wishlist favorite-button"
+                            data-product-id="{{ $product['id'] }}"
+                            data-label-add="{{ $translations['js']['add_favorite'] ?? 'Add to wishlist' }}"
+                            data-label-remove="{{ $translations['js']['remove_favorite'] ?? 'Remove wishlist' }}"
+                            aria-label="Add to wishlist"
+                            title="{{ $translations['js']['add_favorite'] ?? 'Add to wishlist' }}"
+                        >
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20.8 8.8c0 5.1-8.8 10-8.8 10s-8.8-4.9-8.8-10a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"></path>
+                            </svg>
                         </button>
                     </div>
 
-                    {{-- Main Add to Cart Button (Nike Black Pill) --}}
-                    <button
-                        type="button"
-                        class="pdp-btn-add-cart"
-                        id="pdp-add-to-cart-btn"
-                        data-product-id="{{ $product['id'] }}"
-                        data-product-name="{{ $product['name'] }}"
-                        data-product-price="{{ $product['price'] }}"
-                        data-product-image="{{ $product['main_image'] }}"
-                    >
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <path d="M16 10a4 4 0 0 1-8 0"></path>
-                        </svg>
-                        <span>{{ $translations['cart']['add'] ?? 'Add to cart' }}</span>
-                    </button>
+                    <div class="pdp-buttons-row">
+                        {{-- Add to Cart Button --}}
+                        <button
+                            type="button"
+                            class="pdp-btn-add-cart"
+                            id="pdp-add-to-cart-btn"
+                            onclick="handleDetailAddToCart()"
+                        >
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 8H6"></path>
+                                <circle cx="10" cy="20" r="1.2"></circle>
+                                <circle cx="18" cy="20" r="1.2"></circle>
+                            </svg>
+                            <span>{{ $translations['cart']['add'] ?? ($locale === 'km' ? 'ដាក់កន្ត្រក' : 'Add to Cart') }}</span>
+                        </button>
 
-                    {{-- Favorite Wishlist Toggle Button --}}
-                    <button
-                        type="button"
-                        class="pdp-btn-wishlist favorite-button"
-                        data-product-id="{{ $product['id'] }}"
-                        data-label-add="{{ $translations['js']['add_favorite'] ?? 'Add to wishlist' }}"
-                        data-label-remove="{{ $translations['js']['remove_favorite'] ?? 'Remove wishlist' }}"
-                        aria-label="Add to wishlist"
-                    >
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20.8 8.8c0 5.1-8.8 10-8.8 10s-8.8-4.9-8.8-10a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"></path>
-                        </svg>
-                    </button>
+                        {{-- Direct Buy & Pay Now Button --}}
+                        <button
+                            type="button"
+                            class="pdp-btn-buy-now"
+                            id="pdp-buy-now-btn"
+                            data-product-id="{{ $product['id'] }}"
+                            data-product-name="{{ $product['name'] }}"
+                            data-product-price="{{ $product['price'] }}"
+                            data-product-image="{{ $product['main_image'] }}"
+                            onclick="handleDirectBuyNow(this)"
+                        >
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            <span>{{ $locale === 'km' ? 'ទិញឥឡូវនេះ (បង់ប្រាក់)' : 'Buy Now (Direct Checkout)' }}</span>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Delivery & Guarantee Badges (Matching Image 2 Bottom Strip) --}}
@@ -369,13 +422,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const qtyInput = document.getElementById('pdp-qty-input');
     const qtyMinus = document.getElementById('pdp-qty-minus');
     const qtyPlus = document.getElementById('pdp-qty-plus');
-    const addToCartBtn = document.getElementById('pdp-add-to-cart-btn');
+    const buyNowBtn = document.getElementById('pdp-buy-now-btn') || document.getElementById('pdp-add-to-cart-btn');
     const sizeGuideBtn = document.getElementById('pdp-size-guide-trigger');
     const sizeModal = document.getElementById('pdp-size-modal');
     const modalClose = document.getElementById('pdp-modal-close');
 
-    let selectedSize = '{{ $product["default_size"] ?? "" }}';
-    let selectedColor = '{{ $product["colors"][0]["name"] ?? "" }}';
+    window.selectedSize = '{{ $product["default_size"] ?? "" }}';
+    window.selectedColor = '{{ $product["colors"][0]["name"] ?? "" }}';
 
     // Thumbnail switching with smooth fade transition
     thumbButtons.forEach(btn => {
@@ -469,75 +522,118 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Add To Cart Action
-    if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', function () {
-            const pid = this.getAttribute('data-product-id');
-            const name = this.getAttribute('data-product-name');
-            const price = parseFloat(this.getAttribute('data-product-price')) || 0;
-            const img = heroImage ? heroImage.src : this.getAttribute('data-product-image');
-            const qty = parseInt(qtyInput ? qtyInput.value : 1, 10) || 1;
+    // Direct Buy Now Action -> Go straight to Checkout & Payment
+    window.handleDirectBuyNow = function(btn) {
+        const button = btn || document.getElementById('pdp-buy-now-btn');
+        if (!button) return;
 
-            const fullName = selectedSize ? `${name} (${selectedSize}, ${selectedColor})` : name;
+        const pid = button.getAttribute('data-product-id');
+        const name = button.getAttribute('data-product-name');
+        const price = parseFloat(button.getAttribute('data-product-price')) || 0;
+        const hero = document.getElementById('pdp-hero-image');
+        const img = hero ? hero.src : button.getAttribute('data-product-image');
+        const inputQty = document.getElementById('pdp-qty-input');
+        const qty = parseInt(inputQty ? inputQty.value : 1, 10) || 1;
 
-            // Trigger global store addToCart if available or dispatch custom event
-            if (typeof window.storeAddToCart === 'function') {
-                window.storeAddToCart(pid, fullName, price, qty, img);
-                return;
+        const color = window.selectedColor || '';
+        const size = window.selectedSize || '';
+
+        let fullName = name;
+        const details = [];
+        if (color) details.push(color);
+        if (size) details.push(size);
+        if (details.length > 0) {
+            fullName += ` (${details.join(', ')})`;
+        }
+
+        const item = {
+            id: pid,
+            name: fullName,
+            price: price,
+            quantity: qty,
+            image: img
+        };
+
+        // 1. Save to localStorage for instant checkout render
+        try {
+            localStorage.setItem('dara-market-cart', JSON.stringify({
+                count: qty,
+                total: price * qty,
+                items: [item]
+            }));
+            localStorage.setItem('dara_store_cart_items', JSON.stringify([item]));
+        } catch (e) {
+            console.error('Error saving direct checkout item:', e);
+        }
+
+        // 2. Visual feedback
+        button.disabled = true;
+        button.innerHTML = `
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-icon"><circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path></svg>
+            <span>{{ $locale === 'km' ? 'កំពុងបញ្ជូនទៅកាន់ការទូទាត់...' : 'Redirecting to checkout...' }}</span>
+        `;
+
+        // 3. Immediately redirect to Checkout with parameters (server-side backup)
+        const targetUrl = "{{ route('store.checkout') }}?product_id=" + encodeURIComponent(pid) +
+            "&qty=" + encodeURIComponent(qty) +
+            "&color=" + encodeURIComponent(color) +
+            "&size=" + encodeURIComponent(size) +
+            "&image=" + encodeURIComponent(img || '');
+
+        window.location.href = targetUrl;
+    };
+
+    // Add to Cart Action
+    window.handleDetailAddToCart = function() {
+        const pid = '{{ $product["id"] }}';
+        const name = '{{ addslashes($product["name"]) }}';
+        const price = {{ $product["price"] }};
+        const hero = document.getElementById('pdp-hero-image');
+        const img = hero ? hero.src : '{{ $product["main_image"] }}';
+        const inputQty = document.getElementById('pdp-qty-input');
+        const qty = parseInt(inputQty ? inputQty.value : 1, 10) || 1;
+        const color = window.selectedColor || '';
+        const size = window.selectedSize || '';
+
+        let fullName = name;
+        const details = [];
+        if (color) details.push(color);
+        if (size) details.push(size);
+        if (details.length > 0) {
+            fullName += ` (${details.join(', ')})`;
+        }
+
+        if (window.storeAddToCart) {
+            window.storeAddToCart(pid, fullName, price, qty, img);
+        } else {
+            // Fallback manual cart storage
+            let cart = { count: 0, total: 0, items: [] };
+            try {
+                const stored = localStorage.getItem('dara-market-cart');
+                if (stored) cart = JSON.parse(stored);
+            } catch (e) {}
+
+            const existingIdx = cart.items.findIndex(it => it.id == pid && it.name === fullName);
+            if (existingIdx > -1) {
+                cart.items[existingIdx].quantity += qty;
+            } else {
+                cart.items.push({ id: pid, name: fullName, price: price, quantity: qty, image: img });
             }
-                // Dispatch native custom event that store.js listens to
-                window.dispatchEvent(new CustomEvent('product:added-to-cart', {
-                    detail: {
-                        id: pid,
-                        name: fullName,
-                        price: price,
-                        qty: qty,
-                        image: img
-                    }
-                }));
+            cart.count = cart.items.reduce((s, it) => s + it.quantity, 0);
+            cart.total = cart.items.reduce((s, it) => s + (it.price * it.quantity), 0);
+            localStorage.setItem('dara-market-cart', JSON.stringify(cart));
+            localStorage.setItem('dara_store_cart_items', JSON.stringify(cart.items));
+        }
 
-                // Fallback direct localStorage cart injection
-                try {
-                    const storageKey = 'dara_store_cart_items';
-                    let items = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                    const existingIndex = items.findIndex(it => it.id === pid && it.name === fullName);
-                    if (existingIndex > -1) {
-                        items[existingIndex].quantity = (items[existingIndex].quantity || 1) + qty;
-                    } else {
-                        items.push({
-                            id: pid,
-                            name: fullName,
-                            price: price,
-                            quantity: qty,
-                            image: img
-                        });
-                    }
-                    localStorage.setItem(storageKey, JSON.stringify(items));
+        if (window.toggleCartModal) {
+            window.toggleCartModal(true);
+        }
+    };
 
-                    // Show success feedback
-                    const originalHtml = addToCartBtn.innerHTML;
-                    addToCartBtn.innerHTML = `
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        <span>{{ $locale === 'km' ? 'បានបញ្ចូលជោគជ័យ!' : 'Added to Cart!' }}</span>
-                    `;
-                    addToCartBtn.style.background = '#059669';
-
-                    setTimeout(() => {
-                        addToCartBtn.innerHTML = originalHtml;
-                        addToCartBtn.style.background = '';
-                    }, 1800);
-
-                    // Update store cart count in header if element exists
-                    const countBadge = document.querySelector('.cart-count, .cart-bubble, [data-cart-counter]');
-                    if (countBadge) {
-                        const totalCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
-                        countBadge.textContent = totalCount;
-                        countBadge.style.display = totalCount > 0 ? 'flex' : 'none';
-                    }
-                } catch (e) {
-                    console.error('Error saving cart:', e);
-                }
-            }
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.handleDirectBuyNow(this);
         });
     }
 });

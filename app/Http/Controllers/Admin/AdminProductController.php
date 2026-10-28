@@ -173,7 +173,7 @@ class AdminProductController extends Controller
         return response()->stream(function () {
             $handle = fopen('php://output', 'w');
             fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF)); // UTF-8 BOM
-            fputcsv($handle, ['ID', 'SKU', 'Name (EN)', 'Name (KM)', 'Category', 'Price ($)', 'Old Price ($)', 'Stock', 'Rating', 'Status', 'New Arrival', 'Badge']);
+            fputcsv($handle, ['ID', 'SKU', 'Name (EN)', 'Name (KM)', 'Category', 'Price ($)', 'Old Price ($)', 'Stock', 'Rating', 'Status', 'New Arrival', 'Badge', 'Badge Color', 'Badge Style']);
 
             Product::orderBy('sort_order')->chunk(100, function ($products) use ($handle) {
                 foreach ($products as $p) {
@@ -190,6 +190,8 @@ class AdminProductController extends Controller
                         $p->is_active ? 'Active' : 'Hidden',
                         $p->is_new ? 'Yes' : 'No',
                         $p->badge ?? '',
+                        $p->badge_color ?? '',
+                        $p->badge_style ?? 'solid',
                     ]);
                 }
             });
@@ -269,6 +271,8 @@ class AdminProductController extends Controller
                 'rating' => !empty($row['rating']) ? (float)$row['rating'] : 5.0,
                 'image_url' => $imageUrl,
                 'badge' => !empty($row['badge']) ? trim((string)$row['badge']) : null,
+                'badge_color' => !empty($row['badge_color']) ? trim((string)$row['badge_color']) : null,
+                'badge_style' => !empty($row['badge_style']) ? trim((string)$row['badge_style']) : 'solid',
                 'is_active' => !empty($row['is_active']),
                 'is_new' => !empty($row['is_new']),
                 'sort_order' => $maxSort + $index + 1,
@@ -345,6 +349,8 @@ class AdminProductController extends Controller
             'image_file' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,gif,svg', 'max:5120'],
             'image_url' => ['required', 'string', 'max:2048'],
             'badge' => ['nullable', 'string', 'max:80'],
+            'badge_color' => ['nullable', 'string', 'max:100'],
+            'badge_style' => ['nullable', 'string', 'max:40'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:1000000'],
             'is_active' => ['nullable', 'boolean'],
             'is_new' => ['nullable', 'boolean'],

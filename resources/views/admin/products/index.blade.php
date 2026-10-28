@@ -34,56 +34,72 @@
         </div>
     </div>
 
-    <!-- Catalog Quick Stat Cards -->
-    <div class="products-stats-grid">
-        <a href="{{ route('admin.products.index', ['status' => 'all']) }}" class="stat-pill-card {{ ($filters['status'] ?? 'all') === 'all' ? 'is-selected' : '' }}">
-            <div class="stat-pill-icon icon-all">
+    <!-- Catalog Quick Stat Cards (Harmonized with Luxury Inventory Style) -->
+    <div class="inv-stats-grid products-stats-grid">
+        <a href="{{ route('admin.products.index', ['status' => 'all']) }}" class="inv-stat-card card-primary {{ ($filters['status'] ?? 'all') === 'all' ? 'is-selected' : '' }}">
+            <div class="inv-stat-icon icon-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                 </svg>
             </div>
-            <div class="stat-pill-info">
-                <span class="stat-pill-label">Total Catalog</span>
-                <span class="stat-pill-num" id="statCountTotal">{{ $stats['total'] ?? $products->total() }}</span>
+            <div class="inv-stat-info">
+                <span class="inv-stat-label">Total Catalog • ទំនិញសរុប</span>
+                <div class="inv-stat-val-row">
+                    <span class="inv-stat-num" id="statCountTotal">{{ $stats['total'] ?? $products->total() }}</span>
+                    <span class="inv-stat-badge badge-green">All SKUs</span>
+                </div>
+                <span class="inv-stat-sub">Total products in store catalog</span>
             </div>
         </a>
 
-        <a href="{{ route('admin.products.index', ['status' => 'active']) }}" class="stat-pill-card {{ ($filters['status'] ?? '') === 'active' ? 'is-selected' : '' }}">
-            <div class="stat-pill-icon icon-active">
+        <a href="{{ route('admin.products.index', ['status' => 'active']) }}" class="inv-stat-card card-primary {{ ($filters['status'] ?? '') === 'active' ? 'is-selected' : '' }}">
+            <div class="inv-stat-icon icon-primary">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                     <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
             </div>
-            <div class="stat-pill-info">
-                <span class="stat-pill-label">Active (Live)</span>
-                <span class="stat-pill-num text-success" id="statCountActive">{{ $stats['active'] ?? 0 }}</span>
+            <div class="inv-stat-info">
+                <span class="inv-stat-label">Active (Live) • កំពុងដាក់លក់</span>
+                <div class="inv-stat-val-row">
+                    <span class="inv-stat-num text-success" id="statCountActive">{{ $stats['active'] ?? 0 }}</span>
+                    <span class="inv-stat-badge badge-green">Visible</span>
+                </div>
+                <span class="inv-stat-sub">Live & purchasable on storefront</span>
             </div>
         </a>
 
-        <a href="{{ route('admin.products.index', ['status' => 'hidden']) }}" class="stat-pill-card {{ ($filters['status'] ?? '') === 'hidden' ? 'is-selected' : '' }}">
-            <div class="stat-pill-icon icon-hidden">
+        <a href="{{ route('admin.products.index', ['status' => 'hidden']) }}" class="inv-stat-card card-gold {{ ($filters['status'] ?? '') === 'hidden' ? 'is-selected' : '' }}">
+            <div class="inv-stat-icon icon-gold">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                     <line x1="1" y1="1" x2="23" y2="23"></line>
                 </svg>
             </div>
-            <div class="stat-pill-info">
-                <span class="stat-pill-label">Hidden / Draft</span>
-                <span class="stat-pill-num text-muted" id="statCountHidden">{{ $stats['hidden'] ?? 0 }}</span>
+            <div class="inv-stat-info">
+                <span class="inv-stat-label">Hidden / Draft • បានលាក់</span>
+                <div class="inv-stat-val-row">
+                    <span class="inv-stat-num text-muted" id="statCountHidden">{{ $stats['hidden'] ?? 0 }}</span>
+                    <span class="inv-stat-badge {{ ($stats['hidden'] ?? 0) > 0 ? 'badge-alert-amber' : 'badge-green' }}">{{ ($stats['hidden'] ?? 0) > 0 ? 'Draft' : 'None' }}</span>
+                </div>
+                <span class="inv-stat-sub">Unpublished or hidden items</span>
             </div>
         </a>
 
-        <a href="{{ route('admin.products.index', ['status' => 'new']) }}" class="stat-pill-card {{ ($filters['status'] ?? '') === 'new' ? 'is-selected' : '' }}">
-            <div class="stat-pill-icon icon-new">
+        <a href="{{ route('admin.products.index', ['status' => 'new']) }}" class="inv-stat-card card-warning {{ ($filters['status'] ?? '') === 'new' ? 'is-selected' : '' }}">
+            <div class="inv-stat-icon icon-warning">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
             </div>
-            <div class="stat-pill-info">
-                <span class="stat-pill-label">New Arrivals</span>
-                <span class="stat-pill-num text-amber" id="statCountNew">{{ $stats['new'] ?? 0 }}</span>
+            <div class="inv-stat-info">
+                <span class="inv-stat-label">New Arrivals • ទំនិញទើបមកដល់</span>
+                <div class="inv-stat-val-row">
+                    <span class="inv-stat-num text-amber" id="statCountNew">{{ $stats['new'] ?? 0 }}</span>
+                    <span class="inv-stat-badge badge-alert-amber">Featured</span>
+                </div>
+                <span class="inv-stat-sub">Marked as new arrivals</span>
             </div>
         </a>
     </div>
@@ -162,7 +178,7 @@
                         <th class="col-check">
                             <input type="checkbox" id="selectAllCheckbox" class="custom-checkbox" title="Select all products" onchange="toggleSelectAll(this)">
                         </th>
-                        <th style="width: 320px;">Product</th>
+                        <th style="min-width: 240px;">Product</th>
                         <th>Category</th>
                         <th>Stock</th>
                         <th>Price</th>
@@ -184,7 +200,8 @@
                                     <div class="product-thumb-wrap" onclick="previewImage('{{ $product->image_url }}', '{{ addslashes($product->name_en) }}')" title="Click to zoom image">
                                         <img src="{{ $product->image_url }}" alt="{{ $product->name_en }}" loading="lazy" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 50 50\'><rect width=\'50\' height=\'50\' fill=\'%23f3f4f6\'/><text x=\'25\' y=\'30\' font-size=\'18\' text-anchor=\'middle\'>🛍️</text></svg>';">
                                         @if ($product->badge)
-                                            <span class="thumb-badge">{{ $product->badge }}</span>
+                                            @php($isBadgeDiscount = str_contains($product->badge, '%') || str_contains($product->badge, '-') || str_contains($product->badge, '⚡'))
+                                            <span class="thumb-badge {{ $isBadgeDiscount ? 'badge-discount-red' : '' }}">{{ $product->badge }}</span>
                                         @endif
                                     </div>
                                     <div class="product-info-text">

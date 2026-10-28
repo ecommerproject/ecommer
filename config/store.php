@@ -3,8 +3,8 @@
 return [
     'default_locale' => 'km',
     'supported_locales' => ['km', 'en'],
-    'categories' => ['electronics', 'fashion', 'kitchen', 'beauty'],
-    'featured_products_count' => 4,
+    'categories' => ['perfumes', 'phones', 'computers', 'fashion', 'beauty'],
+    'featured_products_count' => 8,
     'products' => [
         [
             'name' => 'daily_bag',
