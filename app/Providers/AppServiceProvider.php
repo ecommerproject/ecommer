@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.env') === 'production' || request()->header('x-forwarded-proto') === 'https' || str_contains(request()->url(), 'onrender.com')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         \Illuminate\Pagination\Paginator::defaultView('admin.partials.pagination');
 
         // Share persistent store settings globally with all views
