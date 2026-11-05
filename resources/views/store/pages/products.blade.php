@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', ($isNewArrivals ?? false) ? $translations['catalog']['new_title'] : $translations['catalog']['title'])
+@section('title', ($isDeals ?? false) ? ($locale === 'km' ? 'ប្រូម៉ូសិនពិសេស | Collection Trend' : 'Special Deals | Collection Trend') : (($isNewArrivals ?? false) ? $translations['catalog']['new_title'] : $translations['catalog']['title']))
 
 @section('content')
 <div class="catalog-page">
@@ -9,7 +9,7 @@
         <nav class="catalog-breadcrumb" aria-label="{{ $translations['catalog']['breadcrumb_label'] }}">
             <a href="{{ route('store.home') }}">{{ $translations['nav']['home'] }}</a>
             <span class="catalog-breadcrumb-sep">/</span>
-            <span aria-current="page">{{ ($isNewArrivals ?? false) ? $translations['nav']['new'] : $translations['nav']['products'] }}</span>
+            <span aria-current="page">{{ ($isDeals ?? false) ? ($translations['nav']['deals'] ?? ($locale === 'km' ? 'ប្រូម៉ូសិនពិសេស' : 'Special Deals')) : (($isNewArrivals ?? false) ? $translations['nav']['new'] : $translations['nav']['products']) }}</span>
         </nav>
 
         {{-- Luxury Hero Banner --}}
@@ -18,10 +18,10 @@
             <div class="catalog-header-content">
                 <span class="catalog-kicker-badge">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6-6.3 4.6 2.3-7-6-4.6h7.6z"/></svg>
-                    <span>{{ ($isNewArrivals ?? false) ? $translations['products']['new_kicker'] : $translations['catalog']['eyebrow'] }}</span>
+                    <span>{{ ($isDeals ?? false) ? ($locale === 'km' ? 'ប្រូម៉ូសិនពិសេស បញ្ចុះតម្លៃរហូតដល់ -35%' : 'HOT PROMOTIONS UP TO 35% OFF') : (($isNewArrivals ?? false) ? $translations['products']['new_kicker'] : $translations['catalog']['eyebrow']) }}</span>
                 </span>
-                <h1 class="catalog-title">{{ ($isNewArrivals ?? false) ? $translations['products']['new_title'] : $translations['catalog']['heading'] }}</h1>
-                <p class="catalog-description">{{ ($isNewArrivals ?? false) ? $translations['catalog']['new_description'] : $translations['catalog']['description'] }}</p>
+                <h1 class="catalog-title">{{ ($isDeals ?? false) ? ($locale === 'km' ? 'ទំនិញប្រូម៉ូសិន និងបញ្ចុះតម្លៃពិសេស' : 'Special Deals & Discounted Products') : (($isNewArrivals ?? false) ? $translations['products']['new_title'] : $translations['catalog']['heading']) }}</h1>
+                <p class="catalog-description">{{ ($isDeals ?? false) ? ($locale === 'km' ? 'ស្វែងរក និងទិញទំនិញពេញនិយមដែលមានតម្លៃបញ្ចុះពិសេស ចំណេញច្រើន គុណភាពខ្ពស់ ១០០%។' : 'Shop exclusive discounted deals on top-rated products with verified authenticity and fast shipping.') : (($isNewArrivals ?? false) ? $translations['catalog']['new_description'] : $translations['catalog']['description']) }}</p>
             </div>
 
             <div class="catalog-header-stats">

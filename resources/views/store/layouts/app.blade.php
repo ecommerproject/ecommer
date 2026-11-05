@@ -26,17 +26,12 @@
             <div class="announcement-welcome-box">
                 <span class="welcome-tag-pill">
                     <span class="welcome-sparkle-dot"></span>
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="#e5b35a" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="#e5b35a"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                     <span>{{ $locale === 'km' ? 'សូមស្វាគមន៍' : 'WELCOME' }}</span>
                 </span>
                 <span class="welcome-text-content">
-                    {{ $locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Collection Trend ហាងទំនិញអនឡាញទាន់សម័យ & គុណភាពខ្ពស់' : 'Welcome to Collection Trend • Modern Lifestyle & Premium Collections' }}
+                    {{ $locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Collection Trend • ហាងទំនិញអនឡាញទាន់សម័យ' : 'Welcome to Collection Trend • Modern Lifestyle Collections' }}
                 </span>
-            </div>
-                <div class="ticker-nav-controls">
-                    <button type="button" class="ticker-nav-btn" onclick="prevTickerItem()" aria-label="Previous announcement" title="សារមុន">‹</button>
-                    <button type="button" class="ticker-nav-btn" onclick="nextTickerItem()" aria-label="Next announcement" title="សារបន្ទាប់">›</button>
-                </div>
             </div>
 
             <!-- Right: Interactive Actions & Utilities -->
@@ -49,7 +44,7 @@
                     <span class="copy-hint" id="couponHint">{{ $locale === 'km' ? 'ចម្លង' : 'Copy' }}</span>
                 </button>
 
-                <!-- Hotline Phone Link (NEW) -->
+                <!-- Hotline Phone Link -->
                 <a href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '0714504547') }}" class="announcement-utility-link topbar-hotline" title="ទាក់ទងផ្នែកបម្រើអតិថិជន">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
@@ -64,12 +59,6 @@
                     </svg>
                     <span>{{ $locale === 'km' ? 'តាមដានការកម្មង់' : 'Track Order' }}</span>
                 </button>
-
-                <!-- Offers Link with glowing pill -->
-                <a class="announcement-offers-link" href="{{ route('store.new-arrivals') }}">
-                    <span>{{ $translations['announcement']['link'] }}</span>
-                    <span aria-hidden="true">↗</span>
-                </a>
 
                 <!-- Custom Modern Language Switcher -->
                 <form class="language-switcher" action="{{ url()->current() }}" method="GET">
@@ -98,27 +87,35 @@
             <button class="icon-button menu-toggle" id="mobileMenuToggle" type="button" onclick="toggleMobileNav(event)" aria-label="{{ $translations['nav']['label'] }}" aria-expanded="false">
                 <span></span><span></span><span></span>
             </button>
-            <a class="brand" href="{{ route('store.home') }}" aria-label="{{ $translations['language']['label'] }}: {{ $translations['meta']['home'] }}">
-                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793855471" alt="Collection Trend Logo" width="60" height="56"></span>
+            <a class="brand" href="{{ route('store.home') }}" aria-label="Collection Trend">
+                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v={{ time() }}" alt="Collection Trend Logo" width="58" height="54"></span>
                 <div class="brand-copy">
                     <div class="brand-copy-title">collection<span>-trend</span></div>
                     <small>STORE &amp; LIVING</small>
                 </div>
             </a>
 
+            <!-- Search Bar Wrapper -->
+            <div class="search-box-wrapper">
+                <form class="search-box" action="{{ route('store.products') }}" method="GET" role="search" id="headerSearchForm">
+                    <div class="search-category-select">
+                        <select name="category" aria-label="Filter by category" id="searchCategorySelect">
+                            <option value="all">{{ $translations['categories']['all'] ?? 'All Categories' }}</option>
+                            @foreach(config('store.categories') as $cat)
+                                <option value="{{ $cat }}" @selected(request('category') === $cat)>{{ $translations['categories'][$cat] ?? ucfirst($cat) }}</option>
+                            @endforeach
+                        </select>
+                        <svg class="search-cat-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <input type="search" name="q" id="store-search" value="{{ request('q') }}" placeholder="{{ $translations['search']['placeholder'] }}" aria-label="{{ $translations['search']['label'] }}" autocomplete="off">
+                    <button type="submit" class="search-submit-btn" aria-label="{{ $translations['search']['button'] }}">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                </form>
+            </div>
+
             <!-- Right Header Actions -->
             <div class="header-actions">
-                @if (auth()->check() && auth()->user()->is_admin)
-                    <a class="admin-pill-badge" href="{{ route('admin.dashboard') }}" title="Open Store Management Dashboard">
-                        <span class="admin-pill-icon">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                        </span>
-                        <span class="admin-pill-text">
-                            <small>{{ $translations['account']['admin_label'] }}</small>
-                            <strong>Dashboard ↗</strong>
-                        </span>
-                    </a>
-                @endif
 
                 <!-- Account Dropdown Menu -->
                 <div class="account-dropdown-wrapper">
@@ -128,10 +125,10 @@
                                 <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="account-avatar-img" referrerpolicy="no-referrer">
                             @else
                                 @if(auth()->check())
-                                <span>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-                            @else
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            @endif
+                                    <span>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                @else
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                @endif
                             @endif
                             @if(auth()->check())
                                 <span class="avatar-online-dot"></span>
@@ -145,283 +142,127 @@
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
-
-                    <div id="accountDropdownMenu" class="account-dropdown-menu" style="display: none;">
+                    <div class="account-dropdown-menu" id="accountDropdownMenu" style="display: none;">
                         @if(auth()->check())
                             <div class="account-menu-profile-card">
                                 <div class="menu-avatar-wrap">
                                     @if(auth()->user()->avatar)
-                                        <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="menu-avatar-img" referrerpolicy="no-referrer">
+                                        <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="menu-avatar-img">
                                     @else
-                                        <span class="menu-avatar-letter">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                        <span>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                                     @endif
-                                    <span class="menu-online-badge" title="Online"></span>
+                                    <span class="menu-online-badge"></span>
                                 </div>
                                 <div class="menu-profile-details">
                                     <h4 class="menu-user-name">{{ auth()->user()->name }}</h4>
                                     <span class="menu-user-email">{{ auth()->user()->email }}</span>
-                                    <div class="menu-tier-pill">
-                                        @if(auth()->user()->is_admin)
-                                            <span class="tier-tag tier-admin">🛡️ Store Admin</span>
-                                        @else
-                                            <span class="tier-tag tier-vip">⭐ VIP Member</span>
-                                        @endif
-                                    </div>
                                 </div>
                             </div>
-
                             <div class="account-menu-list">
-                                <a href="{{ route('account.show') }}" class="account-menu-item">
-                                    <span class="menu-item-icon icon-profile">
-                                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                    </span>
-                                    <div class="menu-item-content">
-                                        <strong>{{ $locale === 'km' ? 'ព័ត៌មានគណនី (My Profile)' : 'My Profile' }}</strong>
-                                        <small>{{ $locale === 'km' ? 'កែប្រែទិន្នន័យ & អាសយដ្ឋាន' : 'Personal info & address' }}</small>
-                                    </div>
-                                    <span class="menu-item-arrow">›</span>
-                                </a>
-
-                                <a href="{{ route('account.show') }}#orders" class="account-menu-item">
-                                    <span class="menu-item-icon icon-orders">
-                                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                                    </span>
-                                    <div class="menu-item-content">
-                                        <strong>{{ $locale === 'km' ? 'ប្រវត្តិការកម្ម៉ង់' : 'My Orders' }}</strong>
-                                        <small>{{ $locale === 'km' ? 'ពិនិត្យទំនិញដែលបានទិញ' : 'View order history' }}</small>
-                                    </div>
-                                    <span class="menu-item-arrow">›</span>
-                                </a>
-
-                                <button type="button" class="account-menu-item" onclick="openTrackOrderModal(); toggleAccountMenu();">
-                                    <span class="menu-item-icon icon-track">
-                                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                                    </span>
-                                    <div class="menu-item-content">
-                                        <strong>{{ $locale === 'km' ? 'តាមដានការដឹកជញ្ជូន' : 'Track Order' }}</strong>
-                                        <small>{{ $locale === 'km' ? 'ពិនិត្យទីតាំងកញ្ចប់ទំនិញ' : 'Live shipment status' }}</small>
-                                    </div>
-                                    <span class="menu-item-arrow">›</span>
-                                </button>
-
                                 @if(auth()->user()->is_admin)
-                                    <a href="{{ route('admin.dashboard') }}" class="account-menu-item admin-highlight">
-                                        <span class="menu-item-icon icon-admin">
-                                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                    <a href="{{ route('admin.dashboard') }}" class="account-menu-item" style="background: #f0fdf4;">
+                                        <span class="menu-item-icon icon-profile" style="color: #16a34a;">
+                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                                         </span>
                                         <div class="menu-item-content">
-                                            <strong>{{ $locale === 'km' ? 'ផ្ទាំងគ្រប់គ្រង Admin' : 'Admin Dashboard' }}</strong>
-                                            <small>{{ $locale === 'km' ? 'គ្រប់គ្រងហាង និងទំនិញ' : 'Manage store & orders' }}</small>
+                                            <strong style="color: #166534;">Admin Dashboard</strong>
+                                            <small>{{ $locale === 'km' ? 'ផ្ទាំងគ្រប់គ្រងទំនិញ និងការបញ្ជាទិញ' : 'Store Management' }}</small>
                                         </div>
-                                        <span class="menu-item-arrow">↗</span>
+                                        <span class="menu-item-arrow" style="color: #16a34a;">↗</span>
                                     </a>
                                 @endif
-
-                                <div class="account-menu-divider"></div>
-
+                                <a href="{{ route('account.show') }}" class="account-menu-item">
+                                    <span class="menu-item-icon icon-profile">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    </span>
+                                    <div class="menu-item-content">
+                                        <strong>{{ $translations['nav']['account'] ?? 'គណនីរបស់ខ្ញុំ' }}</strong>
+                                        <small>{{ $locale === 'km' ? 'ព័ត៌មានផ្ទាល់ខ្លួន និងអាសយដ្ឋាន' : 'Personal profile' }}</small>
+                                    </div>
+                                    <span class="menu-item-arrow">›</span>
+                                </a>
                                 <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
                                     @csrf
                                     <button type="submit" class="account-menu-item logout-btn">
                                         <span class="menu-item-icon icon-logout">
-                                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                                         </span>
                                         <div class="menu-item-content">
-                                            <strong>{{ $locale === 'km' ? 'ចាកចេញពីគណនី' : 'Sign Out' }}</strong>
+                                            <strong>{{ $translations['nav']['logout'] ?? 'ចាកចេញ' }}</strong>
                                         </div>
                                     </button>
                                 </form>
                             </div>
                         @else
-                            <!-- Guest Shopper Menu -->
                             <div class="account-menu-guest-header">
-                                <div class="guest-icon">👋</div>
+                                <span class="guest-icon">👋</span>
                                 <div>
-                                    <h4>{{ $locale === 'km' ? 'សូមស្វាគមន៍' : 'Welcome to Dara Market' }}</h4>
-                                    <p>{{ $locale === 'km' ? 'ចូលគណនីដើម្បីទទួលបានប័ណ្ណបញ្ចុះតម្លៃ' : 'Sign in to access VIP club deals & orders' }}</p>
+                                    <h4>{{ $locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Collection Trend' : 'Welcome to Collection Trend' }}</h4>
+                                    <p>{{ $locale === 'km' ? 'ចូលគណនីដើម្បីបញ្ជាទិញ និងទទួលបានការបញ្ចុះតម្លៃ' : 'Sign in to manage orders and claim member rewards' }}</p>
                                 </div>
                             </div>
-
                             <div class="guest-cta-buttons">
                                 <a href="{{ route('login') }}" class="guest-btn-signin">
                                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
-                                    <span>{{ $locale === 'km' ? 'ចូលគណនី' : 'Sign In' }}</span>
+                                    <span>{{ $translations['nav']['login'] ?? 'ចូលគណនី' }}</span>
                                 </a>
                                 <a href="{{ route('register') }}" class="guest-btn-register">
-                                    <span>{{ $locale === 'km' ? 'ចុះឈ្មោះ' : 'Create Account' }}</span>
+                                    <span>{{ $translations['nav']['register'] ?? 'បង្កើតគណនី' }}</span>
                                     <span class="guest-bonus-tag">+$15</span>
                                 </a>
-                            </div>
-
-                            <div class="account-menu-list guest-links">
-                                <form action="{{ route('demo.login') }}" method="POST" style="margin: 0;">
-                                    @csrf
-                                    <button type="submit" class="account-menu-item demo-login-item" style="display: none !important;">
-                                        <span class="menu-item-icon icon-demo">⚡</span>
-                                        <div class="menu-item-content">
-                                            <strong>{{ $locale === 'km' ? 'សាកល្បង Demo (1-Click)' : '1-Click Demo Login' }}</strong>
-                                            <small>{{ $locale === 'km' ? 'ចូលភ្លាមៗមិនបាច់វាយពាក្យសម្ងាត់' : 'Instant test account' }}</small>
-                                        </div>
-                                        <span class="menu-item-arrow">›</span>
-                                    </button>
-                                </form>
-
-                                <button type="button" class="account-menu-item" onclick="openTrackOrderModal(); toggleAccountMenu();">
-                                    <span class="menu-item-icon icon-track">
-                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                                    </span>
-                                    <div class="menu-item-content">
-                                        <strong>{{ $locale === 'km' ? 'តាមដានការបញ្ជាទិញ' : 'Track Order' }}</strong>
-                                    </div>
-                                    <span class="menu-item-arrow">›</span>
-                                </button>
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <!-- Shopping Cart Pill Button -->
-                <button type="button" class="cart-pill-button" onclick="openCartDrawer()" title="{{ $locale === 'km' ? 'កន្ត្រកទំនិញ' : 'Shopping Cart' }}" aria-label="Shopping Cart">
+                <!-- Cart Pill Button -->
+                <button class="cart-pill-button" id="headerCartBtn" type="button" onclick="openCartDrawer()" aria-label="Shopping Cart">
                     <span class="cart-icon-wrap">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 8H6"></path><circle cx="10" cy="20" r="1.2"></circle><circle cx="18" cy="20" r="1.2"></circle></svg>
-                        <span class="cart-count" id="headerCartCount" aria-live="polite">0</span>
+                        <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <span class="cart-count" id="headerCartCount">0</span>
                     </span>
                     <span class="cart-info-wrap">
-                        <small>{{ $translations['cart']['label'] ?? ($locale === 'km' ? 'កន្ត្រក' : 'Cart') }}</small>
-                        <strong>$<span class="cart-total" id="headerCartTotal">0.00</span></strong>
+                        <small>{{ $locale === 'km' ? 'កន្ត្រកទំនិញ' : 'Cart' }}</small>
+                        <strong class="cart-total" id="headerCartTotal">$0.00</strong>
                     </span>
                 </button>
             </div>
-
-            <!-- Upgraded Search Box with Category Selector & Live Dropdown -->
-            <div class="search-box-wrapper">
-                <form class="search-box" action="{{ route('store.products') }}" method="GET" role="search" id="headerSearchForm">
-                    <div class="search-category-select">
-                        <select name="category" id="searchCategorySelect" aria-label="Filter category">
-                            <option value="all">All Categories</option>
-                            @foreach (config('store.categories') as $cat)
-                                <option value="{{ $cat }}" @selected(($selectedCategory ?? 'all') === $cat)>{{ __('store.categories.'.$cat, [], 'en') }}</option>
-                            @endforeach
-                        </select>
-                        <svg class="search-cat-chevron" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
-
-                    <input id="store-search" name="q" type="search" value="{{ $search ?? '' }}" placeholder="{{ $translations['search']['placeholder'] }}" autocomplete="off" onfocus="showSearchSuggest()" oninput="handleSearchInput(this.value)">
-
-                    <button type="button" id="searchClearBtn" class="search-clear-btn" style="display: {{ !empty($search) ? 'grid' : 'none' }};" onclick="clearSearchInput()">✕</button>
-
-                    <button type="submit" class="search-submit-btn" aria-label="{{ $translations['search']['button'] }}">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
-                    </button>
-                </form>
-
-                <!-- Search Suggestions Dropdown -->
-                <div id="searchSuggestBox" class="search-suggestions-dropdown" style="display: none;">
-                    <div class="search-trending-section">
-                        <span class="trending-title">
-                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f97316" stroke-width="2" style="vertical-align:-2px; margin-right:3px;"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"></path></svg>
-                            Trending:
-                        </span>
-                        <div class="trending-tags">
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Headphones')">Headphones</button>
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Backpack')">Backpack</button>
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Watch')">Watch</button>
-                            <button type="button" class="trending-tag" onclick="quickFillSearch('Shoes')">Shoes</button>
-                        </div>
-                    </div>
-                    <div id="searchLiveResults" class="search-live-results"></div>
-                </div>
-            </div>
         </div>
 
-        <nav class="main-nav" aria-label="{{ $translations['nav']['label'] }}">
+        <!-- Primary Horizontal Navigation Bar -->
+        <nav class="main-nav" aria-label="Main Navigation">
             <div class="container nav-inner">
-                <!-- Mobile Drawer Header (Visible on Mobile Only) -->
-                <div class="mobile-drawer-header">
-                    <div class="drawer-brand">
-                        <span class="brand-mark" style="width: 42px; height: 42px;"><img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="42" height="42"></span>
-                        <div class="brand-copy" style="font-size: 18px;">
-                            <div class="brand-copy-title">collection<span>-trend</span></div>
-                        </div>
-                    </div>
-                    <button type="button" class="drawer-close-btn" onclick="document.querySelector('.main-nav').classList.remove('is-open')" aria-label="Close menu">✕</button>
-                </div>
-
-                <!-- 1. All Categories Mega Dropdown Trigger -->
+                <!-- Category Mega Dropdown Trigger -->
                 <div class="nav-category-dropdown-wrapper">
-                    <button type="button" class="nav-category-trigger-btn" id="navCategoryBtn" onclick="toggleNavCategoryMenu()" aria-expanded="false" aria-haspopup="true">
-                        <span class="nav-category-hamburger" aria-hidden="true">
-                            <span></span><span></span><span></span>
-                        </span>
-                        <span class="nav-category-label">{{ $locale === 'km' ? 'ប្រភេទទំនិញទាំងអស់' : 'All Categories' }}</span>
-                        <svg class="nav-category-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <button type="button" class="nav-category-trigger-btn" id="navCategoryTriggerBtn" onclick="toggleCategoryMegaMenu(event)" aria-expanded="false">
+                        <span class="nav-category-hamburger"><span></span><span></span><span></span></span>
+                        <span>{{ $translations['sidebar']['categories'] ?? 'ប្រភេទទំនិញទាំងអស់' }}</span>
+                        <svg class="nav-category-chevron" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-
-                    <!-- Rich Mega Dropdown Card -->
+                    <!-- Mega Menu Dropdown -->
                     <div class="nav-mega-menu" id="navMegaMenu" style="display: none;">
                         <div class="mega-menu-grid">
                             <div class="mega-menu-categories">
-                                <a href="{{ route('store.products', ['category' => 'electronics']) }}" class="mega-cat-item">
-                                    <div class="mega-cat-icon-box">
-                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
-                                    </div>
-                                    <div class="mega-cat-info">
-                                        <div class="mega-cat-title-row">
-                                            <strong>{{ $locale === 'km' ? 'គ្រឿងអេឡិចត្រូនិច' : 'Electronics & Tech' }}</strong>
-                                            <span class="mega-badge hot">HOT</span>
+                                @foreach(config('store.categories') as $cat)
+                                    <a href="{{ route('store.products', ['category' => $cat]) }}" class="mega-cat-item">
+                                        <div class="mega-cat-icon-box">
+                                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                         </div>
-                                        <small>{{ $locale === 'km' ? 'កាស, នាឡិកា, កាមេរ៉ា' : 'Headphones, Watches, Cameras' }}</small>
-                                    </div>
-                                    <span class="mega-cat-arrow">→</span>
-                                </a>
-
-                                <a href="{{ route('store.products', ['category' => 'fashion']) }}" class="mega-cat-item">
-                                    <div class="mega-cat-icon-box">
-                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                                    </div>
-                                    <div class="mega-cat-info">
-                                        <div class="mega-cat-title-row">
-                                            <strong>{{ $locale === 'km' ? 'ម៉ូដសម្លៀកបំពាក់ & ស្ទីល' : 'Fashion & Apparel' }}</strong>
-                                            <span class="mega-badge popular">TREND</span>
+                                        <div class="mega-cat-info">
+                                            <div class="mega-cat-title-row">
+                                                <strong>{{ $translations['categories'][$cat] ?? ucfirst($cat) }}</strong>
+                                            </div>
                                         </div>
-                                        <small>{{ $locale === 'km' ? 'កាបូប, ស្បែកជើង, វ៉ែនតា' : 'Backpacks, Shoes, Sunglasses' }}</small>
-                                    </div>
-                                    <span class="mega-cat-arrow">→</span>
-                                </a>
-
-                                <a href="{{ route('store.products', ['category' => 'home']) }}" class="mega-cat-item">
-                                    <div class="mega-cat-icon-box">
-                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                    </div>
-                                    <div class="mega-cat-info">
-                                        <div class="mega-cat-title-row">
-                                            <strong>{{ $locale === 'km' ? 'គេហដ្ឋាន និងការរស់នៅ' : 'Home & Living' }}</strong>
-                                        </div>
-                                        <small>{{ $locale === 'km' ? 'គ្រឿងតុបតែង, សម្ភារៈប្រើប្រាស់' : 'Decor, Essentials & Comfort' }}</small>
-                                    </div>
-                                    <span class="mega-cat-arrow">→</span>
-                                </a>
-
-                                <a href="{{ route('store.categories') }}" class="mega-cat-item mega-cat-all">
-                                    <div class="mega-cat-icon-box">
-                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>
-                                    </div>
-                                    <div class="mega-cat-info">
-                                        <div class="mega-cat-title-row">
-                                            <strong>{{ $locale === 'km' ? 'មើលប្រភេទទំនិញទាំងអស់' : 'View All Categories' }}</strong>
-                                        </div>
-                                        <small>{{ $locale === 'km' ? 'រុករកកាតាឡុកទំនិញពេញលេញ' : 'Explore full collection' }}</small>
-                                    </div>
-                                    <span class="mega-cat-arrow">↗</span>
-                                </a>
+                                        <span class="mega-cat-arrow">›</span>
+                                    </a>
+                                @endforeach
                             </div>
-
-                            <!-- Mega Menu Featured Promo Card -->
                             <div class="mega-menu-promo-card">
-                                <div class="mega-promo-badge">WEEKEND OFFER</div>
-                                <h4>{{ $locale === 'km' ? 'បញ្ចុះតម្លៃរហូតដល់ 30%' : 'Save Up To 30% OFF' }}</h4>
-                                <p>{{ $locale === 'km' ? 'ទទួលបានការបញ្ចុះតម្លៃពិសេសលើទំនិញថ្មីៗជាច្រើនមុខ!' : 'Special deals on newly arrived lifestyle and tech essentials.' }}</p>
+                                <span class="mega-promo-badge">HOT DEAL</span>
+                                <h4>Collection Trend</h4>
+                                <p>{{ $locale === 'km' ? 'បញ្ចុះតម្លៃរហូតដល់ 35% លើផលិតផលថ្មីៗប្រចាំសប្តាហ៍!' : 'Up to 35% discount on trending new arrivals!' }}</p>
                                 <a href="{{ route('store.products') }}" class="mega-promo-btn">
-                                    <span>{{ $locale === 'km' ? 'ទិញឥឡូវនេះ' : 'Explore Deals' }}</span>
+                                    <span>{{ $locale === 'km' ? 'ទស្សនាទាំងអស់' : 'Explore All' }}</span>
                                     <span>→</span>
                                 </a>
                             </div>
@@ -429,66 +270,51 @@
                     </div>
                 </div>
 
-                <!-- 2. Primary Navigation Links with Badges -->
+                <!-- Nav Links Track -->
                 <div class="nav-links-track">
-                    <a class="nav-link-pill {{ request()->routeIs('store.home') ? 'active' : '' }}" href="{{ route('store.home') }}">
-                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
-                        <span>{{ $translations['nav']['home'] }}</span>
+                    <a href="{{ route('store.home') }}" class="nav-link-pill {{ request()->routeIs('store.home') ? 'active' : '' }}">
+                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span>
+                        <span>{{ $translations['nav']['home'] ?? ($locale === 'km' ? 'ទំព័រដើម' : 'Home') }}</span>
                     </a>
-
-                    <a class="nav-link-pill {{ request()->routeIs('store.products') ? 'active' : '' }}" href="{{ route('store.products') }}">
-                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg></span>
-                        <span>{{ $translations['nav']['products'] }}</span>
+                    <a href="{{ route('store.products') }}" class="nav-link-pill {{ request()->routeIs('store.products') ? 'active' : '' }}">
+                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg></span>
+                        <span>{{ $translations['nav']['products'] ?? ($locale === 'km' ? 'ផលិតផល' : 'Products') }}</span>
                     </a>
-
-                    <a class="nav-link-pill {{ request()->routeIs('store.categories') ? 'active' : '' }}" href="{{ route('store.categories') }}">
-                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg></span>
-                        <span>{{ $translations['nav']['categories'] }}</span>
+                    <a href="{{ route('store.categories') }}" class="nav-link-pill {{ request()->routeIs('store.categories') ? 'active' : '' }}">
+                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+                        <span>{{ $translations['nav']['categories'] ?? ($locale === 'km' ? 'ប្រភេទទំនិញ' : 'Categories') }}</span>
                     </a>
-
-                    <a class="nav-link-pill {{ request()->routeIs('store.new-arrivals') ? 'active' : '' }}" href="{{ route('store.new-arrivals') }}">
-                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path></svg></span>
-                        <span>{{ $translations['nav']['new'] }}</span>
+                    <a href="{{ route('store.new-arrivals') }}" class="nav-link-pill {{ request()->routeIs('store.new-arrivals') ? 'active' : '' }}">
+                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+                        <span>{{ $translations['nav']['new'] ?? ($locale === 'km' ? 'ទំនិញថ្មី' : 'New Arrivals') }}</span>
                         <span class="nav-micro-badge badge-new">NEW</span>
                     </a>
-
-                    <a class="nav-link-pill nav-deal-pill" href="{{ route('store.products') }}#featured">
-                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
-                        <span>{{ $locale === 'km' ? 'ប្រូម៉ូសិនពិសេស' : 'Flash Sale' }}</span>
+                    <a href="{{ route('store.deals') }}" class="nav-link-pill nav-deal-pill {{ request()->routeIs('store.deals') ? 'active' : '' }}">
+                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
+                        <span>{{ $translations['nav']['deals'] ?? ($locale === 'km' ? 'ប្រូម៉ូសិនពិសេស' : 'Special Deals') }}</span>
                         <span class="nav-micro-badge badge-discount">-30%</span>
                     </a>
-
-                    <button type="button" class="nav-link-pill nav-track-btn" onclick="openTrackOrderModal()" title="Track Your Order">
-                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></span>
-                        <span>{{ $locale === 'km' ? 'តាមដានឥវ៉ាន់' : 'Track Order' }}</span>
-                    </button>
-
-                    <a class="{{ request()->routeIs('store.about') ? 'nav-item active' : 'nav-item' }}" href="{{ route('store.about') }}">
-                        <span>{{ $translations['nav']['about'] }}</span>
+                    <a href="{{ route('store.services') }}" class="nav-link-pill {{ request()->routeIs('store.services') ? 'active' : '' }}">
+                        <span class="nav-pill-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                        <span>{{ $translations['nav']['guarantee'] ?? ($locale === 'km' ? 'ការធានា&សេវា' : 'Warranty & Services') }}</span>
                     </a>
-
-                    <a class="{{ request()->routeIs('store.contact') ? 'nav-item active' : 'nav-item' }}" href="{{ route('store.contact') }}">
-                        <span>{{ $translations['nav']['contact'] }}</span>
+                    <a href="{{ route('store.about') }}" class="nav-link-pill {{ request()->routeIs('store.about') ? 'active' : '' }}">
+                        <span>{{ $translations['nav']['about'] ?? ($locale === 'km' ? 'អំពីយើង' : 'About Us') }}</span>
+                    </a>
+                    <a href="{{ route('store.contact') }}" class="nav-link-pill {{ request()->routeIs('store.contact') ? 'active' : '' }}">
+                        <span>{{ $translations['nav']['contact'] ?? ($locale === 'km' ? 'ទាក់ទង' : 'Contact Us') }}</span>
                     </a>
                 </div>
 
-                <!-- 3. Right Side: Live Store Hours & Hotline Pill -->
+                <!-- Right Utility: Open Hours Status -->
                 <div class="nav-right-utility">
-                    <div class="nav-status-chip" title="Store Operating Hours">
-                        <span class="status-pulse-dot" aria-hidden="true"></span>
-                        <span class="status-chip-text">
+                    <div class="nav-status-chip" title="{{ $storeSettings['business_hours'] ?? '8:00 AM - 9:00 PM' }}">
+                        <span class="status-pulse-dot"></span>
+                        <div class="status-chip-text">
                             <span class="status-open-label">{{ $locale === 'km' ? 'កំពុងបើកដំណើរការ' : 'Open Now' }}</span>
-                            <span class="status-hours-time">{{ $translations['nav']['hours'] }}</span>
-                        </span>
+                            <span class="status-hours-time">{{ $locale === 'km' ? 'ម៉ោងធ្វើការ 8:00 ព្រឹក - 9:00 យប់' : '8:00 AM - 9:00 PM' }}</span>
+                        </div>
                     </div>
-
-                    <a href="tel:{{ preg_replace('/[^0-9+]/', '', $storeSettings['contact_phone'] ?? '+855714504547') }}" class="nav-hotline-pill" title="Need help? Call us!">
-                        <span class="hotline-icon"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span>
-                        <span class="hotline-text">
-                            <small>{{ $locale === 'km' ? 'សេវាជំនួយ' : 'Support' }}</small>
-                            <strong>{{ $storeSettings['contact_phone'] ?? '071 450 4547' }}</strong>
-                        </span>
-                    </a>
                 </div>
             </div>
         </nav>
@@ -524,10 +350,10 @@
             <div class="footer-column footer-service-col">
                 <h2>{{ $translations['footer']['customer_service'] }}</h2>
                 <ul class="footer-links-list">
-                    <li><a href="#featured"><span>{{ $translations['footer']['how_to_order'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-                    <li><a href="#why-us"><span>{{ $translations['footer']['shipping'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-                    <li><a href="#why-us"><span>{{ $translations['footer']['returns'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
-                    <li><a href="mailto:hello@daramarket.com?subject={{ rawurlencode($translations['footer']['faq']) }}"><span>{{ $translations['footer']['faq'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="{{ route('store.services') }}#order-guide"><span>{{ $translations['footer']['how_to_order'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="{{ route('store.services') }}#shipping"><span>{{ $translations['footer']['shipping'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="{{ route('store.services') }}#returns"><span>{{ $translations['footer']['returns'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="{{ route('store.services') }}#faq"><span>{{ $translations['footer']['faq'] }}</span> <svg class="footer-link-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
                 </ul>
             </div>
             <div class="footer-column footer-contact-col">
@@ -609,7 +435,7 @@
         <div class="footer-bottom">
             <div class="container footer-bottom-inner">
                 <div class="footer-copy-text">
-                    <span>© {{ date('Y') }} Dara Market. {{ $translations['footer']['copyright'] }}</span>
+                    <span>© {{ date('Y') }} Collection Trend. {{ $translations['footer']['copyright'] }}</span>
                     <span class="footer-dot-divider">•</span>
                     <span class="footer-tagline-muted">{{ $translations['footer']['tagline'] }}</span>
                 </div>
@@ -2607,11 +2433,89 @@
         document.body.style.overflow = '';
     };
 
+    window.toggleAccountMenu = function() {
+        const menu = document.getElementById('accountDropdownMenu');
+        if (!menu) return;
+        const isShown = menu.style.display === 'block';
+        menu.style.display = isShown ? 'none' : 'block';
+    };
+
+    window.toggleCategoryMegaMenu = function(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const mega = document.getElementById('navMegaMenu');
+        const btn = document.getElementById('navCategoryTriggerBtn');
+        if (!mega) return;
+        const isShown = mega.style.display === 'block';
+        mega.style.display = isShown ? 'none' : 'block';
+        if (btn) btn.classList.toggle('is-open', !isShown);
+    };
+
+    window.openCartModal = function() {
+        if (typeof openCartDrawer === 'function') {
+            openCartDrawer();
+        }
+    };
+
+    document.addEventListener('click', function(e) {
+        const accountWrap = document.querySelector('.account-dropdown-wrapper');
+        const accountMenu = document.getElementById('accountDropdownMenu');
+        if (accountMenu && accountWrap && !accountWrap.contains(e.target)) {
+            accountMenu.style.display = 'none';
+        }
+
+        const catWrap = document.querySelector('.nav-category-dropdown-wrapper');
+        const catMenu = document.getElementById('navMegaMenu');
+        const catBtn = document.getElementById('navCategoryTriggerBtn');
+        if (catMenu && catWrap && !catWrap.contains(e.target)) {
+            catMenu.style.display = 'none';
+            if (catBtn) catBtn.classList.remove('is-open');
+        }
+    });
+
     window.handleAccountButtonClick = function(event) {
         if (window.innerWidth <= 768) {
             toggleMobileAccountSheet(event);
         } else {
             toggleAccountMenu();
+        }
+    };
+
+    window.handleNavNewArrivals = function(e) {
+        const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/home') || window.location.pathname === '';
+        const section = document.getElementById('new-arrivals');
+        if (isHome && section) {
+            e.preventDefault();
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            section.classList.add('deal-highlight-flash');
+            setTimeout(() => section.classList.remove('deal-highlight-flash'), 1800);
+            window.closeMobileNav();
+        }
+    };
+
+    window.handleNavDeals = function(e) {
+        const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/home') || window.location.pathname === '';
+        const target = document.getElementById('featured') || document.getElementById('dailyDealWidget');
+        if (isHome && target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.classList.add('deal-highlight-flash');
+            setTimeout(() => target.classList.remove('deal-highlight-flash'), 1800);
+            window.closeMobileNav();
+        }
+    };
+
+    window.handleNavWhyUs = function(e) {
+        const isHome = window.location.pathname === '/' || window.location.pathname.endsWith('/home') || window.location.pathname === '';
+        const target = document.getElementById('why-us');
+        if (isHome && target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.classList.add('deal-highlight-flash');
+            setTimeout(() => target.classList.remove('deal-highlight-flash'), 1800);
+            window.closeMobileNav();
         }
     };
 
@@ -2651,7 +2555,7 @@
     <div id="mobileAccountSheet" class="mobile-account-sheet" style="display: none;" role="dialog" aria-modal="true" aria-label="Account details">
         <div class="mobile-sheet-drag-handle"></div>
         <div class="mobile-sheet-header">
-            <h3 class="mobile-sheet-title">{{ auth()->check() ? ($locale === 'km' ? 'គណនីរបស់អ្នក' : 'My Account') : ($locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Dara Market' : 'Welcome to Dara Market') }}</h3>
+            <h3 class="mobile-sheet-title">{{ auth()->check() ? ($locale === 'km' ? 'គណនីរបស់អ្នក' : 'My Account') : ($locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Collection Trend' : 'Welcome to Collection Trend') }}</h3>
             <button type="button" class="mobile-sheet-close" onclick="closeMobileAccountSheet()" aria-label="Close">✕</button>
         </div>
         <div class="mobile-sheet-body">
@@ -2801,7 +2705,7 @@
             <span>{{ $locale === 'km' ? 'ប្រភេទទំនិញ' : 'Categories' }}</span>
         </a>
 
-        <a href="{{ route('store.home') }}#featured" onclick="handleBottomNavDeals(event)" class="bottom-nav-item bottom-nav-highlight">
+        <a href="{{ route('store.deals') }}" class="bottom-nav-item bottom-nav-highlight {{ request()->routeIs('store.deals') ? 'active' : '' }}">
             <span class="bottom-nav-deal-badge">🔥</span>
             <span>{{ $locale === 'km' ? 'ប្រូម៉ូសិន' : 'Deals' }}</span>
         </a>

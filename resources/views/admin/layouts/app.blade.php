@@ -13,6 +13,374 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ filemtime(public_path('css/admin.css')) }}">
+
+    <style>
+        /* ========================================================
+           MODERN ULTRA-PREMIUM ADMIN SIDEBAR OVERHAUL (EXPANDED & CRISP)
+           ======================================================== */
+        .food-sidebar {
+            width: 264px !important;
+            background: #ffffff !important;
+            border-right: 1px solid #e2e8f0 !important;
+            box-shadow: 4px 0 24px rgba(16, 41, 31, 0.04) !important;
+            padding: 18px 14px 24px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            z-index: 50 !important;
+        }
+
+        .food-main-wrapper {
+            margin-left: 264px !important;
+            max-width: calc(100vw - 264px) !important;
+        }
+
+        /* Brand Header */
+        .food-brand {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 2px 6px 14px !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            margin-bottom: 12px !important;
+            text-decoration: none !important;
+            transition: transform 0.2s ease !important;
+        }
+        .food-brand:hover {
+            transform: translateY(-1px) !important;
+        }
+
+        .food-brand-logo-wrap {
+            width: 46px !important;
+            height: 44px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            flex-shrink: 0 !important;
+        }
+
+        .food-brand-logo-wrap img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain !important;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12)) !important;
+        }
+
+        .food-brand-text {
+            display: flex !important;
+            flex-direction: column !important;
+            line-height: 1.15 !important;
+        }
+
+        .food-brand-title {
+            font-size: 19px !important;
+            font-weight: 800 !important;
+            letter-spacing: -0.4px !important;
+            font-family: 'DM Sans', 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        .brand-dark {
+            color: #0f291e !important;
+        }
+
+        .brand-orange {
+            color: #d97706 !important;
+        }
+
+        .food-brand-sub {
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            color: #047857 !important;
+            background: #ecfdf5 !important;
+            border: 1px solid #a7f3d0 !important;
+            padding: 2px 8px !important;
+            border-radius: 6px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            margin-top: 4px !important;
+            width: fit-content !important;
+        }
+
+        .brand-sub-dot {
+            width: 5px !important;
+            height: 5px !important;
+            border-radius: 50% !important;
+            background: #10b981 !important;
+            display: inline-block !important;
+        }
+
+        /* Nav Menu Items - Slightly Larger & Super Clean */
+        .food-nav {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3px !important;
+            margin-bottom: auto !important;
+        }
+
+        .food-nav a {
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 9px 14px !important;
+            border-radius: 11px !important;
+            color: #475569 !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .food-nav a .nav-icon {
+            width: 22px !important;
+            height: 22px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #64748b !important;
+            transition: all 0.2s ease !important;
+            flex-shrink: 0 !important;
+        }
+
+        .food-nav a .nav-icon svg {
+            width: 19px !important;
+            height: 19px !important;
+            stroke-width: 2.2 !important;
+        }
+
+        .food-nav a:hover {
+            background: #f0fdf4 !important;
+            color: #166534 !important;
+            transform: translateX(4px) !important;
+        }
+
+        .food-nav a:hover .nav-icon {
+            color: #16a34a !important;
+            transform: scale(1.08) !important;
+        }
+
+        /* Active Highlight (Like Settings in screenshot) */
+        .food-nav a.active {
+            background: linear-gradient(135deg, #0d281c 0%, #173e2c 50%, #225741 100%) !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            box-shadow: 0 4px 16px rgba(23, 62, 44, 0.32) !important;
+            transform: translateX(0) !important;
+        }
+
+        .food-nav a.active .nav-icon {
+            color: #ffffff !important;
+        }
+
+        .food-nav a.active:hover {
+            transform: translateX(0) !important;
+            filter: brightness(1.04) !important;
+        }
+
+        /* Sidebar Live Hub Widget Overhaul */
+        .sidebar-live-hub {
+            margin-top: 14px !important;
+            background: radial-gradient(circle at 100% 0%, rgba(216, 169, 98, 0.2) 0%, transparent 60%),
+                        linear-gradient(155deg, #092017 0%, #10291f 45%, #184431 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            border-radius: 16px !important;
+            padding: 13px 12px !important;
+            color: #ffffff !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 9px !important;
+            box-shadow: 0 10px 25px -4px rgba(16, 41, 31, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+            position: relative !important;
+            overflow: hidden !important;
+            flex-shrink: 0 !important;
+        }
+
+        .live-hub-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .live-hub-status {
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+
+        .hub-status-text {
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            color: #6ee7b7 !important;
+            letter-spacing: 0.5px !important;
+            text-transform: uppercase !important;
+        }
+
+        .hub-pulse-dot {
+            width: 7px !important;
+            height: 7px !important;
+            border-radius: 50% !important;
+            background: #10b981 !important;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7) !important;
+            animation: hubPulse 2s infinite !important;
+        }
+
+        .live-hub-clock {
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            color: #fef08a !important;
+            font-family: 'DM Sans', monospace !important;
+            background: rgba(0, 0, 0, 0.35) !important;
+            padding: 2.5px 7px !important;
+            border-radius: 6px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .live-hub-identity {
+            display: flex !important;
+            align-items: center !important;
+            gap: 9px !important;
+            padding: 0 !important;
+        }
+
+        .hub-avatar {
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 10px !important;
+            background: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .hub-avatar img {
+            width: 24px !important;
+            height: 24px !important;
+            object-fit: contain !important;
+        }
+
+        .hub-text {
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            line-height: 1.2 !important;
+        }
+
+        .hub-name {
+            font-size: 13.5px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        .hub-sub {
+            font-size: 11px !important;
+            color: #a7f3d0 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            margin-top: 2px !important;
+        }
+
+        .live-hub-metrics {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 5px !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            padding: 6px 4px !important;
+            border-radius: 10px !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            text-align: center !important;
+        }
+
+        .hub-metric-chip {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2px !important;
+        }
+
+        .hub-metric-chip .chip-label {
+            font-size: 9.5px !important;
+            color: #94a3b8 !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.3px !important;
+        }
+
+        .hub-metric-chip .chip-val {
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            color: #ffffff !important;
+        }
+
+        .hub-primary-btn {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            width: 100% !important;
+            height: 38px !important;
+            padding: 0 12px !important;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            border-radius: 10px !important;
+            font-weight: 800 !important;
+            font-size: 13px !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+        }
+
+        .hub-primary-btn:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5) !important;
+            color: #ffffff !important;
+        }
+
+        .hub-quick-tools {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 6px !important;
+        }
+
+        .hub-tool-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
+            height: 32px !important;
+            padding: 0 8px !important;
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            border-radius: 8px !important;
+            color: #f1f5f9 !important;
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.18s ease !important;
+        }
+
+        .hub-tool-btn:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .hub-tool-btn.is-copied {
+            background: #059669 !important;
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 <body class="food-admin-body {{ request()->routeIs('admin.dashboard') ? 'is-dashboard-view' : '' }}">
     @php($isAdmin = auth()->user()?->is_admin ?? false)
@@ -20,13 +388,16 @@
     <!-- Sidebar -->
     <aside class="food-sidebar">
         <!-- Brand Logo matched with Collection Trend -->
-        <a class="food-brand" href="{{ route('admin.dashboard') }}">
-            <div class="food-brand-icon dara-brand-mark" style="background:transparent; padding:0; width:38px; height:38px;">
-                <img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="38" height="38" style="border-radius:10px;">
-            </div>
+        <a class="food-brand" href="{{ route('admin.dashboard') }}" title="Collection Trend Admin">
+            <span class="food-brand-logo-wrap">
+                <img src="{{ asset('images/logo-icon.svg') }}?v={{ time() }}" alt="Collection Trend Logo" width="46" height="44">
+            </span>
             <div class="food-brand-text">
                 <div class="food-brand-title"><span class="brand-dark">collection</span><span class="brand-orange">-trend</span></div>
-                <small class="food-brand-sub">{{ $storeSettings['store_name_km'] ?? 'STORE MANAGEMENT' }}</small>
+                <span class="food-brand-sub">
+                    <span class="brand-sub-dot"></span>
+                    <span>{{ $storeSettings['store_name_km'] ?? 'គ្រប់គ្រងហាង' }}</span>
+                </span>
             </div>
         </a>
 
@@ -169,7 +540,7 @@
             <!-- Hub Brand / Identity -->
             <div class="live-hub-identity">
                 <div class="hub-avatar">
-                    <span class="hub-mark">{{ strtolower(substr($storeSettings['store_name_en'] ?? 'Dara', 0, 1)) }}</span>
+                    <img src="{{ asset('images/logo-icon.svg') }}?v={{ time() }}" alt="Collection Trend" width="22" height="22">
                 </div>
                 <div class="hub-text">
                     <strong class="hub-name">{{ $storeSettings['store_name_km'] ?? 'ផ្សារតារា' }}</strong>

@@ -243,6 +243,48 @@ class StoreController extends Controller
         ]);
     }
 
+    public function deals(Request $request): View
+    {
+        $locale = $this->resolveLocale($request);
+        $products = array_values(array_filter(
+            $this->catalogProducts(),
+            static fn (array $product): bool => !empty($product['old_price']) && (float) $product['old_price'] > (float) $product['price'],
+        ));
+
+        if (empty($products)) {
+            $all = $this->catalogProducts();
+            $products = array_slice($all, 0, 8);
+        }
+
+        $categories = config('store.categories');
+        $categoryCounts = array_fill_keys($categories, 0);
+        $discountCount = count($products);
+        $topRatedCount = 0;
+
+        foreach ($products as $prod) {
+            if (isset($categoryCounts[$prod['filter_key']])) {
+                $categoryCounts[$prod['filter_key']]++;
+            }
+            if (($prod['rating'] ?? 0) >= 4.8) {
+                $topRatedCount++;
+            }
+        }
+
+        return view('store.pages.products', [
+            'locale' => $locale,
+            'categories' => $categories,
+            'categoryCounts' => $categoryCounts,
+            'discountCount' => $discountCount,
+            'topRatedCount' => $topRatedCount,
+            'totalCount' => count($products),
+            'selectedCategory' => 'all',
+            'search' => '',
+            'isDeals' => true,
+            'translations' => __('store'),
+            'products' => $products,
+        ]);
+    }
+
     public function categories(Request $request): View
     {
         $locale = $this->resolveLocale($request);
@@ -333,6 +375,16 @@ class StoreController extends Controller
             'categories' => $categories,
             'totalCategories' => count($categories),
             'totalProducts' => count($products),
+            'translations' => __('store'),
+        ]);
+    }
+
+    public function services(Request $request): View
+    {
+        $locale = $this->resolveLocale($request);
+
+        return view('store.pages.services', [
+            'locale' => $locale,
             'translations' => __('store'),
         ]);
     }

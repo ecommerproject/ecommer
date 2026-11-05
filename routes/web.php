@@ -113,8 +113,10 @@ Route::group([], function (): void {
 Route::get('/products', [StoreController::class, 'products'])->name('store.products');
 Route::get('/products/{product}', [StoreController::class, 'show'])->name('store.products.show');
 Route::get('/new-arrivals', [StoreController::class, 'newArrivals'])->name('store.new-arrivals');
+Route::get('/deals', [StoreController::class, 'deals'])->name('store.deals');
 Route::get('/categories', [StoreController::class, 'categories'])->name('store.categories');
 Route::get('/about', [StoreController::class, 'about'])->name('store.about');
+Route::get('/services', [StoreController::class, 'services'])->name('store.services');
 Route::get('/contact', [StoreController::class, 'contact'])->name('store.contact');
 Route::post('/contact', [StoreController::class, 'submitContact'])
     ->middleware('throttle:10,1')

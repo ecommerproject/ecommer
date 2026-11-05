@@ -1,50 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="75 70 325 355" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="110 70 285 345" width="100%" height="100%">
     <defs>
-        <!-- Gradients for 3D Speed Stripes -->
-        <linearGradient id="stripeTop" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#ff3b00" />
-            <stop offset="50%" stop-color="#ff5e00" />
-            <stop offset="100%" stop-color="#ff8500" />
+        <!-- Gradients for Vibrant 3D Speed Stripes (Orange to Coral/Vermillion) -->
+        <linearGradient id="stTop" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ff3300" />
+            <stop offset="60%" stop-color="#ff5c00" />
+            <stop offset="100%" stop-color="#ff8800" />
         </linearGradient>
 
-        <linearGradient id="stripeMidTop" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#e02500" />
-            <stop offset="30%" stop-color="#ff4400" />
+        <linearGradient id="stMidUpper" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#cc1a00" />
+            <stop offset="35%" stop-color="#ff3e00" />
             <stop offset="70%" stop-color="#ff6600" />
             <stop offset="100%" stop-color="#ff8000" />
         </linearGradient>
-        <linearGradient id="stripeMidBot" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#a31400" />
-            <stop offset="40%" stop-color="#c41c00" />
-            <stop offset="100%" stop-color="#e62d00" />
+        <linearGradient id="stMidLower" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#991100" />
+            <stop offset="40%" stop-color="#bd1800" />
+            <stop offset="100%" stop-color="#de2800" />
         </linearGradient>
 
-        <linearGradient id="stripeBotTop" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#e63b00" />
-            <stop offset="40%" stop-color="#ff6200" />
-            <stop offset="100%" stop-color="#ff9400" />
+        <linearGradient id="stBotUpper" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d62b00" />
+            <stop offset="40%" stop-color="#ff5a00" />
+            <stop offset="100%" stop-color="#ff9900" />
         </linearGradient>
-        <linearGradient id="stripeBotBot" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#aa1800" />
-            <stop offset="50%" stop-color="#c92600" />
-            <stop offset="100%" stop-color="#e83800" />
+        <linearGradient id="stBotLower" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#991400" />
+            <stop offset="50%" stop-color="#bd2200" />
+            <stop offset="100%" stop-color="#de3200" />
         </linearGradient>
 
         <!-- Paper Bag Body Shading -->
-        <linearGradient id="bagFront" x1="0%" y1="0%" x2="0%" y2="100%">
+        <linearGradient id="bagFrontFace" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#ffffff" />
             <stop offset="45%" stop-color="#f8fafc" />
             <stop offset="75%" stop-color="#e2e8f0" />
             <stop offset="100%" stop-color="#94a3b8" />
         </linearGradient>
 
-        <linearGradient id="bagSide" x1="0%" y1="0%" x2="100%" y2="0%">
+        <linearGradient id="bagSideFold" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#cbd5e1" />
             <stop offset="60%" stop-color="#94a3b8" />
             <stop offset="100%" stop-color="#64748b" />
         </linearGradient>
 
-        <linearGradient id="bagBase" x1="0%" y1="0%" x2="0%" y2="100%">
+        <linearGradient id="bagBaseShadow" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#334155" />
             <stop offset="50%" stop-color="#1e293b" />
             <stop offset="100%" stop-color="#0f172a" />
@@ -52,46 +52,46 @@
     </defs>
 
     <!-- Ground Shadow -->
-    <ellipse cx="265" cy="410" rx="95" ry="9" fill="#0f172a" opacity="0.2" />
+    <ellipse cx="265" cy="402" rx="90" ry="8" fill="#0f172a" opacity="0.18" />
 
-    <!-- Back Handle (Tilted) -->
-    <path d="M 235 152 C 235 86 288 86 288 152" fill="none" stroke="#0f172a" stroke-width="16" stroke-linecap="round" />
-    <path d="M 235 152 C 235 92 288 92 288 152" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.45" />
+    <!-- Back Handle -->
+    <path d="M 235 152 C 235 88 288 88 288 152" fill="none" stroke="#0f172a" stroke-width="16" stroke-linecap="round" />
+    <path d="M 235 152 C 235 94 288 94 288 152" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.45" />
 
     <!-- Front Handle -->
-    <path d="M 260 152 C 260 80 320 80 320 152" fill="none" stroke="#0f172a" stroke-width="16" stroke-linecap="round" />
-    <path d="M 260 152 C 260 86 320 86 320 152" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.45" />
+    <path d="M 260 152 C 260 82 320 82 320 152" fill="none" stroke="#0f172a" stroke-width="16" stroke-linecap="round" />
+    <path d="M 260 152 C 260 88 320 88 320 152" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" opacity="0.45" />
 
     <!-- Bag 3D Right Side Gusset -->
-    <polygon points="346,148 376,154 388,342 355,360" fill="url(#bagSide)" stroke="#0f172a" stroke-width="15" stroke-linejoin="round" />
+    <polygon points="346,148 376,154 388,342 355,360" fill="url(#bagSideFold)" stroke="#0f172a" stroke-width="15" stroke-linejoin="round" />
     <polygon points="355,360 376,340 376,154" fill="#f1f5f9" stroke="#0f172a" stroke-width="6" stroke-linejoin="round" />
 
     <!-- Bag Front Panel -->
-    <path d="M 198 148 L 346 148 L 355 360 L 192 346 Z" fill="url(#bagFront)" stroke="#0f172a" stroke-width="15" stroke-linejoin="round" />
+    <path d="M 198 148 L 346 148 L 355 360 L 192 346 Z" fill="url(#bagFrontFace)" stroke="#0f172a" stroke-width="15" stroke-linejoin="round" />
 
     <!-- Bottom Dark Gradient Segment -->
-    <path d="M 191 316 L 354 330 L 355 360 L 192 346 Z" fill="url(#bagBase)" />
+    <path d="M 191 316 L 354 330 L 355 360 L 192 346 Z" fill="url(#bagBaseShadow)" />
 
-    <!-- Rivet Rings on Bag Front -->
+    <!-- Handle Rivets on Bag Front -->
     <circle cx="236" cy="168" r="9" fill="#0f172a" />
     <circle cx="300" cy="168" r="9" fill="#0f172a" />
 
     <!-- Decorative Accent Dot -->
     <ellipse cx="220" cy="208" rx="10" ry="7" fill="#0f172a" />
 
-    <!-- SPEED STRIPES (Bursting to Left) -->
+    <!-- SPEED STRIPES (Vibrant Radiant Orange) -->
     <!-- Stripe 1: Top Dot & Streak -->
-    <circle cx="125" cy="242" r="11" fill="url(#stripeTop)" />
-    <path d="M 154 228 C 147 228 143 234 143 240 C 143 246 147 251 154 251 L 350 178 L 346 160 Z" fill="url(#stripeTop)" />
+    <circle cx="125" cy="242" r="11" fill="url(#stTop)" />
+    <path d="M 154 228 C 147 228 143 234 143 240 C 143 246 147 251 154 251 L 350 178 L 346 160 Z" fill="url(#stTop)" />
 
     <!-- Stripe 2: Middle Thick 3D Beveled Stripe -->
-    <path d="M 136 266 C 127 266 120 273 120 282 C 120 289 125 295 131 298 L 354 214 L 352 190 Z" fill="url(#stripeMidTop)" />
-    <path d="M 131 298 C 133 299 137 300 140 300 L 355 228 L 354 214 Z" fill="url(#stripeMidDark)" />
+    <path d="M 136 266 C 127 266 120 273 120 282 C 120 289 125 295 131 298 L 354 214 L 352 190 Z" fill="url(#stMidUpper)" />
+    <path d="M 131 298 C 133 299 137 300 140 300 L 355 228 L 354 214 Z" fill="url(#stMidLower)" />
 
     <!-- Stripe 3: Bottom 3D Stripe & Motion Dot -->
     <ellipse cx="138" cy="336" rx="15" ry="9.5" fill="#1e293b" />
-    <path d="M 166 310 C 158 310 151 316 151 324 C 151 330 154 335 160 338 L 356 264 L 355 242 Z" fill="url(#stripeBotTop)" />
-    <path d="M 160 338 C 163 339 167 340 170 340 L 357 278 L 356 264 Z" fill="url(#stripeBotDark)" />
+    <path d="M 166 310 C 158 310 151 316 151 324 C 151 330 154 335 160 338 L 356 264 L 355 242 Z" fill="url(#stBotUpper)" />
+    <path d="M 160 338 C 163 339 167 340 170 340 L 357 278 L 356 264 Z" fill="url(#stBotLower)" />
 
     <!-- Outer Contour Dark Line -->
     <path d="M 198 148 L 346 148 L 376 154 L 388 342 L 355 360 L 192 346 Z" fill="none" stroke="#0f172a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
