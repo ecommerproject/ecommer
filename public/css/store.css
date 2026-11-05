@@ -708,22 +708,27 @@ button { color: inherit; }
 .brand-mark {
     width: 44px;
     height: 44px;
-    display: grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 12px;
-    background: linear-gradient(135deg, #245943 0%, #163d2e 100%);
-    color: #ffffff;
-    font-family: "DM Sans", sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    font-style: italic;
-    line-height: 1;
-    box-shadow: 0 4px 12px rgba(36, 89, 67, 0.25);
-    transition: box-shadow 0.2s;
+    background: transparent;
+    flex-shrink: 0;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+}
+
+.brand-mark img,
+.brand-mark svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 12px;
+    object-fit: contain;
 }
 
 .brand:hover .brand-mark {
-    box-shadow: 0 6px 16px rgba(36, 89, 67, 0.35);
+    transform: translateY(-1.5px) scale(1.05);
+    filter: drop-shadow(0 6px 16px rgba(216, 169, 98, 0.4));
 }
 
 .brand-copy {

@@ -6,6 +6,11 @@
     <meta name="theme-color" content="#10291f">
     <meta name="description" content="{{ $translations['meta']['description'] }}">
     <title>@yield('title', $translations['meta']['title'])</title>
+    <!-- Brand Favicons & Icons -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -103,7 +108,7 @@
                 <span></span><span></span><span></span>
             </button>
             <a class="brand" href="{{ route('store.home') }}" aria-label="{{ $translations['language']['label'] }}: {{ $translations['meta']['home'] }}">
-                <span class="brand-mark" aria-hidden="true">d</span>
+                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="44" height="44"></span>
                 <div class="brand-copy">
                     <div class="brand-copy-title">dara<span>market</span></div>
                     <small>STORE &amp; LIVING</small>
@@ -342,7 +347,7 @@
                 <!-- Mobile Drawer Header (Visible on Mobile Only) -->
                 <div class="mobile-drawer-header">
                     <div class="drawer-brand">
-                        <span class="brand-mark" style="width: 32px; height: 32px; font-size: 18px; border-radius: 9px;">d</span>
+                        <span class="brand-mark" style="width: 32px; height: 32px;"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="32" height="32"></span>
                         <div class="brand-copy" style="font-size: 18px;">
                             <div class="brand-copy-title">dara<span>market</span></div>
                         </div>
@@ -506,7 +511,7 @@
         <div class="container footer-grid">
             <div class="footer-about">
                 <a class="brand footer-brand" href="{{ route('store.home') }}">
-                    <span class="brand-mark" aria-hidden="true">d</span>
+                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="44" height="44"></span>
                     <span class="brand-copy">dara<span>market</span><small class="footer-tagline-text">{{ $translations['footer']['tagline'] }}</small></span>
                 </a>
                 <p>{{ $translations['footer']['about'] }}</p>

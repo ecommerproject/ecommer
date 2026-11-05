@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#245943">
     <title>@yield('title', 'Dashboard') | Dara Market Store Management</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,8 +21,8 @@
     <aside class="food-sidebar">
         <!-- Brand Logo matched with Dara Market -->
         <a class="food-brand" href="{{ route('admin.dashboard') }}">
-            <div class="food-brand-icon dara-brand-mark">
-                <span>{{ strtolower(substr($storeSettings['store_name_en'] ?? 'dara', 0, 1)) }}</span>
+            <div class="food-brand-icon dara-brand-mark" style="background:transparent; padding:0; width:38px; height:38px;">
+                <img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="38" height="38" style="border-radius:10px;">
             </div>
             <div class="food-brand-text">
                 <div class="food-brand-title"><span class="brand-dark">{{ strtolower(\Illuminate\Support\Str::words($storeSettings['store_name_en'] ?? 'dara market', 1, '')) }}</span><span class="brand-orange">{{ strtolower(trim(str_replace(\Illuminate\Support\Str::words($storeSettings['store_name_en'] ?? 'dara market', 1, ''), '', $storeSettings['store_name_en'] ?? 'market'))) }}</span></div>

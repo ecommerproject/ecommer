@@ -11,7 +11,7 @@
 
             <div class="auth-showcase-header">
                 <a class="brand auth-brand" href="{{ route('store.home') }}">
-                    <span class="brand-mark" aria-hidden="true">d</span>
+                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="40" height="40"></span>
                     <span class="brand-copy">dara<span>market</span></span>
                 </a>
                 <span class="auth-showcase-tag">ហាងទំនិញផ្លូវការ</span>
