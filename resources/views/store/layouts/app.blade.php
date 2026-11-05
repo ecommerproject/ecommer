@@ -108,9 +108,9 @@
                 <span></span><span></span><span></span>
             </button>
             <a class="brand" href="{{ route('store.home') }}" aria-label="{{ $translations['language']['label'] }}: {{ $translations['meta']['home'] }}">
-                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="44" height="44"></span>
+                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="44" height="44"></span>
                 <div class="brand-copy">
-                    <div class="brand-copy-title">dara<span>market</span></div>
+                    <div class="brand-copy-title">collection<span>-trend</span></div>
                     <small>STORE &amp; LIVING</small>
                 </div>
             </a>
@@ -347,9 +347,9 @@
                 <!-- Mobile Drawer Header (Visible on Mobile Only) -->
                 <div class="mobile-drawer-header">
                     <div class="drawer-brand">
-                        <span class="brand-mark" style="width: 32px; height: 32px;"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="32" height="32"></span>
+                        <span class="brand-mark" style="width: 32px; height: 32px;"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="32" height="32"></span>
                         <div class="brand-copy" style="font-size: 18px;">
-                            <div class="brand-copy-title">dara<span>market</span></div>
+                            <div class="brand-copy-title">collection<span>-trend</span></div>
                         </div>
                     </div>
                     <button type="button" class="drawer-close-btn" onclick="document.querySelector('.main-nav').classList.remove('is-open')" aria-label="Close menu">✕</button>
@@ -511,8 +511,8 @@
         <div class="container footer-grid">
             <div class="footer-about">
                 <a class="brand footer-brand" href="{{ route('store.home') }}">
-                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="44" height="44"></span>
-                    <span class="brand-copy">dara<span>market</span><small class="footer-tagline-text">{{ $translations['footer']['tagline'] }}</small></span>
+                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="44" height="44"></span>
+                    <span class="brand-copy">collection<span>-trend</span><small class="footer-tagline-text">{{ $translations['footer']['tagline'] }}</small></span>
                 </a>
                 <p>{{ $translations['footer']['about'] }}</p>
                 <div class="social-links" aria-label="{{ $translations['footer']['social'] }}">

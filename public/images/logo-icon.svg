@@ -1,62 +1,166 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
     <defs>
-        <!-- Background Forest Green Gradient -->
-        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#1f5a41" />
-            <stop offset="45%" stop-color="#143e2d" />
-            <stop offset="100%" stop-color="#0b2319" />
+        <!-- Luxury Forest Emerald Gradients matching Website -->
+        <linearGradient id="emeraldDark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#246a4d" />
+            <stop offset="40%" stop-color="#164b36" />
+            <stop offset="100%" stop-color="#0e2f22" />
         </linearGradient>
 
-        <!-- Luxury Gold Gradient -->
+        <linearGradient id="bagGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#22664a" />
+            <stop offset="45%" stop-color="#184e38" />
+            <stop offset="100%" stop-color="#0f3425" />
+        </linearGradient>
+
+        <linearGradient id="handleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2b7a56" />
+            <stop offset="100%" stop-color="#133d2b" />
+        </linearGradient>
+
+        <!-- Luxury Metallic Gold Gradients matching Website -->
         <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#fff5d6" />
-            <stop offset="28%" stop-color="#f5d37f" />
+            <stop offset="0%" stop-color="#fff0c7" />
+            <stop offset="30%" stop-color="#f5d37f" />
             <stop offset="70%" stop-color="#d49b3d" />
             <stop offset="100%" stop-color="#9e6d20" />
         </linearGradient>
 
-        <!-- Star Glow Gold Gradient -->
-        <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" />
-            <stop offset="35%" stop-color="#ffecb3" />
-            <stop offset="80%" stop-color="#e5b35a" />
-            <stop offset="100%" stop-color="#b8832a" />
+        <linearGradient id="goldLight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fff8e1" />
+            <stop offset="100%" stop-color="#e2b04f" />
         </linearGradient>
 
-        <!-- Subtle Inner Border Highlight -->
+        <!-- Container Border Gradient -->
         <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#f5d37f" stop-opacity="0.75" />
-            <stop offset="50%" stop-color="#ffffff" stop-opacity="0.15" />
-            <stop offset="100%" stop-color="#d49b3d" stop-opacity="0.6" />
+            <stop offset="0%" stop-color="#22664a" />
+            <stop offset="35%" stop-color="#f5d37f" />
+            <stop offset="70%" stop-color="#184e38" />
+            <stop offset="100%" stop-color="#d49b3d" />
         </linearGradient>
 
-        <!-- Drop Shadow for the "D" and Star -->
-        <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="2.5" stdDeviation="3" flood-color="#000000" flood-opacity="0.45" />
-            <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#f5d37f" flood-opacity="0.35" />
+        <!-- Box 3D Shading Gradients -->
+        <linearGradient id="boxTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#f0f5f2" />
+        </linearGradient>
+        <linearGradient id="boxLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f4f8f5" />
+            <stop offset="100%" stop-color="#dce6e0" />
+        </linearGradient>
+        <linearGradient id="boxRight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e5ede8" />
+            <stop offset="100%" stop-color="#c8d6ce" />
+        </linearGradient>
+
+        <!-- Tape Ribbon Gradient -->
+        <linearGradient id="tapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2b7a56" />
+            <stop offset="50%" stop-color="#184e38" />
+            <stop offset="100%" stop-color="#0f3425" />
+        </linearGradient>
+
+        <!-- Soft Shadows -->
+        <filter id="shadowBag" x="-10%" y="-10%" width="125%" height="125%">
+            <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#0a2318" flood-opacity="0.22" />
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0a2318" flood-opacity="0.12" />
+        </filter>
+        <filter id="shadowCanopy" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#05150e" flood-opacity="0.3" />
+        </filter>
+        <filter id="shadowBox" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#061a11" flood-opacity="0.28" />
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.1" />
         </filter>
     </defs>
 
-    <!-- Main Shield / Squircle Container -->
-    <rect x="6" y="6" width="108" height="108" rx="28" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="2.5" />
+    <!-- Outer Squircle App Icon Container -->
+    <rect x="18" y="18" width="476" height="476" rx="112" fill="#ffffff" stroke="url(#borderGrad)" stroke-width="8" />
 
-    <!-- Subtle Diagonal Gloss Stripe -->
-    <path d="M6 34 C6 18.5 18.5 6 34 6 L86 6 C96 6 104 11 109 19 L20 108 C11 103 6 95 6 86 Z" fill="#ffffff" opacity="0.04" />
+    <!-- Motion Speed Lines (Fast Delivery - bottom left) -->
+    <g opacity="0.95">
+        <rect x="110" y="408" width="140" height="9" rx="4.5" fill="#184e38" opacity="0.45" />
+        <rect x="150" y="428" width="105" height="9" rx="4.5" fill="url(#goldGrad)" />
+    </g>
 
-    <!-- Monogram: Modern Elegant "D" & Shopping Arch -->
-    <g filter="url(#goldGlow)">
-        <!-- Outer Stem & Curve of Capital D -->
-        <path d="M34 27 C34 24.8 35.8 23 38 23 L62 23 C79.5 23 91 34.5 91 52 C91 69.5 79.5 81 62 81 L38 81 C35.8 81 34 79.2 34 77 Z M47 35 L47 69 L61 69 C71.5 69 78 62 78 52 C78 42 71.5 35 61 35 Z" fill="url(#goldGrad)" fill-rule="evenodd" />
+    <!-- ============================================== -->
+    <!-- MAIN SHOPPING BAG WITH STOREFRONT CANOPY       -->
+    <!-- ============================================== -->
+    <g filter="url(#shadowBag)">
+        <!-- Bag Arch Handle (Behind bag) -->
+        <path d="M 196 180 C 196 95 316 95 316 180" fill="none" stroke="url(#handleGrad)" stroke-width="26" stroke-linecap="round" />
+        <!-- Bag Handle Inner Gold Accent -->
+        <path d="M 196 180 C 196 95 316 95 316 180" fill="none" stroke="url(#goldGrad)" stroke-width="4" stroke-linecap="round" opacity="0.6" />
 
-        <!-- 4-Point Radiant Spark Star (Dara = Star) floating inside/top-right of D -->
-        <g transform="translate(62, 52)">
-            <!-- Central Shining 4-point Star -->
-            <path d="M0 -22 C0 -6 6 0 22 0 C6 0 0 6 0 22 C0 6 -6 0 -22 0 C-6 0 0 -6 0 -22 Z" fill="url(#starGrad)" />
-            <!-- Star Core Diamond Light -->
-            <circle cx="0" cy="0" r="3" fill="#ffffff" />
+        <!-- Shopping Bag Body (Trapezoid with rounded corners) -->
+        <path d="M 152 165 C 158 155 168 150 180 150 L 332 150 C 344 150 354 155 360 165 L 402 375 C 408 388 398 402 384 402 L 128 402 C 114 402 104 388 110 375 Z" fill="url(#bagGrad)" />
+
+        <!-- Bag Top Rim Highlight -->
+        <path d="M 174 153 L 338 153" stroke="url(#goldGrad)" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+
+        <!-- Handle Attachment Rivet Rings (Gold + White) -->
+        <g fill="none" stroke="url(#goldGrad)" stroke-width="5">
+            <circle cx="196" cy="180" r="14" fill="#ffffff" />
+            <circle cx="316" cy="180" r="14" fill="#ffffff" />
+        </g>
+        <circle cx="196" cy="180" r="8" fill="#133d2b" />
+        <circle cx="316" cy="180" r="8" fill="#133d2b" />
+
+        <!-- ========================================== -->
+        <!-- STOREFRONT WINDOW (Under Canopy)           -->
+        <!-- ========================================== -->
+        <rect x="168" y="278" width="176" height="106" rx="18" fill="#ffffff" />
+        <rect x="180" y="306" width="152" height="66" rx="10" fill="#0c261b" />
+        <!-- Window Warm Ambient Light -->
+        <rect x="188" y="314" width="136" height="50" rx="6" fill="#f5d37f" opacity="0.25" />
+
+        <!-- ========================================== -->
+        <!-- STOREFRONT CANOPY / AWNING                 -->
+        <!-- ========================================== -->
+        <g filter="url(#shadowCanopy)">
+            <!-- Canopy Sloped Awning Body -->
+            <!-- 5 Stripes: Alternating Gold & White -->
+            <g>
+                <!-- Stripe 1 (Left): Gold -->
+                <path d="M 152 230 L 194 230 L 190 286 C 182 298 162 298 154 286 Z" fill="url(#goldGrad)" />
+                <!-- Stripe 2: White -->
+                <path d="M 194 230 L 236 230 L 232 286 C 224 298 204 298 196 286 Z" fill="#ffffff" />
+                <!-- Stripe 3 (Center): Gold -->
+                <path d="M 236 230 L 276 230 L 274 286 C 266 298 246 298 238 286 Z" fill="url(#goldGrad)" />
+                <!-- Stripe 4: White -->
+                <path d="M 276 230 L 318 230 L 316 286 C 308 298 288 298 280 286 Z" fill="#ffffff" />
+                <!-- Stripe 5 (Right): Gold -->
+                <path d="M 318 230 L 360 230 L 358 286 C 350 298 330 298 322 286 Z" fill="url(#goldGrad)" />
+            </g>
+
+            <!-- Canopy Top Gold Highlight Bar -->
+            <rect x="150" y="226" width="212" height="7" rx="3.5" fill="url(#goldLight)" />
+            <!-- Canopy Scallop Bottom Edge Accents -->
+            <path d="M 154 286 C 162 298 182 298 190 286 C 198 298 218 298 226 286 C 234 298 254 298 262 286 C 270 298 290 298 298 286 C 306 298 326 298 334 286" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="2" />
         </g>
     </g>
 
-    <!-- Mini Ambient Corner Sparkle -->
-    <path d="M88 24 C88 20 89.5 18.5 93.5 18.5 C89.5 18.5 88 17 88 13 C88 17 86.5 18.5 82.5 18.5 C86.5 18.5 88 20 88 24 Z" fill="#fff5d6" opacity="0.85" />
+    <!-- ============================================== -->
+    <!-- 3D ISOMETRIC DELIVERY BOX (PARCEL)             -->
+    <!-- Overlapping in foreground right                -->
+    <!-- ============================================== -->
+    <g filter="url(#shadowBox)">
+        <!-- Top Face (Rhombus) -->
+        <polygon points="310,366 374,332 438,366 374,400" fill="url(#boxTop)" stroke="#22664a" stroke-width="2.5" />
+        <!-- Left Face -->
+        <polygon points="310,366 374,400 374,444 310,410" fill="url(#boxLeft)" stroke="#22664a" stroke-width="2.5" />
+        <!-- Right Face -->
+        <polygon points="374,400 438,366 438,410 374,444" fill="url(#boxRight)" stroke="#22664a" stroke-width="2.5" />
+
+        <!-- Tape / Ribbon (Emerald Forest with Gold Edges) -->
+        <!-- Top Face Tape -->
+        <polygon points="338,351 350,344 410,378 398,385" fill="url(#tapeGrad)" stroke="url(#goldGrad)" stroke-width="1.2" />
+        <!-- Left Face Ribbon Drop (V-cut ribbon tail) -->
+        <polygon points="338,351 350,344 350,387 344,380 338,387" fill="url(#tapeGrad)" stroke="url(#goldGrad)" stroke-width="1.2" />
+        <!-- Right Face Ribbon Drop -->
+        <polygon points="410,378 398,385 398,428 404,421 410,428" fill="url(#tapeGrad)" stroke="url(#goldGrad)" stroke-width="1.2" />
+    </g>
+
+    <!-- Mini Ambient Gold Sparkle (Top-Right of Bag) -->
+    <path d="M 390 120 C 390 110 394 106 404 106 C 394 106 390 102 390 92 C 390 102 386 106 376 106 C 386 106 390 110 390 120 Z" fill="url(#goldGrad)" />
 </svg>

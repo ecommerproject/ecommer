@@ -1,6 +1,6 @@
 @extends('store.layouts.app')
 
-@section('title', $translations['account']['register_title'].' | Dara Market')
+@section('title', $translations['account']['register_title'].' | Collection Trend')
 
 @section('content')
     <div class="container auth-page">
@@ -11,8 +11,8 @@
 
             <div class="auth-showcase-header">
                 <a class="brand auth-brand" href="{{ route('store.home') }}">
-                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="40" height="40"></span>
-                    <span class="brand-copy">dara<span>market</span></span>
+                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="40" height="40"></span>
+                    <span class="brand-copy">collection<span>-trend</span></span>
                 </a>
                 <span class="auth-showcase-tag">ហាងទំនិញផ្លូវការ</span>
             </div>

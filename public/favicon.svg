@@ -1,34 +1,81 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
     <defs>
-        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#1f5a41" />
-            <stop offset="45%" stop-color="#143e2d" />
-            <stop offset="100%" stop-color="#0b2319" />
+        <linearGradient id="emeraldDark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#246a4d" />
+            <stop offset="40%" stop-color="#164b36" />
+            <stop offset="100%" stop-color="#0e2f22" />
+        </linearGradient>
+        <linearGradient id="bagGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#22664a" />
+            <stop offset="45%" stop-color="#184e38" />
+            <stop offset="100%" stop-color="#0f3425" />
+        </linearGradient>
+        <linearGradient id="handleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2b7a56" />
+            <stop offset="100%" stop-color="#133d2b" />
         </linearGradient>
         <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#fff5d6" />
-            <stop offset="28%" stop-color="#f5d37f" />
+            <stop offset="0%" stop-color="#fff0c7" />
+            <stop offset="30%" stop-color="#f5d37f" />
             <stop offset="70%" stop-color="#d49b3d" />
             <stop offset="100%" stop-color="#9e6d20" />
         </linearGradient>
-        <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff" />
-            <stop offset="35%" stop-color="#ffecb3" />
-            <stop offset="80%" stop-color="#e5b35a" />
-            <stop offset="100%" stop-color="#b8832a" />
+        <linearGradient id="goldLight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fff8e1" />
+            <stop offset="100%" stop-color="#e2b04f" />
         </linearGradient>
         <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#f5d37f" stop-opacity="0.85" />
-            <stop offset="100%" stop-color="#d49b3d" stop-opacity="0.6" />
+            <stop offset="0%" stop-color="#22664a" />
+            <stop offset="35%" stop-color="#f5d37f" />
+            <stop offset="70%" stop-color="#184e38" />
+            <stop offset="100%" stop-color="#d49b3d" />
+        </linearGradient>
+        <linearGradient id="boxTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#f0f5f2" />
+        </linearGradient>
+        <linearGradient id="boxLeft" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f4f8f5" />
+            <stop offset="100%" stop-color="#dce6e0" />
+        </linearGradient>
+        <linearGradient id="boxRight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e5ede8" />
+            <stop offset="100%" stop-color="#c8d6ce" />
+        </linearGradient>
+        <linearGradient id="tapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2b7a56" />
+            <stop offset="50%" stop-color="#184e38" />
+            <stop offset="100%" stop-color="#0f3425" />
         </linearGradient>
     </defs>
-    <rect x="4" y="4" width="112" height="112" rx="30" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="3" />
-    <g>
-        <path d="M34 27 C34 24.8 35.8 23 38 23 L62 23 C79.5 23 91 34.5 91 52 C91 69.5 79.5 81 62 81 L38 81 C35.8 81 34 79.2 34 77 Z M47 35 L47 69 L61 69 C71.5 69 78 62 78 52 C78 42 71.5 35 61 35 Z" fill="url(#goldGrad)" fill-rule="evenodd" />
-        <g transform="translate(62, 52)">
-            <path d="M0 -22 C0 -6 6 0 22 0 C6 0 0 6 0 22 C0 6 -6 0 -22 0 C-6 0 0 -6 0 -22 Z" fill="url(#starGrad)" />
-            <circle cx="0" cy="0" r="3" fill="#ffffff" />
-        </g>
+    <rect x="18" y="18" width="476" height="476" rx="112" fill="#ffffff" stroke="url(#borderGrad)" stroke-width="12" />
+    <g opacity="0.95">
+        <rect x="110" y="408" width="140" height="12" rx="6" fill="#184e38" opacity="0.45" />
+        <rect x="150" y="428" width="105" height="12" rx="6" fill="url(#goldGrad)" />
     </g>
-    <path d="M88 24 C88 20 89.5 18.5 93.5 18.5 C89.5 18.5 88 17 88 13 C88 17 86.5 18.5 82.5 18.5 C86.5 18.5 88 20 88 24 Z" fill="#fff5d6" opacity="0.9" />
+    <path d="M 196 180 C 196 95 316 95 316 180" fill="none" stroke="url(#handleGrad)" stroke-width="30" stroke-linecap="round" />
+    <path d="M 152 165 C 158 155 168 150 180 150 L 332 150 C 344 150 354 155 360 165 L 402 375 C 408 388 398 402 384 402 L 128 402 C 114 402 104 388 110 375 Z" fill="url(#bagGrad)" />
+    <g fill="none" stroke="url(#goldGrad)" stroke-width="6">
+        <circle cx="196" cy="180" r="16" fill="#ffffff" />
+        <circle cx="316" cy="180" r="16" fill="#ffffff" />
+    </g>
+    <circle cx="196" cy="180" r="9" fill="#133d2b" />
+    <circle cx="316" cy="180" r="9" fill="#133d2b" />
+    <rect x="168" y="278" width="176" height="106" rx="18" fill="#ffffff" />
+    <rect x="180" y="306" width="152" height="66" rx="10" fill="#0c261b" />
+    <rect x="188" y="314" width="136" height="50" rx="6" fill="#f5d37f" opacity="0.25" />
+    <g>
+        <path d="M 152 230 L 194 230 L 190 286 C 182 298 162 298 154 286 Z" fill="url(#goldGrad)" />
+        <path d="M 194 230 L 236 230 L 232 286 C 224 298 204 298 196 286 Z" fill="#ffffff" />
+        <path d="M 236 230 L 276 230 L 274 286 C 266 298 246 298 238 286 Z" fill="url(#goldGrad)" />
+        <path d="M 276 230 L 318 230 L 316 286 C 308 298 288 298 280 286 Z" fill="#ffffff" />
+        <path d="M 318 230 L 360 230 L 358 286 C 350 298 330 298 322 286 Z" fill="url(#goldGrad)" />
+        <rect x="150" y="226" width="212" height="9" rx="4.5" fill="url(#goldLight)" />
+    </g>
+    <polygon points="310,366 374,332 438,366 374,400" fill="url(#boxTop)" stroke="#22664a" stroke-width="3" />
+    <polygon points="310,366 374,400 374,444 310,410" fill="url(#boxLeft)" stroke="#22664a" stroke-width="3" />
+    <polygon points="374,400 438,366 438,410 374,444" fill="url(#boxRight)" stroke="#22664a" stroke-width="3" />
+    <polygon points="338,351 350,344 410,378 398,385" fill="url(#tapeGrad)" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <polygon points="338,351 350,344 350,387 344,380 338,387" fill="url(#tapeGrad)" stroke="url(#goldGrad)" stroke-width="1.5" />
+    <polygon points="410,378 398,385 398,428 404,421 410,428" fill="url(#tapeGrad)" stroke="url(#goldGrad)" stroke-width="1.5" />
 </svg>

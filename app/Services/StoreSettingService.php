@@ -17,7 +17,7 @@ class StoreSettingService
     {
         return [
             // General Profile
-            'store_name_en' => 'Dara Market',
+            'store_name_en' => 'Collection Trend',
             'store_name_km' => 'ផ្សារតារា',
             'store_slogan' => 'Fresh Living, Electronics & Fashion Store in Cambodia',
             'contact_email' => 'contact@daramarket.com',

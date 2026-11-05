@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#245943">
-    <title>@yield('title', 'Dashboard') | Dara Market Store Management</title>
+    <title>@yield('title', 'Dashboard') | Collection Trend Store Management</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
@@ -19,13 +19,13 @@
 
     <!-- Sidebar -->
     <aside class="food-sidebar">
-        <!-- Brand Logo matched with Dara Market -->
+        <!-- Brand Logo matched with Collection Trend -->
         <a class="food-brand" href="{{ route('admin.dashboard') }}">
             <div class="food-brand-icon dara-brand-mark" style="background:transparent; padding:0; width:38px; height:38px;">
-                <img src="{{ asset('images/logo-icon.svg') }}" alt="Dara Market Logo" width="38" height="38" style="border-radius:10px;">
+                <img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="38" height="38" style="border-radius:10px;">
             </div>
             <div class="food-brand-text">
-                <div class="food-brand-title"><span class="brand-dark">{{ strtolower(\Illuminate\Support\Str::words($storeSettings['store_name_en'] ?? 'dara market', 1, '')) }}</span><span class="brand-orange">{{ strtolower(trim(str_replace(\Illuminate\Support\Str::words($storeSettings['store_name_en'] ?? 'dara market', 1, ''), '', $storeSettings['store_name_en'] ?? 'market'))) }}</span></div>
+                <div class="food-brand-title"><span class="brand-dark">collection</span><span class="brand-orange">-trend</span></div>
                 <small class="food-brand-sub">{{ $storeSettings['store_name_km'] ?? 'STORE MANAGEMENT' }}</small>
             </div>
         </a>
@@ -173,7 +173,7 @@
                 </div>
                 <div class="hub-text">
                     <strong class="hub-name">{{ $storeSettings['store_name_km'] ?? 'ផ្សារតារា' }}</strong>
-                    <span class="hub-sub">{{ $storeSettings['store_name_en'] ?? 'Dara Market Live' }}</span>
+                    <span class="hub-sub">{{ $storeSettings['store_name_en'] ?? 'Collection Trend Live' }}</span>
                 </div>
             </div>
 
@@ -385,9 +385,9 @@
             </div>
             <div class="qr-modal-body">
                 <div class="qr-code-frame">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode(route('store.home')) }}&bgcolor=ffffff&color=10291f&margin=2" alt="Dara Market Storefront QR" class="qr-image" width="180" height="180">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode(route('store.home')) }}&bgcolor=ffffff&color=10291f&margin=2" alt="Collection Trend Storefront QR" class="qr-image" width="180" height="180">
                 </div>
-                <p class="qr-desc">ប្រើកាមេរ៉ាទូរស័ព្ទរបស់អ្នក ដើម្បីស្កេនបើកមើលទំព័រហាង Dara Market លើទូរស័ព្ទដៃបានភ្លាមៗ។</p>
+                <p class="qr-desc">ប្រើកាមេរ៉ាទូរស័ព្ទរបស់អ្នក ដើម្បីស្កេនបើកមើលទំព័រហាង Collection Trend លើទូរស័ព្ទដៃបានភ្លាមៗ។</p>
                 <div class="qr-url-box">
                     <input type="text" value="{{ route('store.home') }}" readonly id="modalStoreUrlInput">
                     <button type="button" onclick="copyModalUrl(this)">Copy Link</button>
