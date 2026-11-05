@@ -22,26 +22,17 @@
     <!-- Enhanced Top Announcement & Utility Bar -->
     <div class="announcement">
         <div class="container announcement-inner">
-            <!-- Left: Rotating Announcement Ticker -->
-            <div class="announcement-ticker" id="announcementTicker">
-                <div class="ticker-track">
-                    <div class="ticker-item is-active">
-                        <span class="ticker-badge">🚚</span>
-                        <span class="ticker-text">{{ $locale === 'km' ? ($storeSettings['announcement_text_km'] ?? 'ដឹកជញ្ជូនឥតគិតថ្លៃ រាល់ការកម្ម៉ង់ចាប់ពី $35 ឡើងទៅ!') : ($storeSettings['announcement_text_en'] ?? 'Free Shipping on all orders over $35!') }}</span>
-                    </div>
-                    <div class="ticker-item">
-                        <span class="ticker-badge">⚡</span>
-                        <span class="ticker-text">{{ $locale === 'km' ? 'Flash Sale ពិសេស: បញ្ចុះតម្លៃរហូតដល់ 30% លើទំនិញពេញនិយម' : 'Flash Sale: Up to 30% OFF on Top Picks' }}</span>
-                    </div>
-                    <div class="ticker-item">
-                        <span class="ticker-badge">🎁</span>
-                        <span class="ticker-text">{{ $locale === 'km' ? 'កាដូស្វាគមន៍: សមាជិកថ្មីទទួលបានប័ណ្ណបញ្ចុះតម្លៃ $15 ភ្លាមៗ' : 'Welcome Gift: New members get $15 voucher instantly' }}</span>
-                    </div>
-                    <div class="ticker-item">
-                        <span class="ticker-badge">🇰🇭</span>
-                        <span class="ticker-text">{{ $locale === 'km' ? 'សេវាដឹករហ័ស ២៤-៤៨ ម៉ោង ទូទាំង ២៥ ខេត្ត-ក្រុង' : 'Fast 24-48h Delivery across all 25 provinces' }}</span>
-                    </div>
-                </div>
+            <!-- Left: Luxury Welcome Message -->
+            <div class="announcement-welcome-box">
+                <span class="welcome-tag-pill">
+                    <span class="welcome-sparkle-dot"></span>
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="#e5b35a" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span>{{ $locale === 'km' ? 'សូមស្វាគមន៍' : 'WELCOME' }}</span>
+                </span>
+                <span class="welcome-text-content">
+                    {{ $locale === 'km' ? 'សូមស្វាគមន៍មកកាន់ Collection Trend ហាងទំនិញអនឡាញទាន់សម័យ & គុណភាពខ្ពស់' : 'Welcome to Collection Trend • Modern Lifestyle & Premium Collections' }}
+                </span>
+            </div>
                 <div class="ticker-nav-controls">
                     <button type="button" class="ticker-nav-btn" onclick="prevTickerItem()" aria-label="Previous announcement" title="សារមុន">‹</button>
                     <button type="button" class="ticker-nav-btn" onclick="nextTickerItem()" aria-label="Next announcement" title="សារបន្ទាប់">›</button>
@@ -108,7 +99,7 @@
                 <span></span><span></span><span></span>
             </button>
             <a class="brand" href="{{ route('store.home') }}" aria-label="{{ $translations['language']['label'] }}: {{ $translations['meta']['home'] }}">
-                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="54" height="54"></span>
+                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793855471" alt="Collection Trend Logo" width="60" height="56"></span>
                 <div class="brand-copy">
                     <div class="brand-copy-title">collection<span>-trend</span></div>
                     <small>STORE &amp; LIVING</small>
@@ -511,7 +502,7 @@
         <div class="container footer-grid">
             <div class="footer-about">
                 <a class="brand footer-brand" href="{{ route('store.home') }}">
-                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="54" height="54"></span>
+                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793855471" alt="Collection Trend Logo" width="60" height="56"></span>
                     <span class="brand-copy">collection<span>-trend</span><small class="footer-tagline-text">{{ $translations['footer']['tagline'] }}</small></span>
                 </a>
                 <p>{{ $translations['footer']['about'] }}</p>
