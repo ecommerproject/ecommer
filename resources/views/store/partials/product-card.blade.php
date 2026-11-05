@@ -37,9 +37,19 @@
         <button class="favorite-button" type="button" aria-label="{{ $translations['js']['add_favorite'] }}" data-label-add="{{ $translations['js']['add_favorite'] }}" data-label-remove="{{ $translations['js']['remove_favorite'] }}" aria-pressed="false" title="{{ $translations['js']['add_favorite'] }}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.1-8.8 10-8.8 10s-8.8-4.9-8.8-10a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z"></path></svg>
         </button>
-        <button class="quick-add" type="button" data-id="{{ $product['id'] }}" data-price="{{ $product['price'] }}" data-name="{{ $product['name'] }}" data-image="{{ $product['image'] }}" onclick="if(window.storeAddToCart){ event.preventDefault(); event.stopPropagation(); window.storeAddToCart('{{ $product['id'] }}', '{{ addslashes($product['name']) }}', {{ $product['price'] }}, 1, '{{ $product['image'] }}'); }">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.5L22 8H6"></path><circle cx="10" cy="20" r="1.2"></circle><circle cx="18" cy="20" r="1.2"></circle></svg>
-            <span>{{ $translations['cart']['add'] }}</span>
+        <button class="quick-add" type="button" data-id="{{ $product['id'] }}" data-price="{{ $product['price'] }}" data-name="{{ $product['name'] }}" data-image="{{ $product['image'] }}" onclick="if(window.handleProductCardAdd){ window.handleProductCardAdd(this, event, '{{ $product['id'] }}', '{{ addslashes($product['name']) }}', {{ $product['price'] }}, '{{ $product['image'] }}'); } else if(window.storeAddToCart){ event.preventDefault(); event.stopPropagation(); window.storeAddToCart('{{ $product['id'] }}', '{{ addslashes($product['name']) }}', {{ $product['price'] }}, 1, '{{ $product['image'] }}'); }" aria-label="{{ $translations['cart']['add'] }}">
+            <span class="quick-add-shine" aria-hidden="true"></span>
+            <span class="quick-add-icon-box" aria-hidden="true">
+                <svg class="cart-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1.3"></circle>
+                    <circle cx="19" cy="21" r="1.3"></circle>
+                    <path d="M2.5 3h3l2.4 11.2a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.5l1.9-8.3H6.2"></path>
+                </svg>
+                <svg class="check-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </span>
+            <span class="quick-add-text">{{ $translations['cart']['add'] }}</span>
         </button>
     </div>
     <div class="product-info">

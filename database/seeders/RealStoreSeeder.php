@@ -981,6 +981,19 @@ class RealStoreSeeder extends Seeder
             ],
         ];
 
+        // Admin User
+        User::updateOrCreate(
+            ['email' => 'collection-trend123@gmail.com'],
+            [
+                'name' => 'Collection Trend Admin',
+                'phone' => '071 450 4547',
+                'address' => 'Phnom Penh, Cambodia',
+                'password' => Hash::make('collection-trend123'),
+                'is_admin' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+
         foreach ($realBuyers as $b) {
             User::updateOrCreate(
                 ['email' => $b['email']],

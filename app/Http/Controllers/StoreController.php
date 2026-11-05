@@ -26,7 +26,38 @@ class StoreController extends Controller
             $categoryCounts[$product['filter_key']]++;
         }
 
+        $promotionalProducts = array_values(array_filter($products, static function (array $p): bool {
+            return !empty($p['old_price']) && $p['old_price'] > $p['price'];
+        }));
+        if (empty($promotionalProducts)) {
+            $promotionalProducts = $products;
+        }
+
+        $promotionalProducts = array_map(static function (array $p) use ($locale): array {
+            $oldPrice = (float) ($p['old_price'] ?? ($p['price'] * 1.25));
+            $price = (float) $p['price'];
+            $discountPct = round((($oldPrice - $price) / $oldPrice) * 100);
+            $pid = (int) $p['id'];
+            $soldPercent = 65 + (($pid * 7) % 25);
+            $stockLeft = max(2, 12 - (($pid * 3) % 10));
+
+            return array_merge($p, [
+                'url' => route('store.products.show', $p['id']),
+                'discount_percent' => '-' . $discountPct . '%',
+                'sold_percent' => $soldPercent,
+                'stock_left' => $stockLeft,
+                'sold_text' => $locale === 'km'
+                    ? ('លក់ដាច់ ' . $soldPercent . '% (សល់ ' . $stockLeft . ' គ្រឿង)')
+                    : ('Sold ' . $soldPercent . '% • ' . $stockLeft . ' left'),
+            ]);
+        }, $promotionalProducts);
+
+        $dealIndex = (int) (floor(time() / 1800) % count($promotionalProducts));
+        $initialDeal = $promotionalProducts[$dealIndex];
+
         return view('store.pages.home', [
+            'promotionalProducts' => $promotionalProducts,
+            'initialDeal' => $initialDeal,
             'locale' => $locale,
             'categories' => config('store.categories'),
             'categoryCounts' => $categoryCounts,

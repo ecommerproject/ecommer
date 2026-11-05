@@ -43,18 +43,6 @@
                 </div>
             </div>
 
-            <!-- Center: Flash Sale Live Countdown Timer -->
-            <a href="#flash-deals" class="announcement-flash-sale" title="ចុចដើម្បីមើលទំនិញ Flash Sale">
-                <span class="flash-icon" aria-hidden="true">🔥</span>
-                <span class="flash-label">Flash Sale:</span>
-                <span class="flash-timer" id="topbarTimer">
-                    <span class="time-box" id="tbHours">05</span><span class="time-colon">:</span>
-                    <span class="time-box" id="tbMins">22</span><span class="time-colon">:</span>
-                    <span class="time-box" id="tbSecs">15</span>
-                </span>
-                <span class="flash-pill-tag">-30%</span>
-            </a>
-
             <!-- Right: Interactive Actions & Utilities -->
             <div class="announcement-actions">
                 <!-- Promo Code Quick Copy -->
@@ -143,7 +131,11 @@
                             @if(auth()->check() && auth()->user()->avatar)
                                 <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="account-avatar-img" referrerpolicy="no-referrer">
                             @else
-                                <span>{{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}</span>
+                                @if(auth()->check())
+                                <span>{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                            @else
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            @endif
                             @endif
                             @if(auth()->check())
                                 <span class="avatar-online-dot"></span>
@@ -151,7 +143,7 @@
                         </div>
                         <div class="account-text-wrap">
                             <small>{{ auth()->check() ? ($locale === 'km' ? 'សួស្តី,' : 'Hello,') : ($locale === 'km' ? 'សូមស្វាគមន៍' : 'Welcome') }}</small>
-                            <strong>{{ auth()->check() ? auth()->user()->name : ($locale === 'km' ? 'គណនី' : 'Account') }}</strong>
+                            <strong>{{ auth()->check() ? auth()->user()->name : ($locale === 'km' ? 'ចូលគណនី' : 'Sign In') }}</strong>
                         </div>
                         <svg class="account-chevron" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="6 9 12 15 18 9"></polyline>
@@ -267,7 +259,7 @@
                             <div class="account-menu-list guest-links">
                                 <form action="{{ route('demo.login') }}" method="POST" style="margin: 0;">
                                     @csrf
-                                    <button type="submit" class="account-menu-item demo-login-item">
+                                    <button type="submit" class="account-menu-item demo-login-item" style="display: none !important;">
                                         <span class="menu-item-icon icon-demo">⚡</span>
                                         <div class="menu-item-content">
                                             <strong>{{ $locale === 'km' ? 'សាកល្បង Demo (1-Click)' : '1-Click Demo Login' }}</strong>
@@ -1023,6 +1015,7 @@
 
     // 2. Flash Sale Countdown Timer
     function startFlashCountdown() {
+        if (!document.getElementById('tbHours')) return;
         let totalSeconds = (5 * 3600) + (28 * 60) + 42;
         const hrsEl = document.getElementById('tbHours');
         const minEl = document.getElementById('tbMins');
@@ -2533,6 +2526,32 @@
         }
     };
 
+    window.handleProductCardAdd = function(btn, e, id, name, price, img) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (typeof window.storeAddToCart === 'function') {
+            window.storeAddToCart(id, name, price, 1, img);
+        }
+        if (btn && !btn.classList.contains('is-added')) {
+            btn.classList.add('is-added');
+            const cartSvg = btn.querySelector('.cart-icon-svg');
+            const checkSvg = btn.querySelector('.check-icon-svg');
+            const txt = btn.querySelector('.quick-add-text');
+            const orig = txt ? txt.textContent : '';
+            if (cartSvg) cartSvg.style.display = 'none';
+            if (checkSvg) checkSvg.style.display = 'block';
+            if (txt) txt.textContent = (document.documentElement.lang === 'km' ? 'បានបន្ថែម ✓' : 'Added ✓');
+            setTimeout(function() {
+                btn.classList.remove('is-added');
+                if (cartSvg) cartSvg.style.display = 'block';
+                if (checkSvg) checkSvg.style.display = 'none';
+                if (txt) txt.textContent = orig;
+            }, 1400);
+        }
+    };
+
     // Robust Global Mobile Nav Drawer Toggle
     window.toggleMobileNav = function(forceOrEvent) {
         if (forceOrEvent && forceOrEvent.preventDefault) {
@@ -2750,7 +2769,7 @@
                 <div class="account-menu-list guest-links">
                     <form action="{{ route('demo.login') }}" method="POST" style="margin: 0;">
                         @csrf
-                        <button type="submit" class="account-menu-item demo-login-item">
+                        <button type="submit" class="account-menu-item demo-login-item" style="display: none !important;">
                             <span class="menu-item-icon icon-demo">⚡</span>
                             <div class="menu-item-content">
                                 <strong>{{ $locale === 'km' ? 'សាកល្បង Demo (1-Click)' : '1-Click Demo Login' }}</strong>
@@ -2806,3 +2825,5 @@
     </nav>
 </body>
 </html>
+
+

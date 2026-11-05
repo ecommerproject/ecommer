@@ -10,7 +10,7 @@
                 <div class="sidebar-header-row">
                     <div class="sidebar-title-clean">
                         <span class="sidebar-heading-text">{{ $translations['sidebar']['categories'] }}</span>
-                        <span class="sidebar-count-badge">{{ $productCount }}</span>
+
                     </div>
                 </div>
 
@@ -21,14 +21,36 @@
                 </div>
 
                 <div class="category-links-list">
-                    <button class="category-link selected" type="button" data-filter="all" data-category-name="{{ $translations['categories']['all'] }} all ទាំងអស់">
-                        <span class="cat-name">{{ $translations['categories']['all'] }}</span>
-                        <span class="cat-count-pill">{{ $productCount }}</span>
+                    <button class="category-link selected" type="button" data-filter="all" data-category="all" data-category-name="{{ $translations['categories']['all'] }} all ទាំងអស់">
+
+
+
+
+                            <span class="cat-name">{{ $translations['categories']['all'] }}</span>
+
+
                     </button>
                     @foreach ($categories as $category)
-                        <button class="category-link" type="button" data-filter="{{ $category }}" data-category-name="{{ $translations['categories'][$category] }} {{ $category }}">
-                            <span class="cat-name">{{ $translations['categories'][$category] }}</span>
-                            <span class="cat-count-pill">{{ $categoryCounts[$category] ?? 0 }}</span>
+                        <button class="category-link" type="button" data-filter="{{ $category }}" data-category="{{ $category }}" data-category-name="{{ $translations['categories'][$category] }} {{ $category }}">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+                                <span class="cat-name">{{ $translations['categories'][$category] }}</span>
+
+
                         </button>
                     @endforeach
                 </div>
@@ -39,7 +61,7 @@
                 <div class="deal-widget-header">
                     <span class="deal-kicker">
                         <svg class="deal-icon-svg" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                        <span>{{ $locale === 'km' ? ($storeSettings['deal_kicker_km'] ?? 'ប្រូម៉ូសិនពិសេសថ្ងៃនេះ') : ($storeSettings['deal_kicker_en'] ?? 'DEAL OF THE DAY') }}</span>
+                        <span>{{ $locale === 'km' ? 'ប្រូម៉ូសិន ៣០នាទី (Flash Deal)' : '30-MIN FLASH DEAL' }}</span>
                     </span>
                     <div class="deal-status-group">
                         <span class="deal-live-tag"><span class="deal-pulse-dot"></span> LIVE</span>
@@ -47,33 +69,33 @@
                 </div>
 
                 <!-- Deal Countdown Timer -->
-                <div class="deal-countdown-box" title="ពេលវេលានៅសល់">
+                <div class="deal-countdown-box" title="ពេលវេលានៅសល់មុនដូរផលិតផលបន្ទាប់ (30 នាទីម្តង)">
                     <span class="deal-timer-label">{{ $locale === 'km' ? 'នៅសល់ត្រឹម' : 'Ends in' }}:</span>
-                    <strong class="deal-timer-digits" id="dealCountdownTimer">05 : 42 : 18</strong>
+                    <strong class="deal-timer-digits" id="dealCountdownTimer">00 : 29 : 59</strong>
                 </div>
 
-                <div class="deal-product-preview">
-                    <img src="{{ $storeSettings['deal_image'] ?? 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80' }}" alt="Deal Product" class="deal-img" id="dealProductImg">
+                <div class="deal-product-preview" id="dealProductLink" title="{{ $initialDeal['name'] ?? '' }}" style="cursor: pointer;" onclick="if(this.dataset.url) window.location.href=this.dataset.url;" data-url="{{ $initialDeal['url'] ?? '#' }}">
+                    <img src="{{ $initialDeal['image'] ?? ($storeSettings['deal_image'] ?? '') }}" alt="{{ $initialDeal['name'] ?? 'Deal Product' }}" class="deal-img" id="dealProductImg">
                     <div class="deal-product-details">
-                        <span class="deal-product-title" id="dealProductTitle">{{ $locale === 'km' ? ($storeSettings['deal_title_km'] ?? 'កាសស្ដាប់ត្រចៀកឥតខ្សែ') : ($storeSettings['deal_title_en'] ?? 'Wireless Pro Headphones') }}</span>
+                        <span class="deal-product-title" id="dealProductTitle">{{ $initialDeal['name'] ?? '' }}</span>
                         <div class="deal-price-row">
-                            <strong class="deal-price" id="dealProductPrice">${{ number_format((float)($storeSettings['deal_price'] ?? 32.00), 2) }}</strong>
-                            <del class="deal-old-price" id="dealProductOldPrice">${{ number_format((float)($storeSettings['deal_old_price'] ?? 42.00), 2) }}</del>
-                            <span class="deal-discount-badge" id="dealDiscountBadge">{{ $storeSettings['deal_discount'] ?? '-24%' }}</span>
+                            <strong class="deal-price" id="dealProductPrice">${{ number_format((float)($initialDeal['price'] ?? 0), 2) }}</strong>
+                            <del class="deal-old-price" id="dealProductOldPrice">${{ number_format((float)($initialDeal['old_price'] ?? 0), 2) }}</del>
+                            <span class="deal-discount-badge" id="dealDiscountBadge">{{ $initialDeal['discount_percent'] ?? '-20%' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="deal-progress-wrap">
                     <div class="deal-progress-bar">
-                        <div class="deal-progress-fill" style="width: {{ $storeSettings['deal_sold_percent'] ?? 78 }}%;"></div>
+                        <div class="deal-progress-fill" id="dealProgressFill" style="width: {{ $initialDeal['sold_percent'] ?? 75 }}%;"></div>
                     </div>
                     <div class="deal-progress-text">
-                        <small>{{ $locale === 'km' ? ('លក់ដាច់ ' . ($storeSettings['deal_sold_percent'] ?? 78) . '% (សល់ ' . ($storeSettings['deal_stock_left'] ?? 5) . ' គ្រឿង)') : ('Sold ' . ($storeSettings['deal_sold_percent'] ?? 78) . '% • ' . ($storeSettings['deal_stock_left'] ?? 5) . ' left') }}</small>
+                        <small id="dealProgressText">{{ $initialDeal['sold_text'] ?? ($locale === 'km' ? 'លក់ដាច់ 78% (សល់ 5 គ្រឿង)' : 'Sold 78% • 5 left') }}</small>
                     </div>
                 </div>
 
-                <button type="button" class="deal-action-btn" id="dealQuickBuyBtn" onclick="quickAddDealProduct(this)">
+                <button type="button" class="deal-action-btn" id="dealQuickBuyBtn" title="ចូលមើល និងបញ្ជាទិញទំនិញនេះ" onclick="if(this.dataset.url) window.location.href=this.dataset.url;" data-url="{{ $initialDeal['url'] ?? '#' }}">
                     <span>{{ $locale === 'km' ? 'បញ្ជាទិញឥឡូវនេះ' : 'Grab Deal Now' }}</span>
                     <span>→</span>
                 </button>
@@ -87,6 +109,8 @@
                         <span class="benefit-icon-disk emerald-bg">
                             <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         </span>
+
+
                         <div>
                             <strong>{{ $translations['sidebar']['quality'] }}</strong>
                             <small>{{ $translations['sidebar']['quality_description'] }}</small>
@@ -96,6 +120,8 @@
                         <span class="benefit-icon-disk gold-bg">
                             <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                         </span>
+
+
                         <div>
                             <strong>{{ $translations['sidebar']['delivery'] }}</strong>
                             <small>{{ $translations['sidebar']['delivery_description'] }}</small>
@@ -105,6 +131,8 @@
                         <span class="benefit-icon-disk teal-bg">
                             <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </span>
+
+
                         <div>
                             <strong>{{ $translations['sidebar']['friendly_service'] }}</strong>
                             <small>{{ $translations['sidebar']['friendly_service_description'] }}</small>
@@ -129,8 +157,10 @@
         </aside>
 
         <div class="store-content">
-            <!-- Multi-Slide Interactive Hero Carousel -->
+            <!-- Multi-Slide Interactive Hero Carousel (Upgraded Luxury Design) -->
             <section class="hero-carousel-wrapper" id="homeHeroCarousel" aria-label="Featured Collections">
+                <div class="hero-ambient-orb orb-1"></div>
+                <div class="hero-ambient-orb orb-2"></div>
                 <div class="hero-slides-track">
                     <!-- Slide 1 -->
                     <div class="hero-slide active" data-slide="0">
@@ -139,15 +169,17 @@
                                 <span class="eyebrow-dot"></span>
                                 {{ $translations['hero']['label'] }}
                             </span>
+    
                             <h1>{!! $translations['hero']['title'] !!}</h1>
                             <p>{{ $translations['hero']['description'] }}</p>
                             <div class="hero-actions-row">
-                                <a class="button button-light" href="{{ route('store.products') }}">
+                                <a class="hero-btn-primary" href="{{ route('store.products') }}">
+                                    <span class="quick-add-shine"></span>
                                     <span>{{ $translations['hero']['shop_now'] }}</span>
-                                    <span aria-hidden="true">→</span>
+                                    <svg class="hero-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                 </a>
-                                <a class="button button-outline" href="#featured">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"></path></svg>
+                                <a class="hero-btn-secondary" href="#featured">
+                                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"></path></svg>
                                     <span>{{ $locale === 'km' ? 'ទំនិញលក់ដាច់' : 'Hot Deals' }}</span>
                                 </a>
                             </div>
@@ -155,10 +187,12 @@
                         <div class="hero-image-wrap">
                             <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1200&q=85" alt="{{ $translations['hero']['alt'] }}" class="hero-main-img">
                             <div class="hero-glass-badge">
-                                <span class="badge-star">
+                                <span class="badge-icon-box gold">
                                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
                                 </span>
-                                <div>
+        
+    
+                                <div class="badge-text-box">
                                     <strong>{{ $translations['hero']['note_title'] }}</strong>
                                     <small>{{ $translations['hero']['note_description'] }}</small>
                                 </div>
@@ -170,31 +204,39 @@
                     <div class="hero-slide" data-slide="1">
                         <div class="hero-copy">
                             <span class="eyebrow">
-                                <span class="eyebrow-dot" style="background:#eab308;"></span>
+                                <span class="eyebrow-dot" style="background:#eab308; box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.22);"></span>
                                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#eab308" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                                 {{ $locale === 'km' ? 'បច្ចេកវិទ្យា & ឧបករណ៍ទំនើប' : 'SMART TECH & AUDIO' }}
                             </span>
+    
+
                             <h1>{{ $locale === 'km' ? 'ឧបករណ៍បច្ចេកវិទ្យាឆ្លាតវៃ' : 'Next-Gen Sound & Smart Gear' }}</h1>
                             <p>{{ $locale === 'km' ? 'បញ្ចុះតម្លៃរហូតដល់ 35% លើកាសស្ដាប់ត្រចៀក និងនាឡិកាដៃឆ្លាតវៃ។' : 'Enjoy up to 35% discount on high-fidelity wireless audio & lifestyle watches.' }}</p>
                             <div class="hero-actions-row">
-                                <a class="button button-light" href="{{ route('store.products', ['category' => 'electronics']) }}">
-                                    <span>{{ $locale === 'km' ? 'ស្វែងរកឧបករណ៍ →' : 'Explore Gadgets →' }}</span>
+                                <a class="hero-btn-primary" href="{{ route('store.products', ['category' => 'electronics']) }}">
+                                    <span class="quick-add-shine"></span>
+                                    <span>{{ $locale === 'km' ? 'ស្វែងរកឧបករណ៍' : 'Explore Gadgets' }}</span>
+                                    <svg class="hero-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                 </a>
                                 <span class="hero-pill-info">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
                                     35% OFF Applied
                                 </span>
+        
+    
                             </div>
                         </div>
                         <div class="hero-image-wrap">
                             <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85" alt="Smart Tech" class="hero-main-img">
                             <div class="hero-glass-badge">
-                                <span class="badge-star" style="color: #3b82f6;">
+                                <span class="badge-icon-box blue">
                                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
                                 </span>
-                                <div>
+        
+    
+                                <div class="badge-text-box">
                                     <strong>Premium Audio</strong>
-                                    <small>Noise-canceling & wireless</small>
+                                    <small>{{ $locale === 'km' ? 'សំឡេងច្បាស់ & គ្មានខ្សែ' : 'Noise-canceling & wireless' }}</small>
                                 </div>
                             </div>
                         </div>
@@ -204,31 +246,39 @@
                     <div class="hero-slide" data-slide="2">
                         <div class="hero-copy">
                             <span class="eyebrow">
-                                <span class="eyebrow-dot" style="background:#06b6d4;"></span>
+                                <span class="eyebrow-dot" style="background:#06b6d4; box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.22);"></span>
                                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                                 {{ $locale === 'km' ? 'ម៉ូដសម្លៀកបំពាក់ & កាបូប' : 'MODERN LIFESTYLE STYLE' }}
                             </span>
+    
+
                             <h1>{{ $locale === 'km' ? 'កាបូបស្ពាយរចនាយ៉ាងប្រណីត' : 'Everyday Backpacks & Wear' }}</h1>
                             <p>{{ $locale === 'km' ? 'ទម្ងន់ស្រាល ធន់មិនជ្រាបទឹក សាកសមសម្រាប់ការធ្វើដំណើរ និងធ្វើការ។' : 'Water-resistant, lightweight ergonomics crafted for work, travel and daily life.' }}</p>
                             <div class="hero-actions-row">
-                                <a class="button button-light" href="{{ route('store.products', ['category' => 'fashion']) }}">
-                                    <span>{{ $locale === 'km' ? 'មើលម៉ូដថ្មីៗ →' : 'View Collection →' }}</span>
+                                <a class="hero-btn-primary" href="{{ route('store.products', ['category' => 'fashion']) }}">
+                                    <span class="quick-add-shine"></span>
+                                    <span>{{ $locale === 'km' ? 'មើលម៉ូដថ្មីៗ' : 'View Collection' }}</span>
+                                    <svg class="hero-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                 </a>
                                 <span class="hero-pill-info">
-                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px; margin-right:3px;"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
                                     Free Shipping
                                 </span>
+        
+    
                             </div>
                         </div>
                         <div class="hero-image-wrap">
                             <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1200&q=85" alt="Fashion Bags" class="hero-main-img">
                             <div class="hero-glass-badge">
-                                <span class="badge-star" style="color: #eab308;">
+                                <span class="badge-icon-box gold">
                                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                                 </span>
-                                <div>
+        
+    
+                                <div class="badge-text-box">
                                     <strong>Rated 4.9 / 5</strong>
-                                    <small>1,200+ verified buyers</small>
+                                    <small>{{ $locale === 'km' ? 'អតិថិជនជាង 1,200+ ពេញចិត្ត' : '1,200+ verified buyers' }}</small>
                                 </div>
                             </div>
                         </div>
@@ -257,6 +307,7 @@
                 <div class="benefit-card-v2">
                     <div class="benefit-icon-bubble green">
                         <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+
                     </div>
                     <div class="benefit-text">
                         <strong>{{ $translations['benefits']['free_shipping'] }}</strong>
@@ -298,7 +349,8 @@
                         <span class="section-kicker">
                             <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7-6.3-4.6-6.3 4.6 2.3-7-6-4.6h7.6z"/></svg>
                             {{ $translations['products']['section_kicker'] }}
-                        </span>
+
+
                         <h2>{{ $translations['products']['popular'] }}</h2>
                     </div>
 
@@ -307,7 +359,8 @@
                             <span class="sr-only">{{ $translations['products']['sort_label'] }}</span>
                             <span class="sort-icon-box" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
-                            </span>
+    
+
                             <select id="product-sort" aria-label="{{ $translations['products']['sort_label'] }}">
                                 <option value="featured">{{ $translations['products']['sort_featured'] }}</option>
                                 <option value="price-asc">{{ $translations['products']['sort_price_low'] }}</option>
@@ -409,6 +462,7 @@
                 <div class="trust-item-v2">
                     <span class="trust-icon-bubble teal">
                         <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+
                     </span>
                     <div>
                         <strong>{{ $translations['sidebar']['support'] }}</strong>
@@ -518,14 +572,14 @@
                             <span class="vip-crown-badge">
                                 <span class="crown-icon">👑</span>
                                 <span>{{ $translations['products']['newsletter_kicker'] ?? 'ក្លឹបសមាជិក VIP DARA MARKET' }}</span>
-                            </span>
+
                             <span class="vip-live-pulse-badge">
                                 <span class="pulse-point"></span>
                                 <span>{{ $translations['products']['newsletter_social_proof'] ?? 'អតិថិជនជាង 4,250+ នាក់បានចុះឈ្មោះក្នុងសប្តាហ៍នេះ!' }}</span>
-                            </span>
+
                             <span class="vip-gift-flag">
                                 <span>🎁 $15.00 Welcome Voucher</span>
-                            </span>
+
                         </div>
 
                         <h2 class="vip-hero-heading">
@@ -571,6 +625,7 @@
                             <div class="benefit-card">
                                 <div class="benefit-icon-disk blue">
                                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+
                                 </div>
                                 <div class="benefit-texts">
                                     <strong>{{ $locale === 'km' ? 'សេវាដឹករហ័ស ២៤-៤៨ ម៉ោង' : 'Fast 24-48h Delivery' }}</strong>
@@ -584,7 +639,7 @@
                             <span class="coupons-bar-label">
                                 <span class="sparkle-gold">⚡</span>
                                 <span>{{ $translations['products']['newsletter_popular_tags'] ?? 'កូដប្រូម៉ូសិនពេញនិយម' }}:</span>
-                            </span>
+
                             <div class="coupons-pills-list">
                                 <button type="button" class="coupon-chip" onclick="copyVipCoupon('FLASH30', this)" title="ចុចចម្លងកូដ FLASH30">
                                     <span class="chip-icon">⚡</span>
@@ -642,11 +697,11 @@
                                     <span class="btn-text">
                                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                                         <span>{{ $translations['products']['newsletter_btn'] ?? 'ដោះសោប័ណ្ណ $15 ឥឡូវនេះ' }}</span>
-                                    </span>
+        
                                     <span class="btn-spinner" style="display: none;">
                                         <span class="spinner-ring"></span>
                                         <span>កំពុងដំណើរការ...</span>
-                                    </span>
+        
                                 </button>
                             </form>
 
@@ -748,70 +803,97 @@
         startHeroTimer();
     }
 
-    // Live Ticking Deal of the Day Countdown Timer
-    (function initDealCountdown() {
+    // 30-Minute Promotional Deal Auto-Rotation System
+    (function init30MinPromotionalRotation() {
+        const dealProducts = @json($promotionalProducts ?? []);
+        if (!dealProducts || !dealProducts.length) return;
+
         const timerEl = document.getElementById('dealCountdownTimer');
-        if (!timerEl) return;
-        
-        let totalSeconds = ({{ (int)($storeSettings['deal_countdown_hours'] ?? 6) }} * 3600) + 2542;
-        
-        function updateTimer() {
-            if (totalSeconds <= 0) {
-                totalSeconds = 8 * 3600;
+        const imgEl = document.getElementById('dealProductImg');
+        const titleEl = document.getElementById('dealProductTitle');
+        const priceEl = document.getElementById('dealProductPrice');
+        const oldPriceEl = document.getElementById('dealProductOldPrice');
+        const badgeEl = document.getElementById('dealDiscountBadge');
+        const progressFill = document.getElementById('dealProgressFill');
+        const progressText = document.getElementById('dealProgressText');
+        const productLink = document.getElementById('dealProductLink');
+        const actionBtn = document.getElementById('dealQuickBuyBtn');
+        const previewWrap = document.querySelector('.deal-product-preview');
+
+        const INTERVAL_MS = 30 * 60 * 1000;
+        let lastRenderedIndex = -1;
+
+        function renderDealProduct(index, animate) {
+            const product = dealProducts[index % dealProducts.length];
+            if (!product) return;
+
+            if (animate && previewWrap) {
+                previewWrap.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                previewWrap.style.opacity = '0.25';
+                previewWrap.style.transform = 'scale(0.96)';
             }
-            totalSeconds--;
-            
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            
+
+            setTimeout(() => {
+                if (imgEl) {
+                    imgEl.src = product.image;
+                    imgEl.alt = product.name;
+                }
+                if (titleEl) titleEl.textContent = product.name;
+                if (priceEl) priceEl.textContent = '$' + Number(product.price).toFixed(2);
+                if (oldPriceEl) {
+                    if (product.old_price) {
+                        oldPriceEl.textContent = '$' + Number(product.old_price).toFixed(2);
+                        oldPriceEl.style.display = 'inline';
+                    } else {
+                        oldPriceEl.style.display = 'none';
+                    }
+                }
+                if (badgeEl) badgeEl.textContent = product.discount_percent || '-20%';
+                if (progressFill) progressFill.style.width = (product.sold_percent || 75) + '%';
+                if (progressText) progressText.textContent = product.sold_text || '';
+
+                if (productLink) {
+                    productLink.dataset.url = product.url;
+                    productLink.title = product.name;
+                }
+                if (actionBtn) {
+                    actionBtn.dataset.url = product.url;
+                    actionBtn.title = 'ចូលមើល ' + product.name;
+                }
+
+                if (animate && previewWrap) {
+                    previewWrap.style.opacity = '1';
+                    previewWrap.style.transform = 'scale(1)';
+                }
+            }, animate ? 200 : 0);
+
+            lastRenderedIndex = index;
+        }
+
+        function updateTick() {
+            const now = Date.now();
+            const currentPeriod = Math.floor(now / INTERVAL_MS);
+            const activeIndex = currentPeriod % dealProducts.length;
+
+            if (activeIndex !== lastRenderedIndex) {
+                renderDealProduct(activeIndex, lastRenderedIndex !== -1);
+            }
+
+            const msRemaining = INTERVAL_MS - (now % INTERVAL_MS);
+            const totalSecRemaining = Math.max(0, Math.floor(msRemaining / 1000));
+            const hours = Math.floor(totalSecRemaining / 3600);
+            const minutes = Math.floor((totalSecRemaining % 3600) / 60);
+            const seconds = totalSecRemaining % 60;
+
             const pad = (n) => String(n).padStart(2, '0');
-            timerEl.textContent = `${pad(hours)} : ${pad(minutes)} : ${pad(seconds)}`;
-        }
-        
-        updateTimer();
-        setInterval(updateTimer, 1000);
-    })();
-
-    // Quick Add Deal Product to Cart
-    function quickAddDealProduct(btn) {
-        const title = "{{ addslashes($locale === 'km' ? ($storeSettings['deal_title_km'] ?? 'កាសស្ដាប់ត្រចៀកឥតខ្សែ') : ($storeSettings['deal_title_en'] ?? 'Wireless Pro Headphones')) }}";
-        const price = {{ (float)($storeSettings['deal_price'] ?? 32.00) }};
-        const image = "{{ addslashes($storeSettings['deal_image'] ?? 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80') }}";
-        const dealId = 999999;
-        
-        if (typeof window.storeAddToCart === 'function') {
-            window.storeAddToCart(dealId, title, price, 1, image);
-        } else {
-            const cart = JSON.parse(localStorage.getItem('dara_cart') || '[]');
-            const existing = cart.find(item => item.id === dealId);
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                cart.push({ id: dealId, name: title, price: price, quantity: 1, image: image });
+            if (timerEl) {
+                timerEl.textContent = `${pad(hours)} : ${pad(minutes)} : ${pad(seconds)}`;
             }
-            localStorage.setItem('dara_cart', JSON.stringify(cart));
-            window.dispatchEvent(new Event('cart-updated'));
         }
 
-        const originalHtml = btn.innerHTML;
-        btn.innerHTML = '<span>✓ បានបញ្ចូលកន្ត្រក!</span>';
-        btn.style.background = '#15803d';
-        
-        if (typeof window.showToast === 'function') {
-            window.showToast('✓ បានបញ្ចូល ' + title + ' ទៅកន្ត្រកដោយជោគជ័យ!');
-        }
-
-        setTimeout(() => {
-            btn.innerHTML = originalHtml;
-            btn.style.background = '';
-        }, 2200);
-
-        if (typeof window.openCartDrawer === 'function') {
-            window.openCartDrawer();
-        }
-    }
-
+        updateTick();
+        setInterval(updateTick, 1000);
+    })();
     // Sidebar Voucher One-Click Copy
     function copySidebarVoucher(code, btn) {
         navigator.clipboard.writeText(code).then(() => {

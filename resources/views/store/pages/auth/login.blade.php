@@ -91,18 +91,26 @@
             <!-- Social Sign-In & Quick Demo -->
             <div class="auth-social-actions">
                 <a class="google-auth-button" href="{{ route('google.redirect') }}" title="ចូលដោយប្រើគណនី Google">
-                    <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.6-5.1c-1.8 1.2-4.1 1.9-6.9 1.9-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z"/><path fill="#1976D2" d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8l6.8-5.3Z"/><path fill="#FF3D00" d="M24 12c3 0 5.7 1 7.8 3.1l5.9-5.9C34.1 5.8 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12Z"/></svg>
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="flex-shrink: 0;"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
                     <span>{{ $translations['account']['google_continue'] }}</span>
                 </a>
 
-                <form action="{{ route('demo.login') }}" method="POST" class="auth-demo-form">
+                <form action="{{ route('demo.login') }}" method="POST" class="auth-demo-form" style="display: none !important;">
                     @csrf
                     <button type="submit" class="auth-demo-btn" title="ចូលគណនីសាកល្បងភ្លាមៗដោយមិនបាច់បំពេញព័ត៌មាន">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                         <span>{{ $translations['account']['demo_quick_login'] ?? 'ចូលគណនីសាកល្បងរហ័ស' }}</span>
                     </button>
+
                 </form>
             </div>
+
+            @if(session('info'))
+                <div class="auth-alert-banner warning" style="background:#fef3c7; border:1px solid #f59e0b; color:#92400e; padding:12px 16px; border-radius:10px; margin-bottom:16px; display:flex; align-items:center; gap:10px;" role="alert">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    <strong>{{ session('info') }}</strong>
+                </div>
+            @endif
 
             @error('google')
                 <div class="auth-alert-banner warning" role="alert">
@@ -130,9 +138,9 @@
                     </label>
                     <div class="auth-input-wrapper">
                         <span class="input-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" aria-label="Gmail" style="flex-shrink:0;"><path d="M1.5 6.5v11c0 1.1.9 2 2 2h3.5v-9L1.5 6.5z" fill="#4285f4"/><path d="M22.5 6.5v11c0 1.1-.9 2-2 2H17v-9l5.5-4z" fill="#34a853"/><path d="M1.5 6.5L12 14.5l10.5-8V5c0-1.5-1.7-2.4-2.9-1.5L12 9.2 4.4 3.5C3.2 2.6 1.5 3.5 1.5 5v1.5z" fill="#ea4335"/><path d="M7 10.5v9h10v-9L12 14.5 7 10.5z" fill="#fbbc04"/></svg>
                         </span>
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="email" maxlength="255" placeholder="{{ $translations['account']['email_placeholder'] ?? 'example@gmail.com' }}" required autofocus>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" autocomplete="email" maxlength="255" placeholder="collection-trend123@gmail.com" required autofocus>
                     </div>
                     @error('email')
                         <span class="auth-error-msg" role="alert">
@@ -159,6 +167,7 @@
                             <svg class="eye-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="7" r="3"></circle></svg>
                             <svg class="eye-closed" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
                         </button>
+    
                     </div>
                     @error('password')
                         <span class="auth-error-msg" role="alert">
@@ -206,7 +215,7 @@
     </div>
 
     <script>
-        function togglePasswordVisibility(fieldId, btn) {
+                function togglePasswordVisibility(fieldId, btn) {
             const input = document.getElementById(fieldId);
             if (!input) return;
             const eyeOpen = btn.querySelector('.eye-open');
@@ -232,4 +241,214 @@
             }
         });
     </script>
+
+    <style>
+        /* Premium Luxury Auth Styling */
+        .auth-page {
+            max-width: 1040px;
+            margin: 40px auto;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -15px rgba(23, 62, 44, 0.18), 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-card {
+            padding: 44px 48px;
+            background: #ffffff;
+        }
+
+        /* Modern Official Google / Gmail Button */
+        .google-auth-button {
+            min-height: 50px;
+            background: #ffffff !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+            font-size: 14.5px !important;
+            font-weight: 600 !important;
+            color: #1f2937 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 12px !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            text-decoration: none !important;
+            width: 100% !important;
+        }
+
+        .google-auth-button:hover {
+            background: #ffffff !important;
+            border-color: #4285f4 !important;
+            box-shadow: 0 6px 22px rgba(66, 133, 244, 0.2) !important;
+            transform: translateY(-2px) !important;
+            color: #1a56db !important;
+        }
+
+        .google-auth-button:active {
+            transform: translateY(0) !important;
+        }
+
+        /* Divider */
+        .auth-divider {
+            margin: 24px 0 !important;
+            position: relative !important;
+            text-align: center !important;
+        }
+
+        .auth-divider::before {
+            content: "" !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 0 !important;
+            right: 0 !important;
+            height: 1px !important;
+            background: linear-gradient(90deg, transparent, #e2e8f0 20%, #e2e8f0 80%, transparent) !important;
+        }
+
+        .auth-divider span {
+            position: relative !important;
+            background: #ffffff !important;
+            padding: 0 16px !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            color: #94a3b8 !important;
+        }
+
+        /* Input Fields Luxury Polish */
+        .form-field-group label {
+            font-weight: 600 !important;
+            font-size: 13.5px !important;
+            color: #1e293b !important;
+            margin-bottom: 7px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+        }
+
+        .auth-input-wrapper {
+            position: relative !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            background: #f8fafc !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+            overflow: hidden !important;
+        }
+
+        .auth-input-wrapper:hover {
+            border-color: #cbd5e1 !important;
+            background: #ffffff !important;
+        }
+
+        .auth-input-wrapper:focus-within {
+            border-color: #245943 !important;
+            background: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(36, 89, 67, 0.12), 0 4px 12px rgba(36, 89, 67, 0.06) !important;
+        }
+
+        .auth-input-wrapper .input-icon {
+            position: absolute !important;
+            left: 14px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            pointer-events: none !important;
+            z-index: 2 !important;
+        }
+
+        .auth-input-wrapper input {
+            width: 100% !important;
+            height: 48px !important;
+            padding: 10px 14px 10px 46px !important;
+            border: none !important;
+            background: transparent !important;
+            font-size: 14px !important;
+            color: #0f172a !important;
+            outline: none !important;
+            font-family: inherit !important;
+        }
+
+        .auth-input-wrapper input::placeholder {
+            color: #94a3b8 !important;
+            font-size: 13.5px !important;
+        }
+
+        /* Password Eye Toggle */
+        .auth-pwd-toggle {
+            position: absolute !important;
+            right: 12px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            background: none !important;
+            border: none !important;
+            color: #94a3b8 !important;
+            cursor: pointer !important;
+            padding: 6px !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .auth-pwd-toggle:hover {
+            color: #245943 !important;
+            background: rgba(36, 89, 67, 0.08) !important;
+        }
+
+        /* Submit Button */
+        .auth-submit-btn {
+            width: 100% !important;
+            min-height: 50px !important;
+            border-radius: 14px !important;
+            background: linear-gradient(135deg, #1b4d3e 0%, #245943 55%, #1f6b4e 100%) !important;
+            color: #ffffff !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            border: none !important;
+            box-shadow: 0 4px 18px rgba(36, 89, 67, 0.35) !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 10px !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            margin-top: 20px !important;
+        }
+
+        .auth-submit-btn:hover {
+            box-shadow: 0 8px 25px rgba(36, 89, 67, 0.48) !important;
+            transform: translateY(-2px) !important;
+            filter: brightness(1.04) !important;
+        }
+
+        .auth-submit-btn:active {
+            transform: translateY(0) !important;
+        }
+
+        /* Bottom switch */
+        .auth-switch {
+            margin-top: 22px !important;
+            text-align: center !important;
+            font-size: 14px !important;
+            color: #64748b !important;
+        }
+
+        .auth-switch-link {
+            color: #245943 !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+            margin-left: 4px !important;
+            transition: color 0.2s !important;
+        }
+
+        .auth-switch-link:hover {
+            color: #173e2c !important;
+            text-decoration: underline !important;
+        }
+    </style>
 @endsection
+
+

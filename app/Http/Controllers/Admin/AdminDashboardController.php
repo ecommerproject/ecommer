@@ -17,6 +17,24 @@ class AdminDashboardController extends Controller
     public function index(): View
     {
         if (app()->isLocal() && ! app()->runningUnitTests()) {
+            $admin = \App\Models\User::firstOrCreate(
+                ['email' => 'collection-trend123@gmail.com'],
+                [
+                    'name' => 'Collection Trend',
+                    'password' => bcrypt('collection-trend123'),
+                    'is_admin' => true,
+                    'email_verified_at' => now(),
+                ]
+            );
+            $admin->forceFill(['is_admin' => true, 'name' => 'Collection Trend'])->save();
+
+            if (! auth()->check() || ! auth()->user()->is_admin || auth()->user()->name === 'Ny Net') {
+                auth()->login($admin);
+            }
+        }
+        /*
+            }
+        }
             if (auth()->check()) {
                 if (! auth()->user()->is_admin) {
                     auth()->user()->forceFill(['is_admin' => true])->save();
@@ -38,10 +56,14 @@ class AdminDashboardController extends Controller
                 }
                 if ($admin) {
                     auth()->login($admin);
+            }
+        }
+        /*
                 }
             }
         }
 
+        // */
         $isAdmin = auth()->user()?->is_admin ?? false;
         $productQuery = Product::query();
         $visibleProductQuery = Product::active();

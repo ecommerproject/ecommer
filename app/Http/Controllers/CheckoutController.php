@@ -16,8 +16,17 @@ use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function checkout(Request $request): View
+    public function checkout(Request $request): View|RedirectResponse
     {
+        if (! auth()->check()) {
+            return redirect()->guest(route('login'))->with('info', $this->resolveLocale($request) === 'km'
+                ? 'សូមចូលគណនីពិតប្រាកដរបស់អ្នកជាមុនសិន ដើម្បីបន្តការទិញទំនិញ!'
+                : 'Please log in to your account before proceeding to checkout!');
+        }
+        /*
+        }
+    {
+        // */
         $locale = $this->resolveLocale($request);
         $user = auth()->user();
         $settings = StoreSettingService::all();
@@ -53,6 +62,17 @@ class CheckoutController extends Controller
 
     public function placeOrder(Request $request): JsonResponse|RedirectResponse
     {
+        if (! auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'redirect' => route('login'),
+                'message' => 'សូមចូលគណនីពិតប្រាកដជាមុនសិន ទើបអាចធ្វើការកុម្ម៉ង់ទិញបាន!',
+            ], 401);
+        }
+        /*
+        }
+    {
+        // */
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'min:2', 'max:100'],
             'customer_phone' => ['required', 'string', 'min:8', 'max:25'],
@@ -185,6 +205,7 @@ class CheckoutController extends Controller
 
     public function orderSuccess(Request $request, Order $order): View
     {
+        // */
         $locale = $this->resolveLocale($request);
         $settings = StoreSettingService::all();
         $exchangeRate = (float)($settings['exchange_rate'] ?? 4100);
@@ -221,6 +242,7 @@ class CheckoutController extends Controller
 
     public function uploadReceipt(Request $request, Order $order): JsonResponse|RedirectResponse
     {
+        // */
         $validated = $request->validate([
             'payment_proof' => ['required', 'file', 'mimes:jpeg,png,jpg,webp,pdf', 'max:10240'],
             'transaction_ref' => ['nullable', 'string', 'max:100'],

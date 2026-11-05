@@ -35,11 +35,13 @@ Route::middleware('guest')->group(function (): void {
         ->middleware('throttle:10,1')
         ->name('demo.login');
 });
+Route::match(['get', 'post'], '/logout', [AccountController::class, 'logout'])->name('logout');
+
 Route::middleware('auth')->group(function (): void {
     Route::get('/account', [AccountController::class, 'show'])->name('account.show');
     Route::put('/account/profile', [AccountController::class, 'updateProfile'])->name('account.profile.update');
     Route::put('/account/password', [AccountController::class, 'updatePassword'])->name('account.password.update');
-    Route::post('/logout', [AccountController::class, 'logout'])->name('logout');
+
 });
 Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 Route::prefix('admin')->name('admin.')->middleware([EnsureUserIsAdmin::class])->group(function (): void {
