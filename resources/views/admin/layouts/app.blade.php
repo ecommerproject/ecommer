@@ -22,7 +22,7 @@
         <!-- Brand Logo matched with Collection Trend -->
         <a class="food-brand" href="{{ route('admin.dashboard') }}">
             <div class="food-brand-icon dara-brand-mark" style="background:transparent; padding:0; width:38px; height:38px;">
-                <img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="38" height="38" style="border-radius:10px;">
+                <img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="38" height="38" style="border-radius:10px;">
             </div>
             <div class="food-brand-text">
                 <div class="food-brand-title"><span class="brand-dark">collection</span><span class="brand-orange">-trend</span></div>

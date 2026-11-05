@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
     <defs>
-        <!-- Gradients for 3D Speed Stripes (Orange to Deep Red-Orange) -->
         <linearGradient id="stripeTopGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#ff3b00" />
             <stop offset="60%" stop-color="#ff5e00" />
@@ -30,7 +29,6 @@
             <stop offset="100%" stop-color="#d63400" />
         </linearGradient>
 
-        <!-- Paper Bag Body Shading -->
         <linearGradient id="bagFrontGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#ffffff" />
             <stop offset="40%" stop-color="#f8fafc" />
@@ -44,7 +42,6 @@
             <stop offset="100%" stop-color="#64748b" />
         </linearGradient>
 
-        <!-- Dark base of the bag -->
         <linearGradient id="bagBaseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#334155" />
             <stop offset="60%" stop-color="#1e293b" />
@@ -52,68 +49,35 @@
         </linearGradient>
     </defs>
 
-    <!-- GROUND SHADOW UNDER BAG -->
     <ellipse cx="270" cy="412" rx="90" ry="8" fill="#0f172a" opacity="0.18" />
 
-    <!-- ============================================== -->
-    <!-- 1. BACK HANDLE (Tilted Double Loop)            -->
-    <!-- ============================================== -->
     <path d="M 235 150 C 235 88 285 88 285 150" fill="none" stroke="#0f172a" stroke-width="15" stroke-linecap="round" />
     <path d="M 235 150 C 235 94 285 94 285 150" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.4" />
 
-    <!-- ============================================== -->
-    <!-- 2. FRONT HANDLE (Offset slightly to the right) -->
-    <!-- ============================================== -->
     <path d="M 258 150 C 258 84 315 84 315 150" fill="none" stroke="#0f172a" stroke-width="15" stroke-linecap="round" />
     <path d="M 258 150 C 258 90 315 90 315 150" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.4" />
 
-    <!-- ============================================== -->
-    <!-- 3. BAG 3D SIDE GUSSET (Right side fold)        -->
-    <!-- ============================================== -->
-    <!-- Side outer panel -->
     <polygon points="345,148 375,152 388,342 355,360" fill="url(#bagSideGrad)" stroke="#0f172a" stroke-width="14" stroke-linejoin="round" />
-    <!-- Side inner triangle fold -->
     <polygon points="355,360 375,340 375,152" fill="#e2e8f0" stroke="#0f172a" stroke-width="6" stroke-linejoin="round" />
 
-    <!-- ============================================== -->
-    <!-- 4. BAG FRONT PANEL (Main white paper surface)  -->
-    <!-- ============================================== -->
     <path d="M 198 148 L 345 148 L 355 360 L 192 346 Z" fill="url(#bagFrontGrad)" stroke="#0f172a" stroke-width="15" stroke-linejoin="round" />
 
-    <!-- Bottom Dark Gradient Segment of Bag -->
     <path d="M 191 320 L 354 332 L 355 360 L 192 346 Z" fill="url(#bagBaseGrad)" />
 
-    <!-- Handle Attachments / Rivet Rings on Front -->
     <circle cx="236" cy="168" r="8" fill="#0f172a" />
     <circle cx="298" cy="168" r="8" fill="#0f172a" />
 
-    <!-- Decorative Punch Dot on Bag Front -->
     <ellipse cx="222" cy="208" rx="10" ry="7" fill="#0f172a" />
 
-    <!-- ============================================== -->
-    <!-- 5. THREE SPEED STRIPES (Bursting to Left)      -->
-    <!-- ============================================== -->
-
-    <!-- --- STRIPE 1: TOP THIN STRIPE --- -->
-    <!-- Detached motion dot -->
     <circle cx="138" cy="242" r="10" fill="url(#stripeTopGrad)" />
-    <!-- Main top streak -->
     <path d="M 164 228 C 158 228 154 233 154 239 C 154 245 158 250 164 250 L 350 178 L 346 162 Z" fill="url(#stripeTopGrad)" />
 
-    <!-- --- STRIPE 2: MIDDLE MAIN THICK SPEED STRIPE --- -->
-    <!-- Upper highlight facet -->
     <path d="M 148 266 C 140 266 134 273 134 282 C 134 288 138 293 143 296 L 354 214 L 352 192 Z" fill="url(#stripeMidGrad)" />
-    <!-- Lower shadow bevel facet -->
     <path d="M 143 296 C 145 297 148 298 151 298 L 355 228 L 354 214 Z" fill="url(#stripeMidDark)" />
 
-    <!-- --- STRIPE 3: BOTTOM SPEED STRIPE --- -->
-    <!-- Detached dark motion capsule -->
     <ellipse cx="148" cy="336" rx="14" ry="9" fill="#1e293b" />
-    <!-- Upper highlight facet -->
     <path d="M 175 310 C 167 310 161 316 161 324 C 161 329 164 334 169 337 L 356 264 L 355 244 Z" fill="url(#stripeBotGrad)" />
-    <!-- Lower shadow bevel facet -->
     <path d="M 169 337 C 171 338 174 339 177 339 L 357 278 L 356 264 Z" fill="url(#stripeBotDark)" />
 
-    <!-- Crisp Outer Bag Border Highlight line for depth -->
     <path d="M 198 148 L 345 148 L 375 152 L 388 342 L 355 360 L 192 346 Z" fill="none" stroke="#0f172a" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
 </svg>

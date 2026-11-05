@@ -108,7 +108,7 @@
                 <span></span><span></span><span></span>
             </button>
             <a class="brand" href="{{ route('store.home') }}" aria-label="{{ $translations['language']['label'] }}: {{ $translations['meta']['home'] }}">
-                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="54" height="54"></span>
+                <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="54" height="54"></span>
                 <div class="brand-copy">
                     <div class="brand-copy-title">collection<span>-trend</span></div>
                     <small>STORE &amp; LIVING</small>
@@ -347,7 +347,7 @@
                 <!-- Mobile Drawer Header (Visible on Mobile Only) -->
                 <div class="mobile-drawer-header">
                     <div class="drawer-brand">
-                        <span class="brand-mark" style="width: 42px; height: 42px;"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="42" height="42"></span>
+                        <span class="brand-mark" style="width: 42px; height: 42px;"><img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="42" height="42"></span>
                         <div class="brand-copy" style="font-size: 18px;">
                             <div class="brand-copy-title">collection<span>-trend</span></div>
                         </div>
@@ -511,7 +511,7 @@
         <div class="container footer-grid">
             <div class="footer-about">
                 <a class="brand footer-brand" href="{{ route('store.home') }}">
-                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}" alt="Collection Trend Logo" width="54" height="54"></span>
+                    <span class="brand-mark" aria-hidden="true"><img src="{{ asset('images/logo-icon.svg') }}?v=1793854612" alt="Collection Trend Logo" width="54" height="54"></span>
                     <span class="brand-copy">collection<span>-trend</span><small class="footer-tagline-text">{{ $translations['footer']['tagline'] }}</small></span>
                 </a>
                 <p>{{ $translations['footer']['about'] }}</p>
